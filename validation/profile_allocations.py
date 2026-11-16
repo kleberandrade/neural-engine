@@ -20,7 +20,7 @@ args = parser.parse_args()
 
 
 def profile(kind):
-    command = [args.dart, '--enable-vm-service=0',
+    command = [args.dart, '--enable-vm-service=0', '--profiler',
                '--packages=' + str(pathlib.Path(args.packages).resolve()),
                str(pathlib.Path(args.script).resolve()), kind]
     process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
@@ -55,6 +55,16 @@ def profile(kind):
         try:
             with urllib.request.urlopen(url, timeout=20) as response:
                 result = json.load(response)
+        except urllib.error.HTTPError as error:
+            try:
+                details = json.load(error).get('error', {})
+                message = details.get('message', 'HTTP error')
+                extra = details.get('data', {})
+                if isinstance(extra, dict):
+                    message += ': ' + str(extra.get('details', ''))
+            except Exception:
+                message = 'HTTP ' + str(error.code)
+            raise RuntimeError(method + ': ' + message) from None
         except Exception as error:
             raise RuntimeError('VM service request failed: ' + method + ' (' + type(error).__name__ + ', status=' + str(getattr(error, 'code', None)) + ')') from None
         if 'error' in result:
@@ -81,7 +91,9 @@ def profile(kind):
                                               'liveBytes': m.get('bytesCurrent', 0)} for m in members
                                              if m.get('accumulatedSize', 0) or m.get('bytesCurrent', 0)]})
         classes = rpc('getClassList', isolateId=isolate)['classes']
-        traced = [c for c in classes if c['name'] in ['_List', '_GrowableList']]
+        # VM predefined array classes are not traceable on some SDK builds.
+        # Record their allocation counters, and trace application-owned pass/state types.
+        traced = [c for c in classes if c['name'] in ['DensePass', 'DenseDerivatives', '_AdamState', 'FlatProbe']]
         for item in traced:
             rpc('setTraceClassAllocation', isolateId=isolate, classId=item['id'], enable='true')
         origin = rpc('getVMTimelineMicros')['timestamp']
