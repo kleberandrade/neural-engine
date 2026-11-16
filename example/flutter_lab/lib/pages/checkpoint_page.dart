@@ -27,6 +27,7 @@ class _CheckpointPageState extends State<CheckpointPage>
   }
 
   Future<void> _run(String action) async {
+    FocusScope.of(context).unfocus();
     setState(() {
       _busy = true;
       _error = null;

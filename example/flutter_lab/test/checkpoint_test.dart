@@ -11,6 +11,7 @@ void main() {
         .pumpWidget(const MaterialApp(home: Scaffold(body: CheckpointPage())));
     await tester.tap(find.byKey(const ValueKey('checkpoint-start')));
     await waitForResult(tester, find.text('Completed epochs: 40'));
+    await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
         find.byKey(const ValueKey('checkpoint-json')), 250,
         scrollable: find.byType(Scrollable).first);
@@ -28,10 +29,19 @@ void main() {
     await tester.scrollUntilVisible(
         find.byKey(const ValueKey('checkpoint-load')), -250,
         scrollable: find.byType(Scrollable).first);
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('checkpoint-load')));
     await waitForResult(tester, find.text('Completed epochs: 40'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('checkpoint-resume')), -250,
+        scrollable: find.byType(Scrollable).first);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('checkpoint-resume')).hitTestable(),
+        findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('checkpoint-resume')));
     await waitForResult(tester, find.text('Completed epochs: 100'));
+    await tester.pumpAndSettle();
     expect(find.text('Full model + Adam state matches uninterrupted run: true'),
         findsOneWidget);
     expect(find.text('Maximum prediction difference: 0.0'), findsOneWidget);
@@ -48,6 +58,7 @@ void main() {
     await tester.scrollUntilVisible(
         find.byKey(const ValueKey('checkpoint-load')), -250,
         scrollable: find.byType(Scrollable).first);
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('checkpoint-load')));
     await waitForResult(tester, find.byKey(const ValueKey('checkpoint-error')));
     expect(find.text('Completed epochs: 100'), findsOneWidget);
