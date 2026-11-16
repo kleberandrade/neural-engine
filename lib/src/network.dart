@@ -74,6 +74,11 @@ class NeuralNetwork {
   List<List<double>> predictBatch(List<List<double>> inputs) =>
       List.unmodifiable(inputs.map(predict));
 
+  /// Immutable output of each Dense layer, excluding the input vector.
+  /// Autoencoders can inspect their bottleneck through this method.
+  List<List<double>> layerOutputs(List<double> input) => List.unmodifiable(
+      _forward(input).outputs.skip(1).map((v) => List<double>.unmodifiable(v)));
+
   _Pass _forward(List<double> input) {
     _vector(input, inputSize, 'input');
     final outputs = <List<double>>[List.of(input)];
@@ -161,6 +166,21 @@ class NeuralNetwork {
     required List<double> target,
     required Loss loss,
   }) {
+    return _differentiate(input: input, target: target, loss: loss).parameters;
+  }
+
+  /// Derivative of the sample loss with respect to each input coordinate.
+  /// Useful when composing a dense head with other differentiable models.
+  List<double> inputGradients(
+          {required List<double> input,
+          required List<double> target,
+          required Loss loss}) =>
+      _differentiate(input: input, target: target, loss: loss).input;
+
+  _Derivatives _differentiate(
+      {required List<double> input,
+      required List<double> target,
+      required Loss loss}) {
     _compatible(loss);
     _vector(target, layers.last.units, 'target');
     final pass = _forward(input);
@@ -178,6 +198,7 @@ class NeuralNetwork {
                 loss.gradient(prediction, target),
               );
     final result = List<double>.filled(parameterCount, 0);
+    var inputGradient = <double>[];
     for (var l = layers.length - 1; l >= 0; l--) {
       final previous = pass.outputs[l];
       final upstream = List<double>.filled(previous.length, 0);
@@ -189,10 +210,17 @@ class NeuralNetwork {
         }
         result[base + previous.length] = delta[j];
       }
-      if (l > 0) delta = layers[l - 1].activation.backward(previous, upstream);
+      if (l > 0) {
+        delta = layers[l - 1].activation.backward(previous, upstream);
+      } else {
+        inputGradient = upstream;
+      }
     }
-    if (result.any((x) => !x.isFinite)) throw StateError('Nonfinite gradient.');
-    return List.unmodifiable(result);
+    if ([...result, ...inputGradient].any((x) => !x.isFinite)) {
+      throw StateError('Nonfinite gradient.');
+    }
+    return _Derivatives(
+        List.unmodifiable(result), List.unmodifiable(inputGradient));
   }
 
   /// Fits mini-batches synchronously. Each call starts fresh optimizer state.
@@ -362,4 +390,10 @@ void _vector(List<double> values, int size, String label) {
   if (values.length != size || values.any((x) => !x.isFinite)) {
     throw ArgumentError('$label must contain $size finite values.');
   }
+}
+
+class _Derivatives {
+  final List<double> parameters;
+  final List<double> input;
+  _Derivatives(this.parameters, this.input);
 }

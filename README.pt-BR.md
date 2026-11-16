@@ -1,12 +1,25 @@
 # neural_engine
 
 Redes neurais em Dart puro para aplicativos Flutter e serviços Dart. Treine
-redes densas feedforward com backpropagation, SGD ou Adam e exporte modelos de
-inferência em JSON versionado. Núcleo sem dependências de execução.
+MLPs e CNNs com backpropagation, SGD ou Adam, organize dados com SOM de Kohonen
+e explore autoencoders densos. Exporte modelos em JSON versionado. Núcleo sem dependências de execução.
 
-[English](README.md) · [Arquitetura](doc/architecture.md) · [Laboratório Flutter](example/flutter_lab/README.md)
+[Guia didático dos modelos](doc/models.pt-BR.md) · [English](README.md) · [Arquitetura](doc/architecture.md) · [Laboratório Flutter](example/flutter_lab/README.md)
 
 **Estado:** versão inicial 0.1.0 no código-fonte, ainda não publicada no pub.dev.
+
+## Modelos, exemplos e laboratório
+
+| Modelo | Dart | Aba Flutter | O que observar |
+| --- | --- | --- | --- |
+| MLP | [XOR](example/neural_engine_example.dart), [regressão](example/regression.dart), [classes](example/classification.dart) | MLP | Perda e fronteira de decisão |
+| SOM | [Cores RGB](example/som_colors.dart) | SOM | Protótipos antes/depois e erro de quantização |
+| CNN | [Barras com ruído](example/cnn_bars.dart) | CNN | Imagem, probabilidades e canais da convolução |
+| Autoencoder denso | [Reconstrução](example/autoencoder.dart) | Autoencoder | Entrada, alvo limpo, reconstrução e código latente |
+
+O [guia completo](doc/models.pt-BR.md) explica cada arquitetura, os formatos dos
+dados, os passos de treinamento e experimentos para modificar. Os dados são
+sintéticos e gerados localmente. RNN, LSTM e GRU estão planejados, não implementados.
 
 ## Instalação pelo GitHub
 
@@ -49,6 +62,10 @@ void main() {
 
 ## Recursos
 
+- SOM retangular de Kohonen com vizinhança gaussiana e cronograma de taxa/raio.
+- CNN ponta a ponta com Conv2D, padding valid/same, stride, MaxPool2D e saída densa.
+- Exemplo de autoencoder denso, saídas intermediárias e gradientes das entradas.
+
 - MLP com camadas densas; ativações linear, sigmoid, tanh, ReLU e softmax.
 - Erro quadrático médio, entropia cruzada binária e categórica.
 - Cálculo estável de sigmoid/BCE e softmax/CCE no treinamento e avaliação.
@@ -84,21 +101,26 @@ dart pub get
 dart run example/neural_engine_example.dart
 dart run example/regression.dart
 dart run example/classification.dart
+dart run example/som_colors.dart
+dart run example/cnn_bars.dart
+dart run example/autoencoder.dart
 dart analyze --fatal-infos
 dart test
 ```
 
-O laboratório Flutter permite ajustar neurônios e taxa de aprendizado e ver a
-curva de perda, a superfície de decisão e as previsões. Interface em inglês.
+O laboratório Flutter oferece abas MLP, SOM, CNN e Autoencoder com treinamento
+e visualizações próprias. Interface em inglês; guia detalhado em português.
 Os testes verificam gradientes por diferenças finitas, convergência, estabilidade
 numérica, serialização e early stopping.
 
 ## Limitações
 
-Voltado inicialmente a modelos densos pequenos. Treinamento síncrono, com
+Voltado a modelos pequenos e aprendizado didático. Treinamento síncrono, com
 alocações intermediárias por amostra; use isolate no Flutter nativo para cargas
 maiores. Na web, `compute` executa na thread principal: use worker para cargas
-maiores. Sem GPU, CNN, redes recorrentes, ONNX ou importação TensorFlow.
+maiores. Sem GPU, redes recorrentes, ONNX ou importação TensorFlow. CNN não inclui
+dilatação, batch normalization ou dropout; validação com early stopping permanece
+exclusiva da MLP. SOM usa aprendizado competitivo, sem backpropagation.
 A repetibilidade é testada no mesmo SDK/plataforma; não há promessa de igualdade
 bit a bit entre plataformas. O treinamento modifica os pesos. Em caso de erro,
 os batches já concluídos permanecem aplicados.
@@ -107,6 +129,7 @@ Separe os conjuntos antes de calcular normalização e avalie generalização em
 um conjunto de teste independente. XOR não demonstra qualidade em dados reais.
 
 `fuzzy_engine`, `genetic_engine` e `neural_engine` permanecem independentes.
-Uma integração de neuroevolução poderá ser adicionada em exemplo separado.
+As próximas famílias candidatas são RNN/LSTM/GRU e modelos clássicos, sempre
+acompanhados de testes, exemplos Dart/Flutter e documentação didática.
 
 MIT © 2026 Kleber Andrade.

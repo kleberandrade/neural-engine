@@ -9,6 +9,10 @@ propagates derivatives backward and updates parameters once per mini-batch.
 - `network.dart`: model parameters, forward/backward passes, training and JSON.
 - `neural_engine.dart`: public exports; consumers never need internal imports.
 
+- `som.dart`: competitive Kohonen learning with a rectangular Gaussian neighborhood.
+- `convolution.dart`: immutable HWC tensors, Conv2D/MaxPool2D specifications,
+  spatial passes and an end-to-end dense-headed CNN trainer.
+
 No IO, Flutter, execution workers or other engine packages enter the core.
 Layer specifications are immutable and reusable across networks. Training
 mutates a network; prediction returns independent immutable snapshots.
@@ -73,3 +77,39 @@ rejects unknown format/version/activation, invalid dimensions, malformed data
 and nonfinite weights. Unknown extra fields are ignored for forward metadata
 compatibility. Model files are trusted application data: callers should impose
 size limits before decoding untrusted files. There is no optimizer state.
+
+## Model families added after the dense baseline
+
+SOM is an independent competitive-learning model, not a Dense subclass. Its
+row-major prototypes initialize uniformly in the unit interval. Euclidean BMU
+ties choose the first neuron. Gaussian neighborhood influence uses rectangular
+non-wrapping grid distance; learning rate and radius decay exponentially per
+sample to configured endpoints. Post-epoch history records mean Euclidean
+quantization error. Each fit call restarts the schedule and shuffle sequence.
+
+CNN composes spatial specifications and an existing dense NeuralNetwork head.
+Spatial stages use HWC layout, cross-correlation, per-coordinate activations,
+zero-padding and valid max pooling. Flatten is implicit. Pooling keeps argmax
+routes for backward propagation; ties use the first position, overlapping routes
+accumulate gradients. Dense input derivatives propagate into spatial stages.
+Kernel and dense gradients share one mini-batch optimizer state and timestep.
+Square kernels/strides are supported; dilation, dropout and batch normalization
+are not. The initial CNN trainer has no built-in validation/early stopping.
+
+Spatial parameters appear by layer, then filter, kernel row, kernel column,
+input channel, followed by one bias per filter. Dense-head parameters follow all
+spatial parameters. `featureMaps` snapshots preserve the shapes after each stage.
+
+Dense `inputGradients` uses the same backward calculation as weight gradients.
+`layerOutputs` provides immutable post-activation layer snapshots. Autoencoders
+are ordinary dense architectures with a bottleneck; no separate class, tied
+weights or special optimizer is introduced.
+
+SOM JSON uses format `neural_engine_som` version 1 with grid/input dimensions,
+seed and prototype vectors. CNN JSON uses `neural_engine_cnn` version 1 with
+input shape, spatial specifications, convolution parameters and a nested dense
+head model. Import verifies the flattened spatial output matches head input.
+Unknown formats, versions, layer types and incompatible parameters are rejected.
+
+See [English](models.md) / [Português](models.pt-BR.md) for data walkthroughs,
+shape examples, model selection, runnable commands and learning experiments.

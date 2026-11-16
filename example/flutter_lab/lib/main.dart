@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 // ignore: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:neural_engine/neural_engine.dart';
+import 'model_demos.dart';
 
 void main() => runApp(const NeuralLab());
 
@@ -17,8 +18,30 @@ class NeuralLab extends StatelessWidget {
             brightness: Brightness.dark,
             colorSchemeSeed: Colors.cyan,
             useMaterial3: true),
-        home: const LabPage(),
+        home: const ModelGallery(),
       );
+}
+
+class ModelGallery extends StatelessWidget {
+  const ModelGallery({super.key});
+  @override
+  Widget build(BuildContext context) => DefaultTabController(
+      length: 4,
+      child: Scaffold(
+          appBar: AppBar(
+              title: const Text('Neural Engine • Model Lab'),
+              bottom: const TabBar(tabs: [
+                Tab(text: 'MLP'),
+                Tab(text: 'SOM'),
+                Tab(text: 'CNN'),
+                Tab(text: 'Autoencoder')
+              ])),
+          body: const TabBarView(children: [
+            LabPage(),
+            ModelDemo(kind: DemoKind.som),
+            ModelDemo(kind: DemoKind.cnn),
+            ModelDemo(kind: DemoKind.autoencoder)
+          ])));
 }
 
 const _inputs = <List<double>>[
@@ -85,7 +108,6 @@ class _LabPageState extends State<LabPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: const Text('Neural Engine • XOR Lab')),
         body: Center(
             child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 1000),

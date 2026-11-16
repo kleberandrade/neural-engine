@@ -29,3 +29,19 @@ that import for compatibility with older Flutter versions and suppress only
 its specific deprecation at the two import sites. The first Flutter CI run
 stopped at analysis; a new run validates the change. Local direct compilation
 of the complete Flutter lab to JavaScript also succeeded.
+
+## SOM, CNN and teaching examples
+
+Action: add independent Kohonen SOM and trainable Conv2D/MaxPool2D models; expose
+dense input derivatives and immutable layer outputs; add a dense denoising
+autoencoder example. Replace the neuroevolution roadmap with model families.
+Reason: focus this repository on neural architectures with explanatory Dart and
+Flutter examples, keeping other engines independent.
+
+Validation: 28 public-API tests pass locally, including finite differences across
+all CNN parameters (multiple input channels, stacked filters, overlapping pooling,
+valid/same padding and stride), known spatial updates, dense input gradients,
+SOM learning/neighborhood behavior and held-out-noise reconstruction. Core
+analysis passes. CNN also compiles and runs under Node.js. RGB quantization
+error and synthetic shape/reconstruction results are educational fixture checks,
+not real-world benchmarks. Full Flutter UI and web-build checks run in CI.

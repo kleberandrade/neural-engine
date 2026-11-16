@@ -25,7 +25,16 @@ jobs:
       - run: dart run example/neural_engine_example.dart
       - run: dart run example/regression.dart
       - run: dart run example/classification.dart
+      - run: dart run example/som_colors.dart
+      - run: dart run example/cnn_bars.dart
+      - run: dart run example/autoencoder.dart
       - run: dart compile js example/neural_engine_example.dart -o /tmp/neural_engine.js
+      - run: dart compile js example/som_colors.dart -o /tmp/som.js
+      - run: dart compile js example/cnn_bars.dart -o /tmp/cnn.js
+      - run: dart compile js example/autoencoder.dart -o /tmp/autoencoder.js
+      - run: node /tmp/som.js
+      - run: node /tmp/cnn.js
+      - run: node /tmp/autoencoder.js
       - run: dart pub publish --dry-run
         if: matrix.sdk == 'stable'
   flutter:

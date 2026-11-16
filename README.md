@@ -3,14 +3,27 @@
 [![Dart CI](https://github.com/kleberandrade/neural-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/kleberandrade/neural-engine/actions/workflows/ci.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Pure Dart neural networks for Flutter apps and Dart services. Train dense
-feedforward networks with backpropagation, SGD or Adam, then export a versioned
-JSON inference model. No runtime dependencies, Flutter imports, native bindings
+Pure Dart neural networks for Flutter apps and Dart services: dense MLPs,
+Kohonen self-organizing maps, trainable 2D CNNs and dense autoencoder examples.
+Train locally and export versioned JSON models. No runtime dependencies, Flutter imports, native bindings
 or network access in the core.
 
-[Português](README.pt-BR.md) · [Concepts and architecture](doc/architecture.md) · [Flutter lab](example/flutter_lab/README.md) · [Contributing](CONTRIBUTING.md)
+[Model tutorials](doc/models.md) · [Guia didático](doc/models.pt-BR.md) · [Português](README.pt-BR.md) · [Concepts and architecture](doc/architecture.md) · [Flutter lab](example/flutter_lab/README.md) · [Contributing](CONTRIBUTING.md)
 
 **Status:** initial 0.1.0 source release; not yet published on pub.dev.
+
+## Models and runnable examples
+
+| Family | Dart example | Flutter tab | Guide |
+| --- | --- | --- | --- |
+| MLP | [XOR](example/neural_engine_example.dart), [regression](example/regression.dart), [classes](example/classification.dart) | MLP: loss and decision surface | [MLP](doc/models.md#mlp-learn-a-relationship-between-vectors) |
+| SOM | [RGB organization](example/som_colors.dart) | SOM: before/after color map | [SOM](doc/models.md#som-organize-colors-without-class-labels) |
+| CNN | [Noisy bars](example/cnn_bars.dart) | CNN: image, probabilities, feature channels | [CNN](doc/models.md#cnn-learn-spatial-patterns-with-shared-filters) |
+| Dense autoencoder | [Denoising](example/autoencoder.dart) | Autoencoder: input, target, reconstruction and latent code | [Autoencoder](doc/models.md#dense-autoencoder-compress-and-reconstruct) |
+
+All examples use locally generated synthetic data. The guides explain shape
+conventions, learning steps, practical experiments and evaluation limits.
+RNN/LSTM/GRU are planned; they are not implemented in this version.
 
 ## Install from GitHub
 
@@ -60,6 +73,10 @@ its built-in training follows gradients rather than population evolution.
 These packages have independent cores.
 
 ## Features
+
+- Rectangular Kohonen SOM with Gaussian neighborhoods, decay schedules and JSON.
+- End-to-end CNN: Conv2D, valid/same padding, stride, MaxPool2D, implicit flatten and Dense head.
+- Dense autoencoder example, immutable layer outputs and input gradients.
 
 - Dense MLPs; linear, sigmoid, tanh, ReLU and softmax activations.
 - MSE, binary cross entropy and categorical cross entropy.
@@ -130,25 +147,31 @@ dart pub get
 dart run example/neural_engine_example.dart
 dart run example/regression.dart
 dart run example/classification.dart
+dart run example/som_colors.dart
+dart run example/cnn_bars.dart
+dart run example/autoencoder.dart
 ```
 
-The [Flutter lab](example/flutter_lab/README.md) has hidden-neuron and learning-rate
-controls, an XOR decision surface, loss chart and predictions.
+The [Flutter lab](example/flutter_lab/README.md) has separate MLP, SOM, CNN and
+autoencoder tabs. Train each model and inspect its own curves and visualizations.
 
 ## Limits and roadmap
 
-The initial release targets small dense models and educational/embedded app
-workloads. Training is synchronous and allocates per-sample intermediate vectors.
+This implementation targets small models and educational/embedded app workloads. Training is synchronous and allocates per-sample intermediate vectors.
 Use an isolate for native Flutter workloads; on web use a worker for large jobs.
-No GPU, CNN, recurrent layers, autodiff graph, pretrained model import, ONNX or
-TensorFlow compatibility is provided. Seeded repeatability is tested within the
+No GPU, recurrent layers, autodiff graph, pretrained model import, ONNX or
+TensorFlow compatibility is provided. CNN supports standard square kernels and
+valid max pooling; dilation, batch normalization and dropout are not implemented.
+CNN validation/early stopping is not yet implemented; evaluate a separate set.
+SOM uses competitive learning and reports quantization error, not supervised loss. Seeded repeatability is tested within the
 same SDK/platform; bit-identical results across all platforms are not promised.
 Training mutates weights; do not share a network between concurrent operations.
 Nonfinite updates throw; previously completed batches remain applied.
 
-Next candidates: measured allocation/performance improvements, normalization
-utilities, a separate neuroevolution example using `genetic_engine`, then new
-layer types supported by numerical tests.
+Next model families: RNN/LSTM/GRU, followed by selected classical models. Each
+addition must include numerical checks, Dart/Flutter examples and a tutorial.
+Allocation/performance improvements and normalization utilities remain useful
+parallel priorities. See the [implemented/planned matrix](doc/models.md#implemented-and-planned).
 
 ## Development
 
