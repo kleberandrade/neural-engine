@@ -21,7 +21,8 @@ or network access in the core.
 | CNN | [Noisy bars](https://github.com/kleberandrade/neural-engine/blob/main/example/cnn_bars.dart) | CNN: image, probabilities, feature channels | [CNN](https://github.com/kleberandrade/neural-engine/blob/main/doc/models.md#cnn-learn-spatial-patterns-with-shared-filters) |
 | Dense autoencoder | [Denoising](https://github.com/kleberandrade/neural-engine/blob/main/example/autoencoder.dart) | Autoencoder: input, target, reconstruction and latent code | [Autoencoder](https://github.com/kleberandrade/neural-engine/blob/main/doc/models.md#dense-autoencoder-compress-and-reconstruct) |
 
-All examples use locally generated synthetic data. The guides explain shape
+The model walkthroughs above use locally generated synthetic data; the Real data
+tab adds the pinned datasets linked below. The guides explain shape
 conventions, learning steps, practical experiments and evaluation limits.
 RNN, LSTM and reset-before GRU are implemented as many-to-one models. See
 [sequence forecasting](https://github.com/kleberandrade/neural-engine/blob/main/doc/recurrent.md) and the Flutter Sequences tab.
@@ -168,15 +169,20 @@ dart run example/recurrent_sequences.dart
 dart run example/evaluation.dart
 dart run example/custom_extensions.dart
 dart run example/checkpoint.dart
+dart run example/async_training.dart
+dart run example/real_world.dart
 ```
 
 The [Flutter lab](https://github.com/kleberandrade/neural-engine/blob/main/example/flutter_lab/README.md) has separate MLP, SOM, CNN and
-autoencoder tabs, plus a Sequences comparison tab. Train each model and inspect its own curves and visualizations.
+autoencoder tabs, plus Sequences, Checkpoints, Async training and Real data.
+Train each model and inspect its own curves and visualizations.
 
 ## Limits and roadmap
 
-This implementation targets small models and educational/embedded app workloads. Training is synchronous and allocates per-sample intermediate vectors.
-Use an isolate for native Flutter workloads; on web use a worker for large jobs.
+This implementation targets small models and educational/embedded app workloads. The default `fit` is synchronous; `AsyncTrainingTask` adds native isolate execution
+and cooperative web batches. Intermediate vectors are still allocated per sample.
+Large browser batches or dataset evaluations remain synchronous units; see the
+async guide for scheduling and cancellation limits.
 No GPU, autodiff graph, pretrained model import, ONNX or
 TensorFlow compatibility is provided. CNN supports standard square kernels and
 valid max pooling; dilation, batch normalization and dropout are not implemented.

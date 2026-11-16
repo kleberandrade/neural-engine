@@ -18,8 +18,8 @@ e explore autoencoders densos. Exporte modelos em JSON versionado. Núcleo sem d
 | Autoencoder denso | [Reconstrução](https://github.com/kleberandrade/neural-engine/blob/main/example/autoencoder.dart) | Autoencoder | Entrada, alvo limpo, reconstrução e código latente |
 
 O [guia completo](https://github.com/kleberandrade/neural-engine/blob/main/doc/models.pt-BR.md) explica cada arquitetura, os formatos dos
-dados, os passos de treinamento e experimentos para modificar. Os dados são
-sintéticos e gerados localmente. RNN, LSTM e GRU estão implementados com saída no último passo; veja o guia de sequências.
+dados, os passos de treinamento e experimentos para modificar. Os exemplos dessa tabela usam dados
+sintéticos; a aba Real data acrescenta os datasets locais documentados abaixo. RNN, LSTM e GRU estão implementados com saída no último passo; veja o guia de sequências.
 
 ## Treinamento assíncrono (0.3.0)
 
@@ -122,21 +122,24 @@ dart run example/recurrent_sequences.dart
 dart run example/evaluation.dart
 dart run example/custom_extensions.dart
 dart run example/checkpoint.dart
+dart run example/async_training.dart
+dart run example/real_world.dart
 dart analyze --fatal-infos
 dart test
 ```
 
 O laboratório Flutter oferece abas MLP, SOM, CNN e Autoencoder com treinamento
-e visualizações próprias. Interface em inglês; guia detalhado em português.
+e visualizações próprias, além de Sequences, Checkpoints, Async training e Real data.
+Interface em inglês; guia detalhado em português.
 Os testes verificam gradientes por diferenças finitas, convergência, estabilidade
 numérica, serialização e early stopping.
 
 ## Limitações
 
-Voltado a modelos pequenos e aprendizado didático. Treinamento síncrono, com
-alocações intermediárias por amostra; use isolate no Flutter nativo para cargas
-maiores. Na web, `compute` executa na thread principal: use worker para cargas
-maiores. Sem GPU, ONNX ou importação TensorFlow. CNN não inclui
+Voltado a modelos pequenos e aprendizado didático. O `fit` padrão é síncrono;
+`AsyncTrainingTask` oferece isolate no nativo e lotes cooperativos na web.
+Há alocações intermediárias por amostra; lotes grandes e avaliações do conjunto
+ainda são unidades síncronas. Veja o guia assíncrono para os limites de agendamento. Sem GPU, ONNX ou importação TensorFlow. CNN não inclui
 dilatação, batch normalization ou dropout; CNN, MLP e modelos recorrentes compartilham validação e early stopping. SOM usa aprendizado competitivo, sem backpropagation.
 A repetibilidade é testada no mesmo SDK/plataforma; não há promessa de igualdade
 bit a bit entre plataformas. O treinamento modifica os pesos. Em caso de erro,

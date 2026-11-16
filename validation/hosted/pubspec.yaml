@@ -3,4 +3,4 @@ publish_to: none
 environment:
   sdk: '>=3.3.0 <4.0.0'
 dependencies:
-  neural_engine: 0.2.1
+  neural_engine: 0.3.0
