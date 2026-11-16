@@ -1,6 +1,6 @@
 # Hosted artifact validation
 
-This standalone client deliberately pins `neural_engine: 0.2.0` from pub.dev.
+This standalone client deliberately pins `neural_engine: 0.2.1` from pub.dev.
 It has no path or Git dependency and no overrides. Run it from this directory:
 
 ```sh

@@ -15,8 +15,8 @@ void main() {
   require(
       lock.contains('url: "https://pub.dev"') &&
           lock.contains('source: hosted') &&
-          lock.contains('version: "0.2.0"'),
-      'Expected the exact hosted 0.2.0 dependency.');
+          lock.contains('version: "0.2.1"'),
+      'Expected the exact hosted 0.2.1 dependency.');
   final data = <List<double>>[
     [0],
     [0.25],
@@ -106,5 +106,5 @@ void main() {
         '${kind.name} JSON changed inference.');
   }
   print(
-      'Hosted neural_engine 0.2.0: all families, fitted scalers, disk persistence and exact Adam continuation passed.');
+      'Hosted neural_engine 0.2.1: all families, fitted scalers, disk persistence and exact Adam continuation passed.');
 }
