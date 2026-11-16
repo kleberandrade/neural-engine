@@ -1,10 +1,43 @@
-/// Pure Dart dense/convolutional networks, Kohonen SOM and model interchange.
+/// Pure Dart neural models with explicit contracts and composable training.
 library;
 
-export 'src/activation.dart';
-export 'src/loss.dart';
-export 'src/network.dart';
-export 'src/optimizer.dart';
-
-export 'src/som.dart';
-export 'src/convolution.dart';
+export 'src/contracts/predictor.dart';
+export 'src/contracts/parameterized_model.dart';
+export 'src/contracts/differentiable_model.dart';
+export 'src/contracts/unsupervised_model.dart';
+export 'src/contracts/json_model.dart';
+export 'src/activations/activation.dart';
+export 'src/layers/dense.dart';
+export 'src/layers/spatial/spatial_layer.dart';
+export 'src/layers/spatial/convolution_padding.dart';
+export 'src/layers/spatial/conv2d.dart';
+export 'src/layers/spatial/max_pool2d.dart';
+export 'src/tensors/image_tensor.dart';
+export 'src/losses/loss.dart';
+export 'src/losses/mean_squared_error.dart';
+export 'src/losses/binary_cross_entropy.dart';
+export 'src/losses/categorical_cross_entropy.dart';
+export 'src/optimizers/optimizer.dart';
+export 'src/optimizers/sgd.dart';
+export 'src/optimizers/adam.dart';
+export 'src/training/training_history.dart';
+export 'src/training/mini_batch_trainer.dart';
+export 'src/models/dense/neural_network.dart';
+export 'src/models/cnn/convolutional_network.dart';
+export 'src/models/som/self_organizing_map.dart';
+export 'src/models/som/som_match.dart';
+export 'src/models/som/som_history.dart';
+export 'src/preprocessing/feature_transform.dart';
+export 'src/preprocessing/standard_scaler.dart';
+export 'src/preprocessing/min_max_scaler.dart';
+export 'src/metrics/classification_metrics.dart';
+export 'src/metrics/regression_metrics.dart';
+export 'src/models/recurrent/recurrent_kind.dart';
+export 'src/models/recurrent/recurrent_cell.dart';
+export 'src/models/recurrent/recurrent_state.dart';
+export 'src/models/recurrent/recurrent_step.dart';
+export 'src/models/recurrent/recurrent_derivatives.dart';
+export 'src/models/recurrent/recurrent_network.dart';
+export 'src/models/recurrent/cells/simple_rnn_cell.dart';
+export 'src/models/recurrent/cells/lstm_cell.dart';
+export 'src/models/recurrent/cells/gru_cell.dart';

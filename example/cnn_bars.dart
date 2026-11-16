@@ -16,13 +16,17 @@ void main() {
       ],
       denseLayers: [Dense(2, activation: Activation.softmax)],
       seed: 42);
+  final validation = barDataset(seed: 77, repetitions: 1);
   final history = model.fit(
       inputs: train.images,
       targets: train.targets,
       loss: const CategoricalCrossEntropy(),
       optimizer: Adam(learningRate: 0.02),
       epochs: 100,
-      batchSize: 8);
+      batchSize: 8,
+      validationInputs: validation.images,
+      validationTargets: validation.targets,
+      patience: 15);
   var correct = 0;
   for (var i = 0; i < test.images.length; i++) {
     final p = model.predict(test.images[i]);
@@ -34,6 +38,14 @@ void main() {
       'CNN loss=${history.losses.last}; held-out noise accuracy=$correct/${test.images.length}');
   print(
       'Feature maps: ${model.featureMaps(test.images.first).map((t) => "${t.height}x${t.width}x${t.channels}").join(" -> ")}');
+  final report = ClassificationMetrics.fromLabels(
+      targets: test.targets.map((x) => x[0] == 1 ? 0 : 1).toList(),
+      predictions: test.images
+          .map((x) => model.predict(x)[0] > model.predict(x)[1] ? 0 : 1)
+          .toList(),
+      classCount: 2);
+  print(
+      'Accuracy=${report.accuracy}; macro F1=${report.macroF1}; confusion=${report.confusionMatrix}');
   final restored = ConvolutionalNetwork.fromJson(
       jsonDecode(jsonEncode(model.toJson())) as Map<String, dynamic>);
   if (correct != test.images.length ||

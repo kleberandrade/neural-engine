@@ -205,8 +205,8 @@ uma previsão errada sem entender o dataset.
 
 Nesta implementação, o treinamento é ponta a ponta: o gradiente atravessa a
 camada densa, o flatten, o pooling e os kernels. O treinador CNN inicial oferece
-mini-batches e perda por época. Validação com early stopping ainda é exclusiva
-do treinador MLP; avalie a CNN com `evaluate` em conjuntos separados.
+mini-batches e perda por época. Validação e early stopping estão disponíveis também na CNN pelo treinador
+compartilhado; veja [avaliação](evaluation.pt-BR.md) e mantenha um teste final separado.
 
 ## 5. Autoencoder: aprender a reconstruir
 
@@ -285,7 +285,7 @@ plataformas não é garantida.
 | MLP e autoencoder denso | Implementados; exemplos Dart e Flutter |
 | SOM retangular de Kohonen | Implementado; exemplos Dart e Flutter |
 | CNN 2D com max pooling | Implementada; exemplos Dart e Flutter |
-| RNN, LSTM e GRU | Planejados, ainda sem implementação |
+| RNN, LSTM e GRU | Implementados muitos-para-um; [guia de sequências](recurrent.pt-BR.md), Dart/Flutter |
 | Hopfield, RBF e outros modelos clássicos | Candidatos para etapas posteriores |
 | Transformers, GPU e importação ONNX | Fora do escopo desta etapa |
 

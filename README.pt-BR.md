@@ -4,9 +4,9 @@ Redes neurais em Dart puro para aplicativos Flutter e serviços Dart. Treine
 MLPs e CNNs com backpropagation, SGD ou Adam, organize dados com SOM de Kohonen
 e explore autoencoders densos. Exporte modelos em JSON versionado. Núcleo sem dependências de execução.
 
-[Guia didático dos modelos](doc/models.pt-BR.md) · [English](README.md) · [Arquitetura](doc/architecture.md) · [Laboratório Flutter](example/flutter_lab/README.md)
+[Arquitetura, estrutura e diagramas](doc/architecture.md) · [RNN/LSTM/GRU](doc/recurrent.pt-BR.md) · [Métricas e normalização](doc/evaluation.pt-BR.md) · [Guia didático dos modelos](doc/models.pt-BR.md) · [English](README.md) · [Arquitetura](doc/architecture.md) · [Laboratório Flutter](example/flutter_lab/README.md)
 
-**Estado:** versão inicial 0.1.0 no código-fonte, ainda não publicada no pub.dev.
+**Versão do código-fonte:** 0.2.0. Veja a [preparação da release](doc/release_0.2.0.md). Publicação é uma etapa manual.
 
 ## Modelos, exemplos e laboratório
 
@@ -19,7 +19,7 @@ e explore autoencoders densos. Exporte modelos em JSON versionado. Núcleo sem d
 
 O [guia completo](doc/models.pt-BR.md) explica cada arquitetura, os formatos dos
 dados, os passos de treinamento e experimentos para modificar. Os dados são
-sintéticos e gerados localmente. RNN, LSTM e GRU estão planejados, não implementados.
+sintéticos e gerados localmente. RNN, LSTM e GRU estão implementados com saída no último passo; veja o guia de sequências.
 
 ## Instalação pelo GitHub
 
@@ -61,6 +61,10 @@ void main() {
 ```
 
 ## Recursos
+
+- Contratos de modelo/treinador e estrutura documentada com diagramas de classes.
+- RNN, LSTM e GRU com BPTT completo, estado isolado e JSON.
+- Normalização ajustada no treino, métricas e [medições locais reproduzíveis](doc/benchmarks/README.md).
 
 - SOM retangular de Kohonen com vizinhança gaussiana e cronograma de taxa/raio.
 - CNN ponta a ponta com Conv2D, padding valid/same, stride, MaxPool2D e saída densa.
@@ -104,6 +108,8 @@ dart run example/classification.dart
 dart run example/som_colors.dart
 dart run example/cnn_bars.dart
 dart run example/autoencoder.dart
+dart run example/recurrent_sequences.dart
+dart run example/evaluation.dart
 dart analyze --fatal-infos
 dart test
 ```
@@ -118,9 +124,8 @@ numérica, serialização e early stopping.
 Voltado a modelos pequenos e aprendizado didático. Treinamento síncrono, com
 alocações intermediárias por amostra; use isolate no Flutter nativo para cargas
 maiores. Na web, `compute` executa na thread principal: use worker para cargas
-maiores. Sem GPU, redes recorrentes, ONNX ou importação TensorFlow. CNN não inclui
-dilatação, batch normalization ou dropout; validação com early stopping permanece
-exclusiva da MLP. SOM usa aprendizado competitivo, sem backpropagation.
+maiores. Sem GPU, ONNX ou importação TensorFlow. CNN não inclui
+dilatação, batch normalization ou dropout; CNN, MLP e modelos recorrentes compartilham validação e early stopping. SOM usa aprendizado competitivo, sem backpropagation.
 A repetibilidade é testada no mesmo SDK/plataforma; não há promessa de igualdade
 bit a bit entre plataformas. O treinamento modifica os pesos. Em caso de erro,
 os batches já concluídos permanecem aplicados.
@@ -129,7 +134,7 @@ Separe os conjuntos antes de calcular normalização e avalie generalização em
 um conjunto de teste independente. XOR não demonstra qualidade em dados reais.
 
 `fuzzy_engine`, `genetic_engine` e `neural_engine` permanecem independentes.
-As próximas famílias candidatas são RNN/LSTM/GRU e modelos clássicos, sempre
+Os próximos candidatos são modelos clássicos e novas configurações recorrentes, sempre
 acompanhados de testes, exemplos Dart/Flutter e documentação didática.
 
 MIT © 2026 Kleber Andrade.

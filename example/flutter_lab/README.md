@@ -1,6 +1,6 @@
 # Neural Engine Model Lab
 
-Four independent tabs train models using locally generated data:
+Five independent tabs train models using locally generated data:
 
 | Tab | Training | Visualizations |
 | --- | --- | --- |
@@ -8,6 +8,7 @@ Four independent tabs train models using locally generated data:
 | SOM | 6×6 Kohonen map of RGB samples | Before/after prototypes, quantization curve, BMU coordinates |
 | CNN | 6×6 noisy vertical/horizontal bars | Input image, class probabilities, selectable convolution channel |
 | Autoencoder | Denoising, Dense 8→6→2→6→8 | Noisy input, clean target, reconstruction, latent coordinates |
+| Sequences | RNN, LSTM and GRU on the same six-step sine input | Model comparison, loss, next prediction, hidden/memory states |
 
 ```sh
 flutter pub get
@@ -31,6 +32,19 @@ SOM cells show RGB prototypes with tooltips. Autoencoder examples reconstruct fo
 familiar patterns with new noise; latent coordinates are learned, not class labels.
 Shared generators in `lib/datasets.dart` are pure Dart and reused by CLI examples.
 
-Widget tests train all four tabs and check narrow-screen rendering. Synthetic
+Widget tests train all five tabs and check narrow-screen rendering. Synthetic
 data and tiny networks are educational examples, not performance benchmarks or
 claims of real-world generalization.
+
+
+## Source organization
+
+`main.dart` only starts the application. `app.dart` owns the theme; `pages/`
+owns navigation and state; `runners/` owns compute entry points; `data/` owns
+synthetic fixtures; `widgets/` and `painters/` own rendering. `datasets.dart` and
+`sequence_dataset.dart` are pure Dart fixture exports for CLI programs.
+
+CNN includes a drawable 6×6 canvas and probability output. SOM adds a U-matrix
+(mean adjacent prototype distances) and BMU hit counts; tooltip values are real
+values even when color contrast is normalized. Read the architecture source map
+and recurrent guide before adding another model/demo.

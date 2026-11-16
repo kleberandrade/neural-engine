@@ -160,9 +160,8 @@ not establish performance on photos, rotated shapes or unseen locations.
 Compare training loss with accuracy on separate data. Pooling discards fine
 position detail; extra filters add parameters and CPU cost.
 
-The initial CNN trainer supports mini-batches and training history. Validation
-with early stopping remains available only on `NeuralNetwork`; call CNN
-`evaluate` separately for validation/test data. Backpropagation passes through
+The initial CNN trainer supports mini-batches and training history. CNN now supports validation and early stopping through the shared trainer;
+see [evaluation](evaluation.md) and keep a separate final test set. Backpropagation passes through
 the dense head, implicit flatten, pooling routes and convolution kernels.
 
 ## Dense autoencoder: compress and reconstruct
@@ -236,7 +235,7 @@ floating-point results on every platform.
 | Dense MLP and dense autoencoder | Implemented; Dart and Flutter examples |
 | Rectangular Kohonen SOM | Implemented; Dart and Flutter examples |
 | CNN 2D with max pooling | Implemented; Dart and Flutter examples |
-| RNN, LSTM, GRU | Planned, not implemented |
+| RNN, LSTM, GRU | Implemented many-to-one; [sequence guide](recurrent.md), Dart/Flutter examples |
 | Hopfield, RBF and other classical models | Candidates for later stages |
 | Transformers, GPU, ONNX import | Outside this stage |
 

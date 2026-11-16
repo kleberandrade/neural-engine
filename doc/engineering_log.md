@@ -45,3 +45,21 @@ SOM learning/neighborhood behavior and held-out-noise reconstruction. Core
 analysis passes. CNN also compiles and runs under Node.js. RGB quantization
 error and synthetic shape/reconstruction results are educational fixture checks,
 not real-world benchmarks. Full Flutter UI and web-build checks run in CI.
+
+## Structured architecture and 0.2.0 preparation
+
+Action: replace monolithic family files with contracts, specifications, executors,
+training, preprocessing and metrics modules; reorganize Flutter into pages,
+runners, data, painters and widgets. Add source/dependency/class diagrams and
+explicit extension boundaries. Preserve the public library and v1 model formats.
+
+Then consolidate evaluation/CNN early stopping, add RNN/LSTM/reset-before GRU with
+full BPTT and separate state/cache objects, add sequence comparison, drawable CNN
+inputs and SOM U-matrix/hit maps. Record reproducible workload measurements and
+prepare version 0.2.0 for manual publication.
+
+Verification includes the original 28 public tests after refactoring plus
+numerical recurrent gradients across every parameter, shared CNN stopping,
+normalization, known metric values, clipping and SOM grid diagnostics. Sequence
+CLI asserts held-out synthetic MSE and JSON roundtrip for all three cells.
+The latest CI must be checked independently for Flutter and publication dry-run.

@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 0.2.0
+
+- Reorganize source into contracts, layers, family executors, training, metrics and preprocessing modules; keep the public package import stable.
+- Add an architecture source map, class/dependency diagrams, numerical contracts and JSON layout documentation.
+- Share mini-batch training across Dense, CNN and recurrent models, including CNN validation/early stopping and optional global-norm clipping.
+- Add many-to-one RNN, LSTM and reset-before GRU with full BPTT, state traces and versioned JSON.
+- Add StandardScaler, MinMaxScaler, classification/regression metrics, SOM U-matrix/hit maps and a CNN drawing widget.
+- Reorganize Flutter into pages, runners, data, widgets and painters; add sequence-model comparison.
+- Record reproducible local workload measurements and prepare manual release verification.
+
 - Add Kohonen SOM with Gaussian neighborhood learning, quantization history and versioned JSON.
 - Add end-to-end Conv2D/MaxPool2D networks with HWC tensors, padding, stride and dense heads.
 - Add dense input gradients and immutable intermediate outputs for composition and autoencoder inspection.

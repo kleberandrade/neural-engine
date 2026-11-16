@@ -1,6 +1,6 @@
 # Contributing
 
-Keep the core pure Dart and dependency-free. Use the public library in tests.
+Keep the core pure Dart and dependency-free. Follow the [source map](doc/architecture/structure.md) and [class diagrams](doc/architecture/class_diagrams.md). Do not put training lifecycle or Flutter rendering into numerical executors. Use the public library in tests.
 Each new model family needs a runnable Dart example, a Flutter demonstration,
 and a bilingual tutorial distinguishing implemented behavior from plans.
 New numerical features require meaningful public-API tests, including finite
@@ -10,7 +10,7 @@ Use semantic commits and focused changes.
 
 ```sh
 dart pub get
-dart format --output=none --set-exit-if-changed lib test example
+dart format --output=none --set-exit-if-changed lib test example benchmark
 dart analyze --fatal-infos
 dart test
 dart run example/neural_engine_example.dart
@@ -19,6 +19,8 @@ dart run example/classification.dart
 dart run example/som_colors.dart
 dart run example/cnn_bars.dart
 dart run example/autoencoder.dart
+dart run example/recurrent_sequences.dart
+dart run example/evaluation.dart
 dart compile js example/neural_engine_example.dart -o /tmp/neural_engine.js
 dart pub publish --dry-run
 ```

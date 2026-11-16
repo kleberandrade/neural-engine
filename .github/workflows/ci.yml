@@ -18,7 +18,7 @@ jobs:
         with:
           sdk: ${{ matrix.sdk }}
       - run: dart pub get
-      - run: dart format --output=none --set-exit-if-changed lib test example
+      - run: dart format --output=none --set-exit-if-changed lib test example benchmark
         if: matrix.sdk == 'stable'
       - run: dart analyze --fatal-infos
       - run: dart test
@@ -28,6 +28,8 @@ jobs:
       - run: dart run example/som_colors.dart
       - run: dart run example/cnn_bars.dart
       - run: dart run example/autoencoder.dart
+      - run: dart run example/recurrent_sequences.dart
+      - run: dart run example/evaluation.dart
       - run: dart compile js example/neural_engine_example.dart -o /tmp/neural_engine.js
       - run: dart compile js example/som_colors.dart -o /tmp/som.js
       - run: dart compile js example/cnn_bars.dart -o /tmp/cnn.js
@@ -35,6 +37,8 @@ jobs:
       - run: node /tmp/som.js
       - run: node /tmp/cnn.js
       - run: node /tmp/autoencoder.js
+      - run: dart compile js example/recurrent_sequences.dart -o /tmp/recurrent.js
+      - run: node /tmp/recurrent.js
       - run: dart pub publish --dry-run
         if: matrix.sdk == 'stable'
   flutter:

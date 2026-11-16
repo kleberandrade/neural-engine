@@ -1,23 +1,12 @@
 import 'dart:math' as math;
-
-/// Best matching unit on a rectangular, non-toroidal SOM grid.
-class SomMatch {
-  final int row;
-  final int column;
-  final double distance;
-  const SomMatch(this.row, this.column, this.distance);
-}
-
-/// Immutable post-epoch average Euclidean quantization errors.
-class SomHistory {
-  final List<double> quantizationErrors;
-  SomHistory(List<double> values)
-      : quantizationErrors = List.unmodifiable(values);
-}
+import '../../contracts/json_model.dart';
+import '../../contracts/unsupervised_model.dart';
+import 'som_match.dart';
+import 'som_history.dart';
 
 /// Kohonen self-organizing map with Euclidean BMU and Gaussian neighborhood.
 /// Initialize with unit-range weights; scale each input feature before training.
-class SelfOrganizingMap {
+class SelfOrganizingMap implements JsonModel, UnsupervisedModel<List<double>> {
   final int rows;
   final int columns;
   final int inputSize;
@@ -79,6 +68,7 @@ class SelfOrganizingMap {
         bestIndex ~/ columns, bestIndex % columns, math.sqrt(bestDistance));
   }
 
+  @override
   double quantizationError(List<List<double>> inputs) {
     if (inputs.isEmpty) throw ArgumentError('SOM data must be nonempty.');
     var total = 0.0;
@@ -150,6 +140,49 @@ class SelfOrganizingMap {
     return SomHistory(errors);
   }
 
+  /// Mean Euclidean prototype distance to four directly adjacent grid cells.
+  /// A one-cell map has distance zero; high values can indicate cluster borders.
+  List<List<double>> uMatrix() => List.unmodifiable(List.generate(
+      rows,
+      (r) => List<double>.unmodifiable(List.generate(columns, (c) {
+            var sum = 0.0;
+            var count = 0;
+            for (final neighbor in [
+              (r - 1, c),
+              (r + 1, c),
+              (r, c - 1),
+              (r, c + 1)
+            ]) {
+              if (neighbor.$1 < 0 ||
+                  neighbor.$1 >= rows ||
+                  neighbor.$2 < 0 ||
+                  neighbor.$2 >= columns) {
+                continue;
+              }
+              final a = _weights[r * columns + c],
+                  b = _weights[neighbor.$1 * columns + neighbor.$2];
+              var squared = 0.0;
+              for (var i = 0; i < inputSize; i++) {
+                final d = a[i] - b[i];
+                squared += d * d;
+              }
+              sum += math.sqrt(squared);
+              count++;
+            }
+            return count == 0 ? 0.0 : sum / count;
+          }))));
+
+  /// BMU sample counts; rows/columns match the prototype grid, not class labels.
+  List<List<int>> hitMap(List<List<double>> inputs) {
+    final counts = List.generate(rows, (_) => List<int>.filled(columns, 0));
+    for (final input in inputs) {
+      final match = winner(input);
+      counts[match.row][match.column]++;
+    }
+    return List.unmodifiable(counts.map((r) => List<int>.unmodifiable(r)));
+  }
+
+  @override
   Map<String, Object?> toJson() => {
         'format': 'neural_engine_som',
         'version': 1,

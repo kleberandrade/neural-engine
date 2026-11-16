@@ -1,35 +1,6 @@
 import 'dart:math' as math;
-
-/// An optimizer configuration creates isolated state for each fit invocation.
-abstract interface class Optimizer {
-  OptimizerState createState(int parameterCount);
-}
-
-/// Updates a flat parameter vector once per mini-batch.
-abstract interface class OptimizerState {
-  void update(List<double> parameters, List<double> gradients);
-}
-
-/// Stochastic (or mini-batch) gradient descent without momentum.
-class SGD implements Optimizer {
-  final double learningRate;
-  SGD({this.learningRate = 0.01}) {
-    _rate(learningRate);
-  }
-  @override
-  OptimizerState createState(int parameterCount) => _SgdState(learningRate);
-}
-
-class _SgdState implements OptimizerState {
-  final double rate;
-  _SgdState(this.rate);
-  @override
-  void update(List<double> parameters, List<double> gradients) {
-    for (var i = 0; i < parameters.length; i++) {
-      parameters[i] -= rate * gradients[i];
-    }
-  }
-}
+import 'optimizer.dart';
+import 'optimizer_validation.dart';
 
 /// Adam with bias-corrected first and second moments.
 class Adam implements Optimizer {
@@ -43,7 +14,7 @@ class Adam implements Optimizer {
     this.beta2 = 0.999,
     this.epsilon = 1e-8,
   }) {
-    _rate(learningRate);
+    validateLearningRate(learningRate);
     if (!beta1.isFinite ||
         !beta2.isFinite ||
         beta1 < 0 ||
@@ -80,11 +51,5 @@ class _AdamState implements OptimizerState {
       parameters[i] -=
           config.learningRate * mh / (math.sqrt(vh) + config.epsilon);
     }
-  }
-}
-
-void _rate(double v) {
-  if (!v.isFinite || v <= 0) {
-    throw ArgumentError('Learning rate must be finite and positive.');
   }
 }

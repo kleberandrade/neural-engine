@@ -8,9 +8,9 @@ Kohonen self-organizing maps, trainable 2D CNNs and dense autoencoder examples.
 Train locally and export versioned JSON models. No runtime dependencies, Flutter imports, native bindings
 or network access in the core.
 
-[Model tutorials](doc/models.md) · [Guia didático](doc/models.pt-BR.md) · [Português](README.pt-BR.md) · [Concepts and architecture](doc/architecture.md) · [Flutter lab](example/flutter_lab/README.md) · [Contributing](CONTRIBUTING.md)
+[Architecture and diagrams](doc/architecture.md) · [Sequence models](doc/recurrent.md) · [Evaluation](doc/evaluation.md) · [Model tutorials](doc/models.md) · [Guia didático](doc/models.pt-BR.md) · [Português](README.pt-BR.md) · [Concepts and architecture](doc/architecture.md) · [Flutter lab](example/flutter_lab/README.md) · [Contributing](CONTRIBUTING.md)
 
-**Status:** initial 0.1.0 source release; not yet published on pub.dev.
+**Source version:** 0.2.0. See the [release preparation](doc/release_0.2.0.md). Publication remains a manual step.
 
 ## Models and runnable examples
 
@@ -23,7 +23,8 @@ or network access in the core.
 
 All examples use locally generated synthetic data. The guides explain shape
 conventions, learning steps, practical experiments and evaluation limits.
-RNN/LSTM/GRU are planned; they are not implemented in this version.
+RNN, LSTM and reset-before GRU are implemented as many-to-one models. See
+[sequence forecasting](doc/recurrent.md) and the Flutter Sequences tab.
 
 ## Install from GitHub
 
@@ -73,6 +74,10 @@ its built-in training follows gradients rather than population evolution.
 These packages have independent cores.
 
 ## Features
+
+- Explicit model/trainer contracts and documented source/class architecture.
+- RNN, LSTM and GRU cells with full BPTT, isolated state and JSON models.
+- Training-only normalization, classification/regression metrics and reproducible [workload measurements](doc/benchmarks/README.md).
 
 - Rectangular Kohonen SOM with Gaussian neighborhoods, decay schedules and JSON.
 - End-to-end CNN: Conv2D, valid/same padding, stride, MaxPool2D, implicit flatten and Dense head.
@@ -150,25 +155,28 @@ dart run example/classification.dart
 dart run example/som_colors.dart
 dart run example/cnn_bars.dart
 dart run example/autoencoder.dart
+dart run example/recurrent_sequences.dart
+dart run example/evaluation.dart
 ```
 
 The [Flutter lab](example/flutter_lab/README.md) has separate MLP, SOM, CNN and
-autoencoder tabs. Train each model and inspect its own curves and visualizations.
+autoencoder tabs, plus a Sequences comparison tab. Train each model and inspect its own curves and visualizations.
 
 ## Limits and roadmap
 
 This implementation targets small models and educational/embedded app workloads. Training is synchronous and allocates per-sample intermediate vectors.
 Use an isolate for native Flutter workloads; on web use a worker for large jobs.
-No GPU, recurrent layers, autodiff graph, pretrained model import, ONNX or
+No GPU, autodiff graph, pretrained model import, ONNX or
 TensorFlow compatibility is provided. CNN supports standard square kernels and
 valid max pooling; dilation, batch normalization and dropout are not implemented.
-CNN validation/early stopping is not yet implemented; evaluate a separate set.
+CNN, Dense and recurrent models share validation, early stopping and optional
+global-norm clipping through `MiniBatchTrainer`.
 SOM uses competitive learning and reports quantization error, not supervised loss. Seeded repeatability is tested within the
 same SDK/platform; bit-identical results across all platforms are not promised.
 Training mutates weights; do not share a network between concurrent operations.
 Nonfinite updates throw; previously completed batches remain applied.
 
-Next model families: RNN/LSTM/GRU, followed by selected classical models. Each
+Future candidates include selected classical models and expanded recurrent configurations. Each
 addition must include numerical checks, Dart/Flutter examples and a tutorial.
 Allocation/performance improvements and normalization utilities remain useful
 parallel priorities. See the [implemented/planned matrix](doc/models.md#implemented-and-planned).
