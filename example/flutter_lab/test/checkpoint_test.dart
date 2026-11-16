@@ -11,6 +11,9 @@ void main() {
         .pumpWidget(const MaterialApp(home: Scaffold(body: CheckpointPage())));
     await tester.tap(find.byKey(const ValueKey('checkpoint-start')));
     await waitForResult(tester, find.text('Completed epochs: 40'));
+    await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('checkpoint-json')), 250,
+        scrollable: find.byType(Scrollable).first);
     final saved = tester
         .widget<TextField>(find.byKey(const ValueKey('checkpoint-json')))
         .controller!
@@ -22,7 +25,9 @@ void main() {
         .pumpWidget(const MaterialApp(home: Scaffold(body: CheckpointPage())));
     await tester.enterText(
         find.byKey(const ValueKey('checkpoint-json')), saved);
-    await tester.ensureVisible(find.byKey(const ValueKey('checkpoint-load')));
+    await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('checkpoint-load')), -250,
+        scrollable: find.byType(Scrollable).first);
     await tester.tap(find.byKey(const ValueKey('checkpoint-load')));
     await waitForResult(tester, find.text('Completed epochs: 40'));
     await tester.tap(find.byKey(const ValueKey('checkpoint-resume')));
@@ -36,8 +41,13 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pump();
     expect(tester.takeException(), isNull);
+    await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('checkpoint-json')), 250,
+        scrollable: find.byType(Scrollable).first);
     await tester.enterText(find.byKey(const ValueKey('checkpoint-json')), '{}');
-    await tester.ensureVisible(find.byKey(const ValueKey('checkpoint-load')));
+    await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('checkpoint-load')), -250,
+        scrollable: find.byType(Scrollable).first);
     await tester.tap(find.byKey(const ValueKey('checkpoint-load')));
     await waitForResult(tester, find.byKey(const ValueKey('checkpoint-error')));
     expect(find.text('Completed epochs: 100'), findsOneWidget);
