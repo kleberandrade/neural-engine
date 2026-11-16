@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep the Flutter lab compatible with both legacy Material imports and the latest stable SDK deprecation checks.
+
 ## 0.1.0
 
 - Initial pure Dart MLP with Dense layers and six activation functions.

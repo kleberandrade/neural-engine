@@ -1,5 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
+// Keep compatibility with Flutter versions before the material_ui split.
+// ignore: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:neural_engine/neural_engine.dart';
 

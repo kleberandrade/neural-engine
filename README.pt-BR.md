@@ -61,7 +61,7 @@ void main() {
 | Problema | Ativação de saída | Perda | Alvo |
 | --- | --- | --- | --- |
 | Regressão | linear | `MeanSquaredError` | Vetor numérico |
-| Binário ou múltiplos rótulos | sigmoid | `BinaryCrossEntropy` | Valores em [0, 1] |
+| Binário ou múltiplos rótulos | sigmoid | `BinaryCrossEntropy` | Valores em `[0, 1]` |
 | Classes exclusivas | softmax | `CategoricalCrossEntropy` | Distribuição com soma 1 |
 
 MSE e BCE calculam média por saída e depois por amostra. CCE soma por classe e

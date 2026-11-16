@@ -22,3 +22,10 @@ Local validation (Dart 3.11.5 / Flutter 3.41.9, macOS arm64):
 
 CI is configured for Dart minimum/stable and Flutter stable. Its actual results
 must be inspected independently; configuration alone is not a passing result.
+
+CI follow-up: Dart 3.3.4 and stable jobs passed, including the publish dry-run.
+Latest Flutter stable deprecated the legacy Material forwarding import. Keep
+that import for compatibility with older Flutter versions and suppress only
+its specific deprecation at the two import sites. The first Flutter CI run
+stopped at analysis; a new run validates the change. Local direct compilation
+of the complete Flutter lab to JavaScript also succeeded.

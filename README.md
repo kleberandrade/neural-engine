@@ -73,7 +73,7 @@ These packages have independent cores.
 | Task | Output activation | Loss | Target |
 | --- | --- | --- | --- |
 | Regression | linear | `MeanSquaredError` | Numeric vector |
-| Binary / multilabel classification | sigmoid | `BinaryCrossEntropy` | Each value in [0, 1] |
+| Binary / multilabel classification | sigmoid | `BinaryCrossEntropy` | Each value in `[0, 1]` |
 | Exclusive multiclass classification | softmax | `CategoricalCrossEntropy` | Distribution summing to 1 |
 
 MSE and BCE average over output coordinates, then over samples. Categorical
