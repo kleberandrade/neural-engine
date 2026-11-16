@@ -1,0 +1,303 @@
+{
+  "runId": "43975841654",
+  "sourceCommit": "9e14af7",
+  "host": "Flutter native test engine",
+  "runtime": "3.14.0 (stable) (Wed Nov 4 16:28:39 2026 -0800) on \"linux_x64\"",
+  "os": "linux",
+  "processors": 4,
+  "memoryMetric": "process RSS (all isolates)",
+  "seed": 42,
+  "rows": [
+    {
+      "family": "CNN",
+      "samples": 128,
+      "batchSize": 4,
+      "epochs": 8,
+      "batchesPerYield": 1,
+      "evaluationSamplesPerYield": 32,
+      "maxWorkMicroseconds": null,
+      "repetitions": 3,
+      "exactCheckpointMatch": true,
+      "wall": {
+        "samples": 3,
+        "medianUs": 87634,
+        "p95Us": 150063,
+        "maxUs": 150063
+      },
+      "eventLoopDelay": {
+        "samples": 234,
+        "medianUs": 0,
+        "p95Us": 1153,
+        "maxUs": 11927
+      },
+      "firstEvaluationEvent": {
+        "samples": 3,
+        "medianUs": 2993,
+        "p95Us": 25029,
+        "maxUs": 25029
+      }
+    },
+    {
+      "family": "CNN",
+      "samples": 128,
+      "batchSize": 4,
+      "epochs": 8,
+      "batchesPerYield": 4,
+      "evaluationSamplesPerYield": 32,
+      "maxWorkMicroseconds": null,
+      "repetitions": 3,
+      "exactCheckpointMatch": true,
+      "wall": {
+        "samples": 3,
+        "medianUs": 74166,
+        "p95Us": 79043,
+        "maxUs": 79043
+      },
+      "eventLoopDelay": {
+        "samples": 184,
+        "medianUs": 34,
+        "p95Us": 1232,
+        "maxUs": 8804
+      },
+      "firstEvaluationEvent": {
+        "samples": 3,
+        "medianUs": 2156,
+        "p95Us": 4109,
+        "maxUs": 4109
+      }
+    },
+    {
+      "family": "CNN",
+      "samples": 128,
+      "batchSize": 4,
+      "epochs": 8,
+      "batchesPerYield": 16,
+      "evaluationSamplesPerYield": 32,
+      "maxWorkMicroseconds": null,
+      "repetitions": 3,
+      "exactCheckpointMatch": true,
+      "wall": {
+        "samples": 3,
+        "medianUs": 63194,
+        "p95Us": 63639,
+        "maxUs": 63639
+      },
+      "eventLoopDelay": {
+        "samples": 100,
+        "medianUs": 628,
+        "p95Us": 3287,
+        "maxUs": 10368
+      },
+      "firstEvaluationEvent": {
+        "samples": 3,
+        "medianUs": 2047,
+        "p95Us": 3135,
+        "maxUs": 3135
+      }
+    },
+    {
+      "family": "CNN",
+      "samples": 128,
+      "batchSize": 4,
+      "epochs": 8,
+      "batchesPerYield": 16,
+      "evaluationSamplesPerYield": 8,
+      "maxWorkMicroseconds": null,
+      "repetitions": 3,
+      "exactCheckpointMatch": true,
+      "wall": {
+        "samples": 3,
+        "medianUs": 64260,
+        "p95Us": 67330,
+        "maxUs": 67330
+      },
+      "eventLoopDelay": {
+        "samples": 114,
+        "medianUs": 76,
+        "p95Us": 2371,
+        "maxUs": 10222
+      },
+      "firstEvaluationEvent": {
+        "samples": 3,
+        "medianUs": 1320,
+        "p95Us": 2733,
+        "maxUs": 2733
+      }
+    },
+    {
+      "family": "CNN",
+      "samples": 128,
+      "batchSize": 4,
+      "epochs": 8,
+      "batchesPerYield": 16,
+      "evaluationSamplesPerYield": 8,
+      "maxWorkMicroseconds": 8000,
+      "repetitions": 3,
+      "exactCheckpointMatch": true,
+      "wall": {
+        "samples": 3,
+        "medianUs": 67122,
+        "p95Us": 102412,
+        "maxUs": 102412
+      },
+      "eventLoopDelay": {
+        "samples": 124,
+        "medianUs": 76,
+        "p95Us": 4043,
+        "maxUs": 18307
+      },
+      "firstEvaluationEvent": {
+        "samples": 3,
+        "medianUs": 1165,
+        "p95Us": 6313,
+        "maxUs": 6313
+      }
+    },
+    {
+      "family": "GRU",
+      "samples": 192,
+      "batchSize": 4,
+      "epochs": 8,
+      "batchesPerYield": 1,
+      "evaluationSamplesPerYield": 32,
+      "maxWorkMicroseconds": null,
+      "repetitions": 3,
+      "exactCheckpointMatch": true,
+      "wall": {
+        "samples": 3,
+        "medianUs": 90596,
+        "p95Us": 132028,
+        "maxUs": 132028
+      },
+      "eventLoopDelay": {
+        "samples": 245,
+        "medianUs": 3,
+        "p95Us": 643,
+        "maxUs": 12715
+      },
+      "firstEvaluationEvent": {
+        "samples": 3,
+        "medianUs": 1254,
+        "p95Us": 5548,
+        "maxUs": 5548
+      }
+    },
+    {
+      "family": "GRU",
+      "samples": 192,
+      "batchSize": 4,
+      "epochs": 8,
+      "batchesPerYield": 4,
+      "evaluationSamplesPerYield": 32,
+      "maxWorkMicroseconds": null,
+      "repetitions": 3,
+      "exactCheckpointMatch": true,
+      "wall": {
+        "samples": 3,
+        "medianUs": 89360,
+        "p95Us": 91706,
+        "maxUs": 91706
+      },
+      "eventLoopDelay": {
+        "samples": 221,
+        "medianUs": 0,
+        "p95Us": 630,
+        "maxUs": 13534
+      },
+      "firstEvaluationEvent": {
+        "samples": 3,
+        "medianUs": 1179,
+        "p95Us": 2923,
+        "maxUs": 2923
+      }
+    },
+    {
+      "family": "GRU",
+      "samples": 192,
+      "batchSize": 4,
+      "epochs": 8,
+      "batchesPerYield": 16,
+      "evaluationSamplesPerYield": 32,
+      "maxWorkMicroseconds": null,
+      "repetitions": 3,
+      "exactCheckpointMatch": true,
+      "wall": {
+        "samples": 3,
+        "medianUs": 87993,
+        "p95Us": 100412,
+        "maxUs": 100412
+      },
+      "eventLoopDelay": {
+        "samples": 143,
+        "medianUs": 654,
+        "p95Us": 3111,
+        "maxUs": 15285
+      },
+      "firstEvaluationEvent": {
+        "samples": 3,
+        "medianUs": 1310,
+        "p95Us": 2743,
+        "maxUs": 2743
+      }
+    },
+    {
+      "family": "GRU",
+      "samples": 192,
+      "batchSize": 4,
+      "epochs": 8,
+      "batchesPerYield": 16,
+      "evaluationSamplesPerYield": 8,
+      "maxWorkMicroseconds": null,
+      "repetitions": 3,
+      "exactCheckpointMatch": true,
+      "wall": {
+        "samples": 3,
+        "medianUs": 88295,
+        "p95Us": 98071,
+        "maxUs": 98071
+      },
+      "eventLoopDelay": {
+        "samples": 165,
+        "medianUs": 74,
+        "p95Us": 2395,
+        "maxUs": 14734
+      },
+      "firstEvaluationEvent": {
+        "samples": 3,
+        "medianUs": 967,
+        "p95Us": 2332,
+        "maxUs": 2332
+      }
+    },
+    {
+      "family": "GRU",
+      "samples": 192,
+      "batchSize": 4,
+      "epochs": 8,
+      "batchesPerYield": 16,
+      "evaluationSamplesPerYield": 8,
+      "maxWorkMicroseconds": 8000,
+      "repetitions": 3,
+      "exactCheckpointMatch": true,
+      "wall": {
+        "samples": 3,
+        "medianUs": 85325,
+        "p95Us": 86301,
+        "maxUs": 86301
+      },
+      "eventLoopDelay": {
+        "samples": 162,
+        "medianUs": 76,
+        "p95Us": 2979,
+        "maxUs": 6925
+      },
+      "firstEvaluationEvent": {
+        "samples": 3,
+        "medianUs": 1412,
+        "p95Us": 2535,
+        "maxUs": 2535
+      }
+    }
+  ],
+  "notes": "Same batch size/data/order/math for every policy. Timers are event-loop proxies, not frame times; work budgets are checked between indivisible units."
+}

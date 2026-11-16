@@ -1,0 +1,232 @@
+{
+  "runId": "43975841544",
+  "sourceCommit": "9e14af7",
+  "reports": [
+    {
+      "name": "native-cooperative",
+      "host": "native release app",
+      "os": "linux",
+      "runtime": "3.14.0 (stable) (Wed Nov 4 16:28:39 2026 -0800) on \"linux_x64\"",
+      "logicalProcessors": 4,
+      "releaseMode": true,
+      "policy": "budgeted",
+      "execution": "cooperative",
+      "family": "CNN",
+      "samples": 128,
+      "epochs": 160,
+      "batchSize": 4,
+      "batchesPerYield": 16,
+      "evaluationSamplesPerYield": 8,
+      "maxWorkMicroseconds": 8000,
+      "wallUs": 7708189,
+      "reportedRefreshRateHz": 0,
+      "frameBuild": {
+        "samples": 378,
+        "medianMs": 0.182,
+        "p95Ms": 0.23,
+        "maxMs": 1.18
+      },
+      "frameRaster": {
+        "samples": 378,
+        "medianMs": 8.962,
+        "p95Ms": 17.68,
+        "maxMs": 22.361
+      },
+      "frameTotal": {
+        "samples": 378,
+        "medianMs": 23.786,
+        "p95Ms": 36.187,
+        "maxMs": 42.63
+      },
+      "browserRafIntervals": {
+        "samples": 0,
+        "medianMs": null,
+        "p95Ms": null,
+        "maxMs": null
+      },
+      "measurementNotes": "Flutter FrameTiming callbacks delivered during training; browser rAF intervals are presentation opportunities, not raster times. See external Chrome trace. Named CI virtual machine is not a physical phone."
+    },
+    {
+      "name": "chrome-budgeted",
+      "host": "Chrome release app",
+      "runtime": "dart2js release",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "releaseMode": true,
+      "policy": "budgeted",
+      "execution": "cooperative",
+      "family": "CNN",
+      "samples": 128,
+      "epochs": 160,
+      "batchSize": 4,
+      "batchesPerYield": 16,
+      "evaluationSamplesPerYield": 8,
+      "maxWorkMicroseconds": 8000,
+      "wallUs": 19524900,
+      "reportedRefreshRateHz": 60,
+      "frameBuild": {
+        "samples": 0,
+        "medianMs": null,
+        "p95Ms": null,
+        "maxMs": null
+      },
+      "frameRaster": {
+        "samples": 0,
+        "medianMs": null,
+        "p95Ms": null,
+        "maxMs": null
+      },
+      "frameTotal": {
+        "samples": 0,
+        "medianMs": null,
+        "p95Ms": null,
+        "maxMs": null
+      },
+      "browserRafIntervals": {
+        "samples": 1171,
+        "medianMs": 16.69999999999891,
+        "p95Ms": 16.700000000000728,
+        "maxMs": 16.80000000000291
+      },
+      "measurementNotes": "Flutter FrameTiming callbacks delivered during training; browser rAF intervals are presentation opportunities, not raster times. See external Chrome trace. Named CI virtual machine is not a physical phone.",
+      "chromeVersion": {
+        "Browser": "Chrome/157.0.8103.50",
+        "V8-Version": "15.7.112.23"
+      }
+    },
+    {
+      "name": "native-default",
+      "host": "native release app",
+      "os": "linux",
+      "runtime": "3.14.0 (stable) (Wed Nov 4 16:28:39 2026 -0800) on \"linux_x64\"",
+      "logicalProcessors": 4,
+      "releaseMode": true,
+      "policy": "default",
+      "execution": "isolate",
+      "family": "CNN",
+      "samples": 128,
+      "epochs": 160,
+      "batchSize": 4,
+      "batchesPerYield": 1,
+      "evaluationSamplesPerYield": 32,
+      "maxWorkMicroseconds": null,
+      "wallUs": 2374186,
+      "reportedRefreshRateHz": 0,
+      "frameBuild": {
+        "samples": 89,
+        "medianMs": 0.189,
+        "p95Ms": 0.384,
+        "maxMs": 1.328
+      },
+      "frameRaster": {
+        "samples": 89,
+        "medianMs": 9.855,
+        "p95Ms": 21.43,
+        "maxMs": 22.738
+      },
+      "frameTotal": {
+        "samples": 89,
+        "medianMs": 26.489,
+        "p95Ms": 42.993,
+        "maxMs": 1736.776
+      },
+      "browserRafIntervals": {
+        "samples": 0,
+        "medianMs": null,
+        "p95Ms": null,
+        "maxMs": null
+      },
+      "measurementNotes": "Flutter FrameTiming callbacks delivered during training; browser rAF intervals are presentation opportunities, not raster times. See external Chrome trace. Named CI virtual machine is not a physical phone."
+    },
+    {
+      "name": "chrome-default",
+      "host": "Chrome release app",
+      "runtime": "dart2js release",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "releaseMode": true,
+      "policy": "default",
+      "execution": "cooperative",
+      "family": "CNN",
+      "samples": 128,
+      "epochs": 160,
+      "batchSize": 4,
+      "batchesPerYield": 1,
+      "evaluationSamplesPerYield": 32,
+      "maxWorkMicroseconds": null,
+      "wallUs": 33897599,
+      "reportedRefreshRateHz": 60,
+      "frameBuild": {
+        "samples": 0,
+        "medianMs": null,
+        "p95Ms": null,
+        "maxMs": null
+      },
+      "frameRaster": {
+        "samples": 0,
+        "medianMs": null,
+        "p95Ms": null,
+        "maxMs": null
+      },
+      "frameTotal": {
+        "samples": 0,
+        "medianMs": null,
+        "p95Ms": null,
+        "maxMs": null
+      },
+      "browserRafIntervals": {
+        "samples": 2034,
+        "medianMs": 16.69999999999891,
+        "p95Ms": 16.799999999999272,
+        "maxMs": 16.80000000000291
+      },
+      "measurementNotes": "Flutter FrameTiming callbacks delivered during training; browser rAF intervals are presentation opportunities, not raster times. See external Chrome trace. Named CI virtual machine is not a physical phone.",
+      "chromeVersion": {
+        "Browser": "Chrome/157.0.8103.50",
+        "V8-Version": "15.7.112.23"
+      }
+    },
+    {
+      "name": "native-budgeted",
+      "host": "native release app",
+      "os": "linux",
+      "runtime": "3.14.0 (stable) (Wed Nov 4 16:28:39 2026 -0800) on \"linux_x64\"",
+      "logicalProcessors": 4,
+      "releaseMode": true,
+      "policy": "budgeted",
+      "execution": "isolate",
+      "family": "CNN",
+      "samples": 128,
+      "epochs": 160,
+      "batchSize": 4,
+      "batchesPerYield": 16,
+      "evaluationSamplesPerYield": 8,
+      "maxWorkMicroseconds": 8000,
+      "wallUs": 2362699,
+      "reportedRefreshRateHz": 0,
+      "frameBuild": {
+        "samples": 143,
+        "medianMs": 0.2,
+        "p95Ms": 0.377,
+        "maxMs": 3.278
+      },
+      "frameRaster": {
+        "samples": 143,
+        "medianMs": 10.681,
+        "p95Ms": 23.19,
+        "maxMs": 24.543
+      },
+      "frameTotal": {
+        "samples": 143,
+        "medianMs": 26.779,
+        "p95Ms": 41.265,
+        "maxMs": 58.479
+      },
+      "browserRafIntervals": {
+        "samples": 0,
+        "medianMs": null,
+        "p95Ms": null,
+        "maxMs": null
+      },
+      "measurementNotes": "Flutter FrameTiming callbacks delivered during training; browser rAF intervals are presentation opportunities, not raster times. See external Chrome trace. Named CI virtual machine is not a physical phone."
+    }
+  ]
+}

@@ -113,3 +113,16 @@ window. No v0.4.0 tag or pub.dev upload has been made. Resume with a visible
 repository window, push, inspect CI/performance results, correct any failures,
 then publish through the existing OIDC workflow and verify the exact hosted
 artifact. Keep the hosted consumer pinned to 0.3.0 until 0.4.0 exists publicly.
+
+
+0.4.0 remote follow-up: commits were pushed successfully via GitHub Desktop.
+[Source CI 43975841654](https://github.com/kleberandrade/neural-engine/actions/runs/43975841654)
+passed minimum/stable Dart, Flutter interaction tests, native/Chrome fixed-batch
+matrices, JavaScript examples and publication dry run.
+[Performance evidence 43975841544](https://github.com/kleberandrade/neural-engine/actions/runs/43975841544)
+passed both allocation and actual release-frame jobs. Baseline/current parameters
+and losses match; counters/throughput show extra executor cost, not a speedup.
+Release-app checkpoints match per platform and execution policy. Permanent
+summaries and links to full metadata/traces are in doc/benchmarks. Physical-device
+evidence and optimizer-buffer attribution remain deferred. These remote results
+supersede the earlier push-blocked state above.

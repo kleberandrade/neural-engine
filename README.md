@@ -27,7 +27,7 @@ conventions, learning steps, practical experiments and evaluation limits.
 RNN, LSTM and reset-before GRU are implemented as many-to-one models. See
 [sequence forecasting](https://github.com/kleberandrade/neural-engine/blob/main/doc/recurrent.md) and the Flutter Sequences tab.
 
-## Asynchronous training (0.3.0)
+## Asynchronous training (0.4.0)
 
 Version 0.3.0 adds native isolates, cooperative web batches, epoch
 progress and safe cancellation/resume for MLP, CNN and recurrent models.
@@ -41,7 +41,7 @@ See [real data examples](https://github.com/kleberandrade/neural-engine/blob/mai
 
 ```yaml
 dependencies:
-  neural_engine: ^0.3.0
+  neural_engine: ^0.4.0
 ```
 
 Dart >=3.3.0. Works in Flutter
@@ -217,3 +217,6 @@ Try the Flutter **Checkpoints** tab to save/load JSON and compare resumed traini
 with uninterrupted execution. See [benchmarks](https://github.com/kleberandrade/neural-engine/blob/main/doc/benchmarks/README.md),
 [hosted validation](https://github.com/kleberandrade/neural-engine/blob/main/validation/hosted/README.md) and
 [release procedure](https://github.com/kleberandrade/neural-engine/blob/main/doc/releasing.md).
+
+
+0.4.0: [incremental evaluation and scheduling](https://github.com/kleberandrade/neural-engine/blob/main/doc/async_training.md), [measured results and limits](https://github.com/kleberandrade/neural-engine/blob/main/doc/benchmarks/scheduling_0.4.0.md).

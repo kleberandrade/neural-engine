@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.0 (unreleased)
+## 0.4.0
 
 - Add optional SampleLossModel and incremental preflight/training/validation evaluation, preserving sample order, fused losses and v1 checkpoint replay.
 - Add typed executor phases, a separate evaluation-progress stream, configurable evaluation blocks and an explicit between-unit work-duration budget.

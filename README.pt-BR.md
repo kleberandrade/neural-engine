@@ -21,7 +21,7 @@ O [guia completo](https://github.com/kleberandrade/neural-engine/blob/main/doc/m
 dados, os passos de treinamento e experimentos para modificar. Os exemplos dessa tabela usam dados
 sintéticos; a aba Real data acrescenta os datasets locais documentados abaixo. RNN, LSTM e GRU estão implementados com saída no último passo; veja o guia de sequências.
 
-## Treinamento assíncrono (0.3.0)
+## Treinamento assíncrono (0.4.0)
 
 A versão 0.3.0 inclui isolates no nativo, mini-batches cooperativos
 na web, progresso e cancelamento com retomada. Veja o
@@ -35,7 +35,7 @@ Veja os [exemplos reais](https://github.com/kleberandrade/neural-engine/blob/mai
 
 ```yaml
 dependencies:
-  neural_engine: ^0.3.0
+  neural_engine: ^0.4.0
 ```
 
 Requer Dart >=3.3.0. Compatível com Flutter.
@@ -157,3 +157,6 @@ MIT © 2026 Kleber Andrade.
 Na aba Flutter **Checkpoints**, salve/carregue JSON e compare a retomada com
 um treinamento contínuo. Veja as [medições](https://github.com/kleberandrade/neural-engine/blob/main/doc/benchmarks/README.md)
 e a [validação pelo pub.dev](https://github.com/kleberandrade/neural-engine/blob/main/validation/hosted/README.md).
+
+
+0.4.0: [incremental evaluation and scheduling](https://github.com/kleberandrade/neural-engine/blob/main/doc/async_training.md), [measured results and limits](https://github.com/kleberandrade/neural-engine/blob/main/doc/benchmarks/scheduling_0.4.0.md).
