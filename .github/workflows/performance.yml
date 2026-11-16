@@ -1,0 +1,32 @@
+name: Performance evidence
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'benchmark/profiling/**'
+      - 'validation/profile_allocations.py'
+      - '.github/workflows/performance.yml'
+permissions:
+  contents: read
+jobs:
+  allocations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - run: dart pub get
+      - uses: actions/checkout@v4
+        with:
+          ref: v0.3.0
+          path: baseline
+      - run: dart pub get
+        working-directory: baseline
+      - run: python3 validation/profile_allocations.py --packages baseline/.dart_tool/package_config.json --out evidence/allocations-0.3.0.json
+      - run: python3 validation/profile_allocations.py --packages .dart_tool/package_config.json --out evidence/allocations-current.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: allocation-evidence
+          path: evidence/*.json
