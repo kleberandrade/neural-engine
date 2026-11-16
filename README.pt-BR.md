@@ -6,7 +6,7 @@ e explore autoencoders densos. Exporte modelos em JSON versionado. Núcleo sem d
 
 [Extensibilidade](doc/extending.pt-BR.md) · [Persistência e checkpoints](doc/persistence.pt-BR.md) · [Arquitetura, estrutura e diagramas](doc/architecture.md) · [RNN/LSTM/GRU](doc/recurrent.pt-BR.md) · [Métricas e normalização](doc/evaluation.pt-BR.md) · [Guia didático dos modelos](doc/models.pt-BR.md) · [English](README.md) · [Arquitetura](doc/architecture.md) · [Laboratório Flutter](example/flutter_lab/README.md)
 
-**Versão do código-fonte:** 0.2.0. Veja a [preparação da release](doc/release_0.2.0.md). Publicação é uma etapa manual.
+**Versão publicada:** [0.2.0](https://pub.dev/packages/neural_engine/versions/0.2.0), pelo publisher verificado [kleberandrade.dev](https://pub.dev/publishers/kleberandrade.dev). Veja o [registro da release](doc/release_0.2.0.md).
 
 ## Modelos, exemplos e laboratório
 
@@ -21,17 +21,14 @@ O [guia completo](doc/models.pt-BR.md) explica cada arquitetura, os formatos dos
 dados, os passos de treinamento e experimentos para modificar. Os dados são
 sintéticos e gerados localmente. RNN, LSTM e GRU estão implementados com saída no último passo; veja o guia de sequências.
 
-## Instalação pelo GitHub
+## Instalação
 
 ```yaml
 dependencies:
-  neural_engine:
-    git:
-      url: https://github.com/kleberandrade/neural-engine.git
-      ref: main
+  neural_engine: ^0.2.0
 ```
 
-Fixe um commit para aplicações reproduzíveis. Requer Dart >=3.3.0.
+Requer Dart >=3.3.0. Compatível com Flutter.
 
 ## Exemplo: aprender XOR
 

@@ -1,9 +1,15 @@
-# 0.2.0 release preparation
+# 0.2.0 release record
 
-Source version 0.2.0 groups the architecture refactor, model/evaluation features,
-external contract validation and resumable persistence. Version 0.1.0 is already
-published; 0.2.0 must be published as a new version.
-This document prepares a manual release; it does not imply a pub.dev publication.
+Published on November 16, 2026 under verified publisher `kleberandrade.dev`.
+
+- [Hosted package](https://pub.dev/packages/neural_engine/versions/0.2.0)
+- [GitHub release and tag](https://github.com/kleberandrade/neural-engine/releases/tag/v0.2.0)
+- [Successful release workflow](https://github.com/kleberandrade/neural-engine/actions/runs/43935440907)
+- Release commit: `840dc169983fdfaf8384d270e61ecf2dc2b33208`
+
+The release includes the architecture refactor, model/evaluation features,
+external contract validation and resumable persistence. Install with
+`neural_engine: ^0.2.0`. Version 0.1.0 remains available.
 
 ## API review
 
@@ -49,13 +55,19 @@ Keep architecture diagrams, source map and tutorials synchronized with the final
 code. Review packaged files and version availability on pub.dev immediately
 before publishing. Do not overwrite an already published version.
 
-After a reviewed successful dry-run, the maintainer can publish through the
-normal authorized `dart pub publish` flow and associate the verified publisher.
-Only after confirming the published artifact should release metadata and
-installation instructions be updated to that hosted version. The tag-scoped `.github/workflows/publish.yml` is prepared for `v0.2.0`, after the
-full reusable CI succeeds. It uses the Dart-maintained publishing workflow and
-OIDC. Pub.dev automated publishing is a separate administrative permission and
-must be explicitly enabled for `kleberandrade/neural-engine` and `v{{version}}`
-before creating the release tag. Until then, use the authorized manual CLI flow.
-Never place a personal Pub token in Git or workflow source. Transfer the package
-to verified publisher `kleberandrade.dev` as requested and verify package ownership.
+## Publication result
+
+All release jobs passed: minimum/stable Dart, Flutter, package validation,
+archive generation and publication. The test suite contains 55 tests, with
+additional external-consumer and Flutter checks.
+
+The tag-scoped `.github/workflows/publish.yml` published `v0.2.0` using the
+Dart-maintained workflow and temporary OIDC credentials. Pub.dev authorizes
+push events from `kleberandrade/neural-engine` with tag pattern `v{{version}}`.
+No personal Pub token is stored in the repository. Package ownership was
+transferred to verified publisher `kleberandrade.dev` and confirmed after
+publication.
+
+The workflow currently targets only `v0.2.0`; review its tag trigger before
+preparing a subsequent release. Published artifacts are immutable: changes to
+this repository after the release require a new version to appear on pub.dev.

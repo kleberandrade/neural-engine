@@ -10,7 +10,7 @@ or network access in the core.
 
 [Extension contracts](doc/extending.md) · [Persistence/checkpoints](doc/persistence.md) · [Architecture and diagrams](doc/architecture.md) · [Sequence models](doc/recurrent.md) · [Evaluation](doc/evaluation.md) · [Model tutorials](doc/models.md) · [Guia didático](doc/models.pt-BR.md) · [Português](README.pt-BR.md) · [Concepts and architecture](doc/architecture.md) · [Flutter lab](example/flutter_lab/README.md) · [Contributing](CONTRIBUTING.md)
 
-**Source version:** 0.2.0. See the [release preparation](doc/release_0.2.0.md). Publication remains a manual step.
+**Published version:** [0.2.0](https://pub.dev/packages/neural_engine/versions/0.2.0), by verified publisher [kleberandrade.dev](https://pub.dev/publishers/kleberandrade.dev). See the [release record](doc/release_0.2.0.md).
 
 ## Models and runnable examples
 
@@ -26,17 +26,14 @@ conventions, learning steps, practical experiments and evaluation limits.
 RNN, LSTM and reset-before GRU are implemented as many-to-one models. See
 [sequence forecasting](doc/recurrent.md) and the Flutter Sequences tab.
 
-## Install from GitHub
+## Install
 
 ```yaml
 dependencies:
-  neural_engine:
-    git:
-      url: https://github.com/kleberandrade/neural-engine.git
-      ref: main
+  neural_engine: ^0.2.0
 ```
 
-Pin a commit for reproducible applications. Dart >=3.3.0. Works in Flutter
+Dart >=3.3.0. Works in Flutter
 without adding Flutter as a core dependency.
 
 ## Learn XOR
@@ -195,6 +192,7 @@ dart pub publish --dry-run
 ```
 
 CI checks Dart 3.3 and stable, all CLI examples, JavaScript compilation, and the
-Flutter lab separately. Release publication remains a manual step.
+Flutter lab separately. The `v0.2.0` release was published through GitHub Actions
+using OIDC after all release checks passed.
 
 MIT © 2026 Kleber Andrade.
