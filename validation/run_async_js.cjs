@@ -8,6 +8,6 @@ const result = spawnSync(process.execPath,
   {encoding: 'utf8', timeout: 60000});
 process.stdout.write(result.stdout || '');
 process.stderr.write(result.stderr || '');
-if (result.error || result.status !== 0 || !result.stdout.includes('Async validation passed')) {
+if (result.error || result.status !== 0 || !result.stdout.includes(process.argv[3] || 'Async validation passed')) {
   throw new Error(`Async JavaScript did not complete: ${result.error || result.status}`);
 }

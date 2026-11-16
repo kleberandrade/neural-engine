@@ -1,0 +1,393 @@
+{
+  "date": "2026-11-16",
+  "runtime": "Dart 3.11.5 macOS arm64",
+  "seed": 42,
+  "results": [
+    {
+      "dataset": "Iris",
+      "sourceRows": 150,
+      "uniqueRows": 147,
+      "train": 87,
+      "validation": 28,
+      "test": 32,
+      "epochs": 120,
+      "loss": 0.005296916974838529,
+      "validationLoss": 0.06403702174863325,
+      "testAccuracy": 0.875,
+      "testMacroF1": 0.8727272727272729,
+      "confusionMatrix": [
+        [
+          11,
+          0,
+          0
+        ],
+        [
+          0,
+          8,
+          2
+        ],
+        [
+          0,
+          2,
+          9
+        ]
+      ],
+      "baselineAccuracy": 0.3125,
+      "scaler": {
+        "format": "neural_engine_standard_scaler",
+        "version": 1,
+        "means": [
+          5.894252873563219,
+          3.063218390804597,
+          3.810344827586207,
+          1.2333333333333332
+        ],
+        "scales": [
+          0.8431408605728968,
+          0.4256475641386666,
+          1.7701246454428796,
+          0.7842804252565616
+        ]
+      },
+      "milliseconds": 109,
+      "sampleRows": [
+        {
+          "id": 23,
+          "actual": "Iris-setosa",
+          "prediction": "Iris-setosa"
+        },
+        {
+          "id": 13,
+          "actual": "Iris-setosa",
+          "prediction": "Iris-setosa"
+        },
+        {
+          "id": 0,
+          "actual": "Iris-setosa",
+          "prediction": "Iris-setosa"
+        },
+        {
+          "id": 30,
+          "actual": "Iris-setosa",
+          "prediction": "Iris-setosa"
+        },
+        {
+          "id": 1,
+          "actual": "Iris-setosa",
+          "prediction": "Iris-setosa"
+        },
+        {
+          "id": 35,
+          "actual": "Iris-setosa",
+          "prediction": "Iris-setosa"
+        },
+        {
+          "id": 21,
+          "actual": "Iris-setosa",
+          "prediction": "Iris-setosa"
+        },
+        {
+          "id": 42,
+          "actual": "Iris-setosa",
+          "prediction": "Iris-setosa"
+        },
+        {
+          "id": 8,
+          "actual": "Iris-setosa",
+          "prediction": "Iris-setosa"
+        },
+        {
+          "id": 5,
+          "actual": "Iris-setosa",
+          "prediction": "Iris-setosa"
+        },
+        {
+          "id": 19,
+          "actual": "Iris-setosa",
+          "prediction": "Iris-setosa"
+        },
+        {
+          "id": 70,
+          "actual": "Iris-versicolor",
+          "prediction": "Iris-virginica"
+        },
+        {
+          "id": 64,
+          "actual": "Iris-versicolor",
+          "prediction": "Iris-versicolor"
+        },
+        {
+          "id": 96,
+          "actual": "Iris-versicolor",
+          "prediction": "Iris-versicolor"
+        },
+        {
+          "id": 88,
+          "actual": "Iris-versicolor",
+          "prediction": "Iris-versicolor"
+        },
+        {
+          "id": 99,
+          "actual": "Iris-versicolor",
+          "prediction": "Iris-versicolor"
+        },
+        {
+          "id": 83,
+          "actual": "Iris-versicolor",
+          "prediction": "Iris-virginica"
+        },
+        {
+          "id": 55,
+          "actual": "Iris-versicolor",
+          "prediction": "Iris-versicolor"
+        },
+        {
+          "id": 66,
+          "actual": "Iris-versicolor",
+          "prediction": "Iris-versicolor"
+        },
+        {
+          "id": 69,
+          "actual": "Iris-versicolor",
+          "prediction": "Iris-versicolor"
+        },
+        {
+          "id": 58,
+          "actual": "Iris-versicolor",
+          "prediction": "Iris-versicolor"
+        },
+        {
+          "id": 119,
+          "actual": "Iris-virginica",
+          "prediction": "Iris-versicolor"
+        },
+        {
+          "id": 106,
+          "actual": "Iris-virginica",
+          "prediction": "Iris-virginica"
+        },
+        {
+          "id": 122,
+          "actual": "Iris-virginica",
+          "prediction": "Iris-virginica"
+        },
+        {
+          "id": 131,
+          "actual": "Iris-virginica",
+          "prediction": "Iris-virginica"
+        },
+        {
+          "id": 110,
+          "actual": "Iris-virginica",
+          "prediction": "Iris-virginica"
+        },
+        {
+          "id": 149,
+          "actual": "Iris-virginica",
+          "prediction": "Iris-virginica"
+        },
+        {
+          "id": 127,
+          "actual": "Iris-virginica",
+          "prediction": "Iris-virginica"
+        },
+        {
+          "id": 129,
+          "actual": "Iris-virginica",
+          "prediction": "Iris-virginica"
+        },
+        {
+          "id": 145,
+          "actual": "Iris-virginica",
+          "prediction": "Iris-virginica"
+        },
+        {
+          "id": 117,
+          "actual": "Iris-virginica",
+          "prediction": "Iris-virginica"
+        },
+        {
+          "id": 133,
+          "actual": "Iris-virginica",
+          "prediction": "Iris-versicolor"
+        }
+      ],
+      "protocol": "Exact-row deduplication, seeded stratified 60/20/remainder split; scaler fit on training only; fixed recipe, test not used for selection."
+    },
+    {
+      "dataset": "AirPassengers",
+      "trainTargets": 84,
+      "validationTargets": 24,
+      "testTargets": 24,
+      "trainEnd": "1956-12",
+      "validationEnd": "1958-12",
+      "testEnd": "1960-12",
+      "lookback": 12,
+      "epochs": 100,
+      "loss": 0.02168206741672619,
+      "validationLoss": 0.07010491480891433,
+      "testMAEThousands": 68.63993105013463,
+      "testRMSEThousands": 85.21449177305537,
+      "seasonalMAEThousands": 47.583333333333336,
+      "persistenceMAEThousands": 44.208333333333336,
+      "scaler": {
+        "format": "neural_engine_standard_scaler",
+        "version": 1,
+        "means": [
+          5.3093217651637
+        ],
+        "scales": [
+          0.3335872977561357
+        ]
+      },
+      "milliseconds": 923,
+      "sampleRows": [
+        {
+          "month": "1959-01",
+          "actual": 360.0,
+          "prediction": 374.5521502253337,
+          "seasonal": 340.0
+        },
+        {
+          "month": "1959-02",
+          "actual": 342.0,
+          "prediction": 352.33399192891613,
+          "seasonal": 318.0
+        },
+        {
+          "month": "1959-03",
+          "actual": 406.0,
+          "prediction": 360.03965412040156,
+          "seasonal": 362.0
+        },
+        {
+          "month": "1959-04",
+          "actual": 396.0,
+          "prediction": 429.0453065990632,
+          "seasonal": 348.0
+        },
+        {
+          "month": "1959-05",
+          "actual": 420.0,
+          "prediction": 388.94363364473594,
+          "seasonal": 363.0
+        },
+        {
+          "month": "1959-06",
+          "actual": 472.0,
+          "prediction": 384.7419328756578,
+          "seasonal": 435.0
+        },
+        {
+          "month": "1959-07",
+          "actual": 548.0,
+          "prediction": 404.09850332356444,
+          "seasonal": 491.0
+        },
+        {
+          "month": "1959-08",
+          "actual": 559.0,
+          "prediction": 436.4923865111656,
+          "seasonal": 505.0
+        },
+        {
+          "month": "1959-09",
+          "actual": 463.0,
+          "prediction": 425.62041156902745,
+          "seasonal": 404.0
+        },
+        {
+          "month": "1959-10",
+          "actual": 407.0,
+          "prediction": 378.51325912155323,
+          "seasonal": 359.0
+        },
+        {
+          "month": "1959-11",
+          "actual": 362.0,
+          "prediction": 342.0402457323438,
+          "seasonal": 310.0
+        },
+        {
+          "month": "1959-12",
+          "actual": 405.0,
+          "prediction": 315.78003686614693,
+          "seasonal": 337.0
+        },
+        {
+          "month": "1960-01",
+          "actual": 417.0,
+          "prediction": 389.47964311469707,
+          "seasonal": 360.0
+        },
+        {
+          "month": "1960-02",
+          "actual": 391.0,
+          "prediction": 411.22645467625085,
+          "seasonal": 342.0
+        },
+        {
+          "month": "1960-03",
+          "actual": 419.0,
+          "prediction": 363.5355976368782,
+          "seasonal": 406.0
+        },
+        {
+          "month": "1960-04",
+          "actual": 461.0,
+          "prediction": 382.6189215779811,
+          "seasonal": 396.0
+        },
+        {
+          "month": "1960-05",
+          "actual": 472.0,
+          "prediction": 409.9010471912456,
+          "seasonal": 420.0
+        },
+        {
+          "month": "1960-06",
+          "actual": 535.0,
+          "prediction": 399.91973566842694,
+          "seasonal": 472.0
+        },
+        {
+          "month": "1960-07",
+          "actual": 622.0,
+          "prediction": 422.996807310914,
+          "seasonal": 548.0
+        },
+        {
+          "month": "1960-08",
+          "actual": 606.0,
+          "prediction": 449.4501387360783,
+          "seasonal": 559.0
+        },
+        {
+          "month": "1960-09",
+          "actual": 508.0,
+          "prediction": 436.2104248020257,
+          "seasonal": 463.0
+        },
+        {
+          "month": "1960-10",
+          "actual": 461.0,
+          "prediction": 398.9496522422784,
+          "seasonal": 407.0
+        },
+        {
+          "month": "1960-11",
+          "actual": 390.0,
+          "prediction": 374.74527384948146,
+          "seasonal": 362.0
+        },
+        {
+          "month": "1960-12",
+          "actual": 432.0,
+          "prediction": 331.722252331729,
+          "seasonal": 405.0
+        }
+      ],
+      "protocol": "Chronological targets, 12 observed monthly lags, log + training-only scaler, rolling one-step forecast; not a recursive 24-month forecast. Fixed recipe; no test tuning."
+    }
+  ]
+}

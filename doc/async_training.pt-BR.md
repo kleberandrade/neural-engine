@@ -1,7 +1,6 @@
 # Treinamento assíncrono — 0.3.0
 
-A API está no código da próxima 0.3.0; não faz parte da versão publicada 0.2.1.
-Use o checkout do repositório até a publicação. O núcleo continua em Dart puro.
+A API assíncrona é introduzida na 0.3.0. O núcleo continua em Dart puro.
 
 ## Qual execução escolher?
 

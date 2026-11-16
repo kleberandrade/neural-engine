@@ -1,0 +1,14 @@
+{
+  "iris": {
+    "source": "https://archive.ics.uci.edu/static/public/53/data.csv",
+    "retrieved": "2026-11-16",
+    "rows": 150,
+    "sha256": "ea110d42c2240c77fd292751dfdc4db00c699fee569528ed33ca270838b6f9f4"
+  },
+  "air_passengers": {
+    "source": "https://stat.ethz.ch/education/semesters/ss2012/atsa/ATSA-Scriptum-SS2012-120521.pdf",
+    "retrieved": "2026-11-16",
+    "rows": 144,
+    "sha256": "eda0181c2450975f5ad68556dcf14367541b22553f0c628b9747334cfdc6c96c"
+  }
+}

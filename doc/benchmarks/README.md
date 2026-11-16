@@ -40,3 +40,9 @@ Repeat on the target device and runtime (JIT/AOT/web) before selecting a model.
 The Flutter Checkpoints tab reports the full indented checkpoint UTF-8 size,
 which includes Adam moments and metadata and is intentionally larger than the
 inference-only figures above.
+
+## Async responsiveness and real-data reference
+
+See [protocol and observations](responsiveness.md), [fixed real-data results](real-world-results.json)
+and the [0.4.0 plan](../roadmap_0.4.0.md). Event-loop delay is not rendered FPS;
+sampled memory is not allocation profiling.

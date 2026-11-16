@@ -1,7 +1,6 @@
 # Asynchronous training (0.3.0)
 
-This API is on the development branch for 0.3.0; it is not in the published 0.2.1.
-Use the source checkout until 0.3.0 is released. The core still has no Flutter or
+The asynchronous API is introduced in 0.3.0. The core still has no Flutter or
 runtime package dependency.
 
 ## Choose an execution mode

@@ -2,6 +2,7 @@
 // ignore: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'mlp_page.dart';
+import 'real_world_page.dart';
 import 'async_training_page.dart';
 import 'model_demo_page.dart';
 import 'sequence_page.dart';
@@ -12,7 +13,7 @@ class ModelGallery extends StatelessWidget {
   const ModelGallery({super.key});
   @override
   Widget build(BuildContext context) => DefaultTabController(
-      length: 7,
+      length: 8,
       child: Scaffold(
           appBar: AppBar(
               title: const Text('Neural Engine • Model Lab'),
@@ -23,7 +24,8 @@ class ModelGallery extends StatelessWidget {
                 Tab(text: 'Autoencoder'),
                 Tab(text: 'Sequences'),
                 Tab(text: 'Checkpoints'),
-                Tab(text: 'Async training')
+                Tab(text: 'Async training'),
+                Tab(text: 'Real data')
               ])),
           body: const TabBarView(children: [
             MlpPage(),
@@ -32,6 +34,7 @@ class ModelGallery extends StatelessWidget {
             ModelDemo(kind: DemoKind.autoencoder),
             SequencePage(),
             CheckpointPage(),
-            AsyncTrainingPage()
+            AsyncTrainingPage(),
+            RealWorldPage()
           ])));
 }

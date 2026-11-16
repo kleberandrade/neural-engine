@@ -1,7 +1,9 @@
 # Changelog
 
-## 0.3.0 (unreleased)
+## 0.3.0
 
+- Add offline Iris classification and chronological AirPassengers forecasting examples shared by Dart/Flutter, with training-only scalers, reserved tests, baselines and dataset provenance.
+- Record reproducible native/Chrome responsiveness, cancellation, sampled-memory and executor-step measurements; document a measured 0.4.0 plan.
 - Add native isolate workers and cooperative web mini-batches through AsyncTrainingTask.
 - Share the synchronous batch executor with TrainingSession.fitAsync; support custom model/loss/optimizer contracts cooperatively.
 - Stream epoch progress, training/validation loss and elapsed time; cancel at complete epoch boundaries and resume existing JSON checkpoints.

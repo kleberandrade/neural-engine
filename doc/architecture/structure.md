@@ -55,3 +55,10 @@ Async Flutter lifecycle lives in `pages/async_training_page.dart`; portable reci
 live in `runners/async_demo_recipe.dart`. The asynchronous core separates request,
 result, progress, cancellation, task orchestration, codecs and platform transports
 into their own files. See [scheduling](../async_training.md).
+
+Real-data recipes are pure Dart under `example/flutter_lab/lib/real_world/` so
+the Flutter package can import them normally. `example/real_world.dart` imports
+those same files as a CLI walkthrough; no Flutter import enters those recipes.
+CSV snapshots and provenance live in `example/data/`, mirrored byte-for-byte in
+Dart constants for offline browser use. Responsiveness probes live in `benchmark/`
+with conditional native/browser memory adapters; measurement code is not core API.

@@ -36,11 +36,14 @@ jobs:
       - run: dart run example/cnn_bars.dart
       - run: dart run example/autoencoder.dart
       - run: dart run example/recurrent_sequences.dart
+      - run: dart run example/real_world.dart
       - run: dart run example/evaluation.dart
       - run: dart run example/custom_extensions.dart
       - run: dart run validation/async_portability.dart
       - run: dart run example/async_training.dart
       - run: dart run example/checkpoint.dart
+      - run: dart compile js example/real_world.dart -o /tmp/real_world.js
+      - run: node validation/run_async_js.cjs /tmp/real_world.js "Real-world examples passed"
       - run: dart compile js example/neural_engine_example.dart -o /tmp/neural_engine.js
       - run: dart compile js example/som_colors.dart -o /tmp/som.js
       - run: dart compile js example/cnn_bars.dart -o /tmp/cnn.js
@@ -73,7 +76,19 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter analyze --fatal-infos
-      - run: flutter test
+      - run: flutter test --exclude-tags benchmark
+      - name: Measure native Flutter test runtime
+        run: flutter test test/responsiveness_test.dart --reporter expanded | tee /tmp/neural-native.log
+      - name: Measure Chrome Flutter test runtime
+        run: flutter test --platform chrome test/responsiveness_test.dart --reporter expanded | tee /tmp/neural-chrome.log
+      - name: Extract responsiveness reports
+        run: |
+          python3 ../../validation/extract_measurements.py /tmp/neural-native.log /tmp/neural-metrics/flutter-native.json
+          python3 ../../validation/extract_measurements.py /tmp/neural-chrome.log /tmp/neural-metrics/flutter-chrome.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: flutter-responsiveness
+          path: /tmp/neural-metrics/*.json
       - run: flutter build web
   hosted:
     runs-on: ubuntu-latest
