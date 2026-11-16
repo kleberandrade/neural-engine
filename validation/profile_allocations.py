@@ -39,8 +39,8 @@ def profile(kind):
                 line = messages.get(timeout=60)
             except queue.Empty:
                 raise RuntimeError('VM workload did not reach ' + prefix) from None
-            match = re.search(r'(http://127\.0\.0\.1:\d+/[^\s]*/)', line)
-            if match:
+            match = re.search(r'(http://127\.0\.0\.1:\d+/[^/\s]+/)', line)
+            if match and uri is None:
                 uri = match[1]
             if line.startswith(prefix):
                 return line[len(prefix):].strip()
@@ -56,7 +56,7 @@ def profile(kind):
             with urllib.request.urlopen(url, timeout=20) as response:
                 result = json.load(response)
         except Exception as error:
-            raise RuntimeError('VM service request failed: ' + method) from None
+            raise RuntimeError('VM service request failed: ' + method + ' (' + type(error).__name__ + ', status=' + str(getattr(error, 'code', None)) + ')') from None
         if 'error' in result:
             raise RuntimeError(method + ': ' + str(result['error'].get('message')))
         return result['result']
