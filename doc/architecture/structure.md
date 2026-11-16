@@ -25,6 +25,7 @@ is under `lib/src`; its classes are exported selectively through the public
 | `test/` | Public behavior, finite differences, fixtures | Imports public library, not private implementation |
 | `example/` | Runnable Dart walkthroughs | Synthetic data, convergence checks |
 | `example/flutter_lab/lib/` | App shell, pages, painters, widgets, data and runners | No Flutter imports enter package core |
+| `validation/hosted/` | Standalone exact pub.dev consumer and disk checkpoint smoke checks | Hosted dependency only; separate CI matrix |
 | `benchmark/` | Repeatable local workload measurements | IO allowed here, never interpreted as quality tests |
 | `doc/architecture/` | Source map, decisions, diagrams, contracts | Must match actual code |
 
@@ -44,3 +45,7 @@ is not a metric report, and a serialized model is not an optimizer checkpoint.
 Private caches may be colocated with the numerical operation that creates them.
 Small shared value objects may share a file when they form one pass result.
 Avoid adding interfaces with no consumer; contracts above are used in execution.
+
+Flutter checkpoint UI lives in `pages/checkpoint_page.dart`; its pure Dart
+worker and reference comparison live in `runners/checkpoint_runner.dart`. No
+Flutter rendering or clipboard API is imported by the worker or package core.

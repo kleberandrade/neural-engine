@@ -1,5 +1,10 @@
 {
   "runtime": "3.11.5 (stable) (Wed Apr 15 00:36:32 2026 -0700) on \"macos_arm64\"",
+  "processors": 8,
+  "predictionWarmupCalls": 50,
+  "predictionBatches": 5,
+  "predictionsPerBatch": 1000,
+  "modelSizeEncoding": "compact JSON UTF-8, inference parameters only",
   "os": "macos",
   "seed": 42,
   "notes": "Different workloads and parameter counts. One local run; no statistical speed ranking. Prediction median uses 5 batches of 1000 calls after warmup.",
@@ -8,63 +13,109 @@
       "model": "MLP XOR",
       "parameters": 33,
       "samples": 4,
+      "modelJsonBytes": 807,
+      "batchSize": 8,
+      "optimizer": "Adam(learningRate: 0.01)",
+      "maxGradientNorm": 1,
+      "shuffle": true,
       "epochs": 50,
       "warmupEpochs": 5,
-      "trainingMicroseconds": 6795,
-      "medianPredictionMicroseconds": 1.887
+      "trainingMicroseconds": 7534,
+      "medianPredictionMicroseconds": 1.655,
+      "minBatchPredictionMicroseconds": 1.168,
+      "maxBatchPredictionMicroseconds": 3.972
     },
     {
       "model": "CNN bars",
       "parameters": 114,
       "samples": 16,
+      "modelJsonBytes": 2684,
+      "batchSize": 8,
+      "optimizer": "Adam(learningRate: 0.01)",
+      "maxGradientNorm": 1,
+      "shuffle": true,
       "epochs": 50,
       "warmupEpochs": 5,
-      "trainingMicroseconds": 43542,
-      "medianPredictionMicroseconds": 10.25
+      "trainingMicroseconds": 50513,
+      "medianPredictionMicroseconds": 11.053,
+      "minBatchPredictionMicroseconds": 10.696,
+      "maxBatchPredictionMicroseconds": 11.332
     },
     {
       "model": "Dense autoencoder",
       "parameters": 142,
       "samples": 20,
+      "modelJsonBytes": 3025,
+      "batchSize": 8,
+      "optimizer": "Adam(learningRate: 0.01)",
+      "maxGradientNorm": 1,
+      "shuffle": true,
       "epochs": 50,
       "warmupEpochs": 5,
-      "trainingMicroseconds": 11893,
-      "medianPredictionMicroseconds": 0.933
+      "trainingMicroseconds": 14103,
+      "medianPredictionMicroseconds": 1.08,
+      "minBatchPredictionMicroseconds": 0.95,
+      "maxBatchPredictionMicroseconds": 1.198
     },
     {
       "model": "rnn",
       "parameters": 55,
       "samples": 24,
+      "modelJsonBytes": 1275,
+      "batchSize": 8,
+      "optimizer": "Adam(learningRate: 0.01)",
+      "maxGradientNorm": 1,
+      "shuffle": true,
       "epochs": 50,
       "warmupEpochs": 5,
-      "trainingMicroseconds": 31309,
-      "medianPredictionMicroseconds": 2.681
+      "trainingMicroseconds": 42315,
+      "medianPredictionMicroseconds": 3.843,
+      "minBatchPredictionMicroseconds": 3.48,
+      "maxBatchPredictionMicroseconds": 3.973
     },
     {
       "model": "lstm",
       "parameters": 199,
       "samples": 24,
+      "modelJsonBytes": 4152,
+      "batchSize": 8,
+      "optimizer": "Adam(learningRate: 0.01)",
+      "maxGradientNorm": 1,
+      "shuffle": true,
       "epochs": 50,
       "warmupEpochs": 5,
-      "trainingMicroseconds": 61601,
-      "medianPredictionMicroseconds": 9.072
+      "trainingMicroseconds": 76716,
+      "medianPredictionMicroseconds": 10.913,
+      "minBatchPredictionMicroseconds": 10.147,
+      "maxBatchPredictionMicroseconds": 11.287
     },
     {
       "model": "gru",
       "parameters": 151,
       "samples": 24,
+      "modelJsonBytes": 3185,
+      "batchSize": 8,
+      "optimizer": "Adam(learningRate: 0.01)",
+      "maxGradientNorm": 1,
+      "shuffle": true,
       "epochs": 50,
       "warmupEpochs": 5,
-      "trainingMicroseconds": 46534,
-      "medianPredictionMicroseconds": 6.253
+      "trainingMicroseconds": 78251,
+      "medianPredictionMicroseconds": 8.258,
+      "minBatchPredictionMicroseconds": 7.262,
+      "maxBatchPredictionMicroseconds": 9.175
     },
     {
       "model": "SOM colors",
       "parameters": 108,
+      "modelJsonBytes": 2254,
+      "medianPredictionMicroseconds": 0.217,
+      "minBatchPredictionMicroseconds": 0.211,
+      "maxBatchPredictionMicroseconds": 0.252,
       "samples": 48,
       "epochs": 50,
       "warmupEpochs": 5,
-      "trainingMicroseconds": 17538
+      "trainingMicroseconds": 18332
     }
   ]
 }

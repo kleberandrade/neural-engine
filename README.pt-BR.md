@@ -4,20 +4,20 @@ Redes neurais em Dart puro para aplicativos Flutter e serviços Dart. Treine
 MLPs e CNNs com backpropagation, SGD ou Adam, organize dados com SOM de Kohonen
 e explore autoencoders densos. Exporte modelos em JSON versionado. Núcleo sem dependências de execução.
 
-[Extensibilidade](doc/extending.pt-BR.md) · [Persistência e checkpoints](doc/persistence.pt-BR.md) · [Arquitetura, estrutura e diagramas](doc/architecture.md) · [RNN/LSTM/GRU](doc/recurrent.pt-BR.md) · [Métricas e normalização](doc/evaluation.pt-BR.md) · [Guia didático dos modelos](doc/models.pt-BR.md) · [English](README.md) · [Arquitetura](doc/architecture.md) · [Laboratório Flutter](example/flutter_lab/README.md)
+[Extensibilidade](https://github.com/kleberandrade/neural-engine/blob/main/doc/extending.pt-BR.md) · [Persistência e checkpoints](https://github.com/kleberandrade/neural-engine/blob/main/doc/persistence.pt-BR.md) · [Arquitetura, estrutura e diagramas](https://github.com/kleberandrade/neural-engine/blob/main/doc/architecture.md) · [RNN/LSTM/GRU](https://github.com/kleberandrade/neural-engine/blob/main/doc/recurrent.pt-BR.md) · [Métricas e normalização](https://github.com/kleberandrade/neural-engine/blob/main/doc/evaluation.pt-BR.md) · [Guia didático dos modelos](https://github.com/kleberandrade/neural-engine/blob/main/doc/models.pt-BR.md) · [English](https://github.com/kleberandrade/neural-engine/blob/main/README.md) · [Laboratório Flutter](https://github.com/kleberandrade/neural-engine/blob/main/example/flutter_lab/README.md)
 
-**Versão publicada:** [0.2.0](https://pub.dev/packages/neural_engine/versions/0.2.0), pelo publisher verificado [kleberandrade.dev](https://pub.dev/publishers/kleberandrade.dev). Veja o [registro da release](doc/release_0.2.0.md).
+**Pacote:** [neural_engine](https://pub.dev/packages/neural_engine), pelo publisher verificado [kleberandrade.dev](https://pub.dev/publishers/kleberandrade.dev). Veja o [changelog](https://github.com/kleberandrade/neural-engine/blob/main/CHANGELOG.md).
 
 ## Modelos, exemplos e laboratório
 
 | Modelo | Dart | Aba Flutter | O que observar |
 | --- | --- | --- | --- |
-| MLP | [XOR](example/neural_engine_example.dart), [regressão](example/regression.dart), [classes](example/classification.dart) | MLP | Perda e fronteira de decisão |
-| SOM | [Cores RGB](example/som_colors.dart) | SOM | Protótipos antes/depois e erro de quantização |
-| CNN | [Barras com ruído](example/cnn_bars.dart) | CNN | Imagem, probabilidades e canais da convolução |
-| Autoencoder denso | [Reconstrução](example/autoencoder.dart) | Autoencoder | Entrada, alvo limpo, reconstrução e código latente |
+| MLP | [XOR](https://github.com/kleberandrade/neural-engine/blob/main/example/neural_engine_example.dart), [regressão](https://github.com/kleberandrade/neural-engine/blob/main/example/regression.dart), [classes](https://github.com/kleberandrade/neural-engine/blob/main/example/classification.dart) | MLP | Perda e fronteira de decisão |
+| SOM | [Cores RGB](https://github.com/kleberandrade/neural-engine/blob/main/example/som_colors.dart) | SOM | Protótipos antes/depois e erro de quantização |
+| CNN | [Barras com ruído](https://github.com/kleberandrade/neural-engine/blob/main/example/cnn_bars.dart) | CNN | Imagem, probabilidades e canais da convolução |
+| Autoencoder denso | [Reconstrução](https://github.com/kleberandrade/neural-engine/blob/main/example/autoencoder.dart) | Autoencoder | Entrada, alvo limpo, reconstrução e código latente |
 
-O [guia completo](doc/models.pt-BR.md) explica cada arquitetura, os formatos dos
+O [guia completo](https://github.com/kleberandrade/neural-engine/blob/main/doc/models.pt-BR.md) explica cada arquitetura, os formatos dos
 dados, os passos de treinamento e experimentos para modificar. Os dados são
 sintéticos e gerados localmente. RNN, LSTM e GRU estão implementados com saída no último passo; veja o guia de sequências.
 
@@ -25,7 +25,7 @@ sintéticos e gerados localmente. RNN, LSTM e GRU estão implementados com saíd
 
 ```yaml
 dependencies:
-  neural_engine: ^0.2.0
+  neural_engine: ^0.2.1
 ```
 
 Requer Dart >=3.3.0. Compatível com Flutter.
@@ -64,7 +64,7 @@ void main() {
 
 - Contratos de modelo/treinador e estrutura documentada com diagramas de classes.
 - RNN, LSTM e GRU com BPTT completo, estado isolado e JSON.
-- Normalização ajustada no treino, métricas e [medições locais reproduzíveis](doc/benchmarks/README.md).
+- Normalização ajustada no treino, métricas e [medições locais reproduzíveis](https://github.com/kleberandrade/neural-engine/blob/main/doc/benchmarks/README.md).
 
 - SOM retangular de Kohonen com vizinhança gaussiana e cronograma de taxa/raio.
 - CNN ponta a ponta com Conv2D, padding valid/same, stride, MaxPool2D e saída densa.
@@ -95,7 +95,7 @@ restaura os pesos da melhor época qualificada, mesmo ao atingir o limite de
 
 `toJson()` produz o modelo; `NeuralNetwork.fromJson(...)` restaura arquitetura e
 pesos. Use `dart:convert` para codificar/decodificar. O JSON de inferência não contém momentos do Adam; use
-[checkpoints de TrainingSession](doc/persistence.pt-BR.md) para retomar sessões. Cada chamada a `fit` reinicia o estado do
+[checkpoints de TrainingSession](https://github.com/kleberandrade/neural-engine/blob/main/doc/persistence.pt-BR.md) para retomar sessões. Cada chamada a `fit` reinicia o estado do
 otimizador e a sequência de embaralhamento a partir da seed.
 
 ## Exemplos e validação
@@ -140,3 +140,7 @@ Os próximos candidatos são modelos clássicos e novas configurações recorren
 acompanhados de testes, exemplos Dart/Flutter e documentação didática.
 
 MIT © 2026 Kleber Andrade.
+
+Na aba Flutter **Checkpoints**, salve/carregue JSON e compare a retomada com
+um treinamento contínuo. Veja as [medições](https://github.com/kleberandrade/neural-engine/blob/main/doc/benchmarks/README.md)
+e a [validação pelo pub.dev](https://github.com/kleberandrade/neural-engine/blob/main/validation/hosted/README.md).

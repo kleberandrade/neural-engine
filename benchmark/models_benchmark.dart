@@ -49,10 +49,18 @@ Map<String, Object> measure<I>(String name, DifferentiableModel<I> model,
     'model': name,
     'parameters': model.parameterCount,
     'samples': inputs.length,
+    'modelJsonBytes':
+        utf8.encode(jsonEncode((model as JsonModel).toJson())).length,
+    'batchSize': 8,
+    'optimizer': 'Adam(learningRate: 0.01)',
+    'maxGradientNorm': 1,
+    'shuffle': true,
     'epochs': 50,
     'warmupEpochs': 5,
     'trainingMicroseconds': training.elapsedMicroseconds,
-    'medianPredictionMicroseconds': timings[2] / 1000
+    'medianPredictionMicroseconds': timings[2] / 1000,
+    'minBatchPredictionMicroseconds': timings.first / 1000,
+    'maxBatchPredictionMicroseconds': timings.last / 1000
   };
 }
 
@@ -120,9 +128,26 @@ void main() {
   final timer = Stopwatch()..start();
   som.fit(colors, epochs: 50);
   timer.stop();
+  for (var i = 0; i < 50; i++) {
+    som.winner(colors[i % colors.length]);
+  }
+  final somTimings = <int>[];
+  for (var repeat = 0; repeat < 5; repeat++) {
+    final prediction = Stopwatch()..start();
+    for (var i = 0; i < 1000; i++) {
+      som.winner(colors[i % colors.length]);
+    }
+    prediction.stop();
+    somTimings.add(prediction.elapsedMicroseconds);
+  }
+  somTimings.sort();
   rows.add({
     'model': 'SOM colors',
     'parameters': 108,
+    'modelJsonBytes': utf8.encode(jsonEncode(som.toJson())).length,
+    'medianPredictionMicroseconds': somTimings[2] / 1000,
+    'minBatchPredictionMicroseconds': somTimings.first / 1000,
+    'maxBatchPredictionMicroseconds': somTimings.last / 1000,
     'samples': colors.length,
     'epochs': 50,
     'warmupEpochs': 5,
@@ -130,6 +155,11 @@ void main() {
   });
   print(const JsonEncoder.withIndent('  ').convert({
     'runtime': Platform.version,
+    'processors': Platform.numberOfProcessors,
+    'predictionWarmupCalls': 50,
+    'predictionBatches': 5,
+    'predictionsPerBatch': 1000,
+    'modelSizeEncoding': 'compact JSON UTF-8, inference parameters only',
     'os': Platform.operatingSystem,
     'seed': 42,
     'notes':

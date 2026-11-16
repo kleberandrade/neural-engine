@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 0.2.1
+
+- Fix pub.dev installation instructions and make README documentation links absolute.
+- Verify the exact hosted 0.2.0 artifact with an isolated minimum/stable Dart consumer, all model JSON codecs, scalers and disk-backed checkpoint continuation.
+- Add a Flutter Checkpoints tab with editable/copyable JSON, fresh model restoration, Adam continuation and comparison against uninterrupted training for MLP/CNN/RNN/LSTM/GRU.
+- Measure compact model JSON sizes and SOM inference alongside reproducible training/inference workloads.
+- Generalize stable release tags with an exact tag/pubspec guard and mandatory CI before OIDC publication.
+
 ## 0.2.0
 
 - Validate extensibility with an independent public-API consumer: Huber loss, momentum optimizer and a custom linear model.

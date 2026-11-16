@@ -68,6 +68,6 @@ No personal Pub token is stored in the repository. Package ownership was
 transferred to verified publisher `kleberandrade.dev` and confirmed after
 publication.
 
-The workflow currently targets only `v0.2.0`; review its tag trigger before
-preparing a subsequent release. Published artifacts are immutable: changes to
+The workflow at this release targeted only `v0.2.0`. Subsequent releases use
+the generalized tag guard described in [the release procedure](releasing.md). Published artifacts are immutable: changes to
 this repository after the release require a new version to appear on pub.dev.

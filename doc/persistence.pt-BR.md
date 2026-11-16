@@ -116,3 +116,17 @@ restauração do otimizador validam suas estruturas ao restaurar a sessão.
 IO pertence à aplicação. Limite tamanho de arquivos antes de decodificar dados
 não confiáveis. SOM possui modelo JSON, mas não usa este checkpoint de otimizador:
 seu aprendizado competitivo e cronograma de vizinhança são outra responsabilidade.
+
+## Experimento completo no Flutter
+
+Na aba **Checkpoints** do [laboratório](../example/flutter_lab/README.md#checkpoint-walkthrough),
+escolha MLP, CNN, RNN, LSTM ou GRU. Treine 40 épocas, copie o JSON e salve-o em
+um arquivo de texto. Reinicie o aplicativo, selecione a mesma família, cole o
+JSON e carregue. A previsão deve permanecer igual. Retome por mais 60 épocas:
+a tela mostra perda, tamanho do checkpoint, previsões e comparação do estado
+com uma execução contínua de 100 épocas. Sem editar o checkpoint e no mesmo
+SDK/plataforma, a diferença máxima é zero. Copiar não grava um arquivo
+automaticamente; o usuário escolhe onde guardar o texto.
+
+O [consumidor independente](../validation/hosted/README.md) valida a instalação
+pelo pub.dev e demonstra salvar/restaurar um arquivo JSON real em Dart.

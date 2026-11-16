@@ -1,6 +1,6 @@
 name: neural_engine
 description: Pure Dart neural networks with dense and convolutional layers, Kohonen SOM, SGD and Adam, versioned models and educational Flutter examples.
-version: 0.2.0
+version: 0.2.1
 repository: https://github.com/kleberandrade/neural-engine
 issue_tracker: https://github.com/kleberandrade/neural-engine/issues
 environment:

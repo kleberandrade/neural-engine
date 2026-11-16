@@ -1,36 +1,36 @@
 # neural_engine
 
 [![Dart CI](https://github.com/kleberandrade/neural-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/kleberandrade/neural-engine/actions/workflows/ci.yml)
-[![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/kleberandrade/neural-engine/blob/main/LICENSE)
 
 Pure Dart neural networks for Flutter apps and Dart services: dense MLPs,
 Kohonen self-organizing maps, trainable 2D CNNs and dense autoencoder examples.
 Train locally and export versioned JSON models. No runtime dependencies, Flutter imports, native bindings
 or network access in the core.
 
-[Extension contracts](doc/extending.md) · [Persistence/checkpoints](doc/persistence.md) · [Architecture and diagrams](doc/architecture.md) · [Sequence models](doc/recurrent.md) · [Evaluation](doc/evaluation.md) · [Model tutorials](doc/models.md) · [Guia didático](doc/models.pt-BR.md) · [Português](README.pt-BR.md) · [Concepts and architecture](doc/architecture.md) · [Flutter lab](example/flutter_lab/README.md) · [Contributing](CONTRIBUTING.md)
+[Extension contracts](https://github.com/kleberandrade/neural-engine/blob/main/doc/extending.md) · [Persistence/checkpoints](https://github.com/kleberandrade/neural-engine/blob/main/doc/persistence.md) · [Architecture and diagrams](https://github.com/kleberandrade/neural-engine/blob/main/doc/architecture.md) · [Sequence models](https://github.com/kleberandrade/neural-engine/blob/main/doc/recurrent.md) · [Evaluation](https://github.com/kleberandrade/neural-engine/blob/main/doc/evaluation.md) · [Model tutorials](https://github.com/kleberandrade/neural-engine/blob/main/doc/models.md) · [Guia didático](https://github.com/kleberandrade/neural-engine/blob/main/doc/models.pt-BR.md) · [Português](https://github.com/kleberandrade/neural-engine/blob/main/README.pt-BR.md) · [Flutter lab](https://github.com/kleberandrade/neural-engine/blob/main/example/flutter_lab/README.md) · [Contributing](https://github.com/kleberandrade/neural-engine/blob/main/CONTRIBUTING.md)
 
-**Published version:** [0.2.0](https://pub.dev/packages/neural_engine/versions/0.2.0), by verified publisher [kleberandrade.dev](https://pub.dev/publishers/kleberandrade.dev). See the [release record](doc/release_0.2.0.md).
+**Package:** [neural_engine](https://pub.dev/packages/neural_engine), by verified publisher [kleberandrade.dev](https://pub.dev/publishers/kleberandrade.dev). See the [changelog](https://github.com/kleberandrade/neural-engine/blob/main/CHANGELOG.md).
 
 ## Models and runnable examples
 
 | Family | Dart example | Flutter tab | Guide |
 | --- | --- | --- | --- |
-| MLP | [XOR](example/neural_engine_example.dart), [regression](example/regression.dart), [classes](example/classification.dart) | MLP: loss and decision surface | [MLP](doc/models.md#mlp-learn-a-relationship-between-vectors) |
-| SOM | [RGB organization](example/som_colors.dart) | SOM: before/after color map | [SOM](doc/models.md#som-organize-colors-without-class-labels) |
-| CNN | [Noisy bars](example/cnn_bars.dart) | CNN: image, probabilities, feature channels | [CNN](doc/models.md#cnn-learn-spatial-patterns-with-shared-filters) |
-| Dense autoencoder | [Denoising](example/autoencoder.dart) | Autoencoder: input, target, reconstruction and latent code | [Autoencoder](doc/models.md#dense-autoencoder-compress-and-reconstruct) |
+| MLP | [XOR](https://github.com/kleberandrade/neural-engine/blob/main/example/neural_engine_example.dart), [regression](https://github.com/kleberandrade/neural-engine/blob/main/example/regression.dart), [classes](https://github.com/kleberandrade/neural-engine/blob/main/example/classification.dart) | MLP: loss and decision surface | [MLP](https://github.com/kleberandrade/neural-engine/blob/main/doc/models.md#mlp-learn-a-relationship-between-vectors) |
+| SOM | [RGB organization](https://github.com/kleberandrade/neural-engine/blob/main/example/som_colors.dart) | SOM: before/after color map | [SOM](https://github.com/kleberandrade/neural-engine/blob/main/doc/models.md#som-organize-colors-without-class-labels) |
+| CNN | [Noisy bars](https://github.com/kleberandrade/neural-engine/blob/main/example/cnn_bars.dart) | CNN: image, probabilities, feature channels | [CNN](https://github.com/kleberandrade/neural-engine/blob/main/doc/models.md#cnn-learn-spatial-patterns-with-shared-filters) |
+| Dense autoencoder | [Denoising](https://github.com/kleberandrade/neural-engine/blob/main/example/autoencoder.dart) | Autoencoder: input, target, reconstruction and latent code | [Autoencoder](https://github.com/kleberandrade/neural-engine/blob/main/doc/models.md#dense-autoencoder-compress-and-reconstruct) |
 
 All examples use locally generated synthetic data. The guides explain shape
 conventions, learning steps, practical experiments and evaluation limits.
 RNN, LSTM and reset-before GRU are implemented as many-to-one models. See
-[sequence forecasting](doc/recurrent.md) and the Flutter Sequences tab.
+[sequence forecasting](https://github.com/kleberandrade/neural-engine/blob/main/doc/recurrent.md) and the Flutter Sequences tab.
 
 ## Install
 
 ```yaml
 dependencies:
-  neural_engine: ^0.2.0
+  neural_engine: ^0.2.1
 ```
 
 Dart >=3.3.0. Works in Flutter
@@ -77,7 +77,7 @@ These packages have independent cores.
 
 - Explicit model/trainer contracts and documented source/class architecture.
 - RNN, LSTM and GRU cells with full BPTT, isolated state and JSON models.
-- Training-only normalization, classification/regression metrics and reproducible [workload measurements](doc/benchmarks/README.md).
+- Training-only normalization, classification/regression metrics and reproducible [workload measurements](https://github.com/kleberandrade/neural-engine/blob/main/doc/benchmarks/README.md).
 
 - Rectangular Kohonen SOM with Gaussian neighborhoods, decay schedules and JSON.
 - End-to-end CNN: Conv2D, valid/same padding, stride, MaxPool2D, implicit flatten and Dense head.
@@ -140,9 +140,9 @@ final restored = NeuralNetwork.fromJson(
 ```
 
 Import `dart:convert`. File/network IO belongs to the application. Inference models contain architecture, seed and weights. For optimizer moments
-and progress use the separate [TrainingSession checkpoint](doc/persistence.md). A subsequent `fit` continues from current weights with fresh optimizer
+and progress use the separate [TrainingSession checkpoint](https://github.com/kleberandrade/neural-engine/blob/main/doc/persistence.md). A subsequent `fit` continues from current weights with fresh optimizer
 state and a fresh seeded shuffle sequence. Parameter ordering is documented in
-[architecture](doc/architecture.md).
+[architecture](https://github.com/kleberandrade/neural-engine/blob/main/doc/architecture.md).
 
 ## Runnable examples
 
@@ -160,7 +160,7 @@ dart run example/custom_extensions.dart
 dart run example/checkpoint.dart
 ```
 
-The [Flutter lab](example/flutter_lab/README.md) has separate MLP, SOM, CNN and
+The [Flutter lab](https://github.com/kleberandrade/neural-engine/blob/main/example/flutter_lab/README.md) has separate MLP, SOM, CNN and
 autoencoder tabs, plus a Sequences comparison tab. Train each model and inspect its own curves and visualizations.
 
 ## Limits and roadmap
@@ -180,7 +180,7 @@ Nonfinite updates throw; previously completed batches remain applied.
 Future candidates include selected classical models and expanded recurrent configurations. Each
 addition must include numerical checks, Dart/Flutter examples and a tutorial.
 Allocation/performance improvements and normalization utilities remain useful
-parallel priorities. See the [implemented/planned matrix](doc/models.md#implemented-and-planned).
+parallel priorities. See the [implemented/planned matrix](https://github.com/kleberandrade/neural-engine/blob/main/doc/models.md#implemented-and-planned).
 
 ## Development
 
@@ -192,7 +192,12 @@ dart pub publish --dry-run
 ```
 
 CI checks Dart 3.3 and stable, all CLI examples, JavaScript compilation, and the
-Flutter lab separately. The `v0.2.0` release was published through GitHub Actions
-using OIDC after all release checks passed.
+Flutter lab separately. Stable releases use GitHub Actions with OIDC after the tag/version guard and
+all release checks pass.
 
 MIT © 2026 Kleber Andrade.
+
+Try the Flutter **Checkpoints** tab to save/load JSON and compare resumed training
+with uninterrupted execution. See [benchmarks](https://github.com/kleberandrade/neural-engine/blob/main/doc/benchmarks/README.md),
+[hosted validation](https://github.com/kleberandrade/neural-engine/blob/main/validation/hosted/README.md) and
+[release procedure](https://github.com/kleberandrade/neural-engine/blob/main/doc/releasing.md).

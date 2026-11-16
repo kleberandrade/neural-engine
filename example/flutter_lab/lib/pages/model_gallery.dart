@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'mlp_page.dart';
 import 'model_demo_page.dart';
 import 'sequence_page.dart';
+import 'checkpoint_page.dart';
 import '../data/demo_kind.dart';
 
 class ModelGallery extends StatelessWidget {
   const ModelGallery({super.key});
   @override
   Widget build(BuildContext context) => DefaultTabController(
-      length: 5,
+      length: 6,
       child: Scaffold(
           appBar: AppBar(
               title: const Text('Neural Engine • Model Lab'),
@@ -19,13 +20,15 @@ class ModelGallery extends StatelessWidget {
                 Tab(text: 'SOM'),
                 Tab(text: 'CNN'),
                 Tab(text: 'Autoencoder'),
-                Tab(text: 'Sequences')
+                Tab(text: 'Sequences'),
+                Tab(text: 'Checkpoints')
               ])),
           body: const TabBarView(children: [
             MlpPage(),
             ModelDemo(kind: DemoKind.som),
             ModelDemo(kind: DemoKind.cnn),
             ModelDemo(kind: DemoKind.autoencoder),
-            SequencePage()
+            SequencePage(),
+            CheckpointPage()
           ])));
 }

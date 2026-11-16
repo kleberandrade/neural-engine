@@ -78,3 +78,14 @@ and progress; family model and optimizer decoders validate their payloads when
 restoring. IO and untrusted-file size limits remain application responsibilities.
 SOM inference JSON remains supported, but competitive-learning schedules are not
 an optimizer checkpoint handled by TrainingSession.
+
+## Flutter save/load experiment
+
+The [Checkpoints walkthrough](../example/flutter_lab/README.md#checkpoint-walkthrough)
+trains MLP, CNN, RNN, LSTM or GRU for 40 epochs, exports editable JSON via an
+explicit copy action and restores a new model/session after reopening the app.
+Resuming 60 epochs compares predictions and full Adam/model state with an
+uninterrupted reference. The page reports training loss and checkpoint bytes.
+Save the copied text yourself; clipboard export does not automatically write a
+file. The [hosted consumer](../validation/hosted/README.md) demonstrates real
+Dart file IO and verifies the released pub.dev artifact independently.
