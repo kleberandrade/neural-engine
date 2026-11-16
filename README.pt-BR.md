@@ -23,13 +23,14 @@ sintéticos; a aba Real data acrescenta os datasets locais documentados abaixo. 
 
 ## Treinamento assíncrono (0.4.0)
 
-A versão 0.3.0 inclui isolates no nativo, mini-batches cooperativos
+A versão 0.4.0 acrescenta avaliação incremental, progresso de avaliação separado
+e controles explícitos de pausas. A 0.3.0 introduziu isolates no nativo, mini-batches cooperativos
 na web, progresso e cancelamento com retomada. Veja o
 [guia didático](https://github.com/kleberandrade/neural-engine/blob/main/doc/async_training.pt-BR.md)
 e a aba **Async training** no Flutter. Use a versão 0.3.0 ou mais recente para essas APIs.
 Veja os [exemplos reais](https://github.com/kleberandrade/neural-engine/blob/main/doc/real_world.pt-BR.md),
 [medições](https://github.com/kleberandrade/neural-engine/blob/main/doc/benchmarks/responsiveness.md) e
-[plano da 0.4.0](https://github.com/kleberandrade/neural-engine/blob/main/doc/roadmap_0.4.0.md).
+[entregas da 0.4.0](https://github.com/kleberandrade/neural-engine/blob/main/doc/roadmap_0.4.0.md).
 
 ## Instalação
 
@@ -159,4 +160,4 @@ um treinamento contínuo. Veja as [medições](https://github.com/kleberandrade/
 e a [validação pelo pub.dev](https://github.com/kleberandrade/neural-engine/blob/main/validation/hosted/README.md).
 
 
-0.4.0: [incremental evaluation and scheduling](https://github.com/kleberandrade/neural-engine/blob/main/doc/async_training.md), [measured results and limits](https://github.com/kleberandrade/neural-engine/blob/main/doc/benchmarks/scheduling_0.4.0.md).
+0.4.0: [avaliação incremental e pausas](https://github.com/kleberandrade/neural-engine/blob/main/doc/async_training.pt-BR.md), [medições e limites](https://github.com/kleberandrade/neural-engine/blob/main/doc/benchmarks/scheduling_0.4.0.md).

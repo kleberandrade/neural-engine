@@ -29,13 +29,14 @@ RNN, LSTM and reset-before GRU are implemented as many-to-one models. See
 
 ## Asynchronous training (0.4.0)
 
-Version 0.3.0 adds native isolates, cooperative web batches, epoch
+Version 0.4.0 adds incremental evaluation, a separate evaluation-progress stream
+and explicit scheduling controls. Version 0.3.0 introduced native isolates, cooperative web batches, epoch
 progress and safe cancellation/resume for MLP, CNN and recurrent models.
 See the [async guide](https://github.com/kleberandrade/neural-engine/blob/main/doc/async_training.md)
 and the Flutter **Async training** tab. Use version 0.3.0 or newer for these APIs.
 See [real data examples](https://github.com/kleberandrade/neural-engine/blob/main/doc/real_world.md),
 [responsiveness measurements](https://github.com/kleberandrade/neural-engine/blob/main/doc/benchmarks/responsiveness.md) and the
-[0.4.0 plan](https://github.com/kleberandrade/neural-engine/blob/main/doc/roadmap_0.4.0.md).
+[0.4.0 delivery status](https://github.com/kleberandrade/neural-engine/blob/main/doc/roadmap_0.4.0.md).
 
 ## Install
 
@@ -181,7 +182,7 @@ Train each model and inspect its own curves and visualizations.
 
 This implementation targets small models and educational/embedded app workloads. The default `fit` is synchronous; `AsyncTrainingTask` adds native isolate execution
 and cooperative web batches. Intermediate vectors are still allocated per sample.
-Large browser batches or dataset evaluations remain synchronous units; see the
+One large browser batch, one evaluation block and custom atomic evaluation remain synchronous units; see the
 async guide for scheduling and cancellation limits.
 No GPU, autodiff graph, pretrained model import, ONNX or
 TensorFlow compatibility is provided. CNN supports standard square kernels and

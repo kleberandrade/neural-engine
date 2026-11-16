@@ -126,3 +126,9 @@ Release-app checkpoints match per platform and execution policy. Permanent
 summaries and links to full metadata/traces are in doc/benchmarks. Physical-device
 evidence and optimizer-buffer attribution remain deferred. These remote results
 supersede the earlier push-blocked state above.
+
+
+Publication follow-up: v0.4.0 was published successfully by workflow
+43977287304 at release commit 22ef129. Pub.dev confirms version 0.4.0 under
+kleberandrade.dev. The independent consumer was advanced after upload and now
+exercises the new evaluation stream/options through the exact hosted dependency.

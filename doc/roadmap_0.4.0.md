@@ -1,6 +1,6 @@
 # 0.4.0: scheduling and measured follow-up
 
-Status: implemented and validated; release publication pending. This replaces the
+Status: published as 0.4.0; independent hosted verification follows publication. This replaces the
 original plan with explicit delivery status; incomplete evidence is not a
 completed performance claim. See [measurement protocol and observations](benchmarks/scheduling_0.4.0.md).
 
@@ -21,8 +21,9 @@ completed performance claim. See [measurement protocol and observations](benchma
 2. Allocation and Linux/Chrome release captures passed for implementation commit
    `9e14af7`; reports, metadata/artifact links and limits are archived.
 3. Bilingual guides and v1 checkpoint replay reviewed; source CI dry run passed.
-4. Remaining: publish v0.4.0 through the existing tag/OIDC workflow, then validate the exact
-   hosted artifact independently. Update the hosted consumer only after upload.
+4. Published v0.4.0 through the existing tag/OIDC workflow. The exact hosted
+   consumer was advanced only after confirmed upload; minimum/stable verification
+   follows. See [release record](release_0.4.0.md).
 
 Physical-device evidence, measured buffer optimization and a reusable worker
 lifecycle are explicit follow-ups, not silently delivered features. No new model

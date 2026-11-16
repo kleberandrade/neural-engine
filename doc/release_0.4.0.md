@@ -24,5 +24,21 @@ sample shows additional executor cost; no throughput improvement, optimizer
 buffer optimization, worker pool or physical-phone frame guarantee is claimed.
 The optional duration cannot interrupt one indivisible sample/batch operation.
 
-Publication is pending the final tag workflow. The exact hosted consumer remains
-pinned to 0.3.0 until the new artifact exists publicly.
+## Publication
+
+Published November 16, 2026 under verified publisher `kleberandrade.dev`.
+
+- [Exact hosted artifact](https://pub.dev/packages/neural_engine/versions/0.4.0)
+- [GitHub release](https://github.com/kleberandrade/neural-engine/releases/tag/v0.4.0)
+- [Final source CI](https://github.com/kleberandrade/neural-engine/actions/runs/43976742408)
+- [Successful OIDC publication](https://github.com/kleberandrade/neural-engine/actions/runs/43977287304)
+- Immutable release commit: `22ef1294a14366f5ade2f3c37886a00fcca5026c`.
+
+The independent consumer now pins exactly 0.4.0 and checks its hosted lockfile and
+package root. It verifies all inference/scaler codecs, disk JSON, Adam/SGD,
+automatic/cooperative execution, epoch/evaluation streams, explicit scheduling,
+cancellation and exact checkpoint replay across five supervised model families.
+The post-publication consumer matrix must pass on minimum/stable SDKs; it never
+uses a path override or changes the tagged artifact.
+
+![Published 0.4.0 and verified publisher](releases/neural_engine_0.4.0_published.jpg)
