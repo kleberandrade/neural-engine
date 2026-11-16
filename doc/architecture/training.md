@@ -43,3 +43,12 @@ JSON compatibility and best-validation-weight restoration.
 Synthetic convergence examples are checks of numerical behavior, not evidence
 of real-world generalization. Benchmarks report workloads and environment; model
 families have different parameter counts and compute costs.
+
+## Continuing a session
+
+TrainingSession injects retained optimizer state and an absolute epoch offset into
+the same trainer. Its per-epoch shuffle is reproducible across checkpoint
+boundaries; ordinary fit retains its existing fresh-run behavior. Sessions use
+fixed epochs, with no silent reuse of early-stopping weights and mismatched
+optimizer moments. A failed session must restore a previous valid checkpoint.
+See [persistence](../persistence.md) for exact-replay requirements.

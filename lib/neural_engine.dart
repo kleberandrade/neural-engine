@@ -41,3 +41,8 @@ export 'src/models/recurrent/recurrent_network.dart';
 export 'src/models/recurrent/cells/simple_rnn_cell.dart';
 export 'src/models/recurrent/cells/lstm_cell.dart';
 export 'src/models/recurrent/cells/gru_cell.dart';
+
+export 'src/optimizers/checkpoint_optimizer.dart';
+export 'src/persistence/optimizer_codec.dart';
+export 'src/persistence/training_checkpoint.dart';
+export 'src/training/training_session.dart';

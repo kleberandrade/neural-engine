@@ -4,6 +4,12 @@
 
 ## 0.2.0
 
+- Validate extensibility with an independent public-API consumer: Huber loss, momentum optimizer and a custom linear model.
+- Persist fitted StandardScaler/MinMaxScaler statistics with validated versioned JSON.
+- Add fixed-epoch TrainingSession checkpoints, Adam moments/step, SGD state and deterministic epoch continuation.
+- Support application-owned model/optimizer checkpoint decoders and reject malformed extension boundary results.
+- Add cross-family exact replay tests and bilingual extension/persistence guides.
+
 - Reorganize source into contracts, layers, family executors, training, metrics and preprocessing modules; keep the public package import stable.
 - Add an architecture source map, class/dependency diagrams, numerical contracts and JSON layout documentation.
 - Share mini-batch training across Dense, CNN and recurrent models, including CNN validation/early stopping and optional global-norm clipping.

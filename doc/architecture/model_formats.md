@@ -1,6 +1,7 @@
 # Model formats and parameter ordering
 
-All model JSON is versioned inference data, not a resumable optimizer checkpoint.
+Model JSON is versioned inference data. Training checkpoints and scaler formats
+are separate versioned artifacts; see [persistence](../persistence.md).
 Use the matching family factory. Applications own IO and file-size/resource limits
 when accepting untrusted model files.
 
@@ -23,6 +24,8 @@ Older Dense, SOM and CNN version-1 model payloads remain loadable after the fold
 refactor. The public package import remains stable; internal source imports are
 unsupported and changed locations.
 
-StandardScaler/MinMaxScaler fitted statistics must be saved alongside a model by
-the application when deployment needs the same preprocessing; model JSON does not
-silently fit or embed a scaler. Do not refit against production/test inputs.
+StandardScaler/MinMaxScaler provide their own JSON codecs; save them alongside the
+model when deployment needs the same preprocessing. Model JSON does not silently
+fit/embed scalers. TrainingCheckpoint contains model, optimizer config/state, seed
+and completed session epochs. Adam/SGD codecs validate state dimensions and finite
+moments. The dataset/loss/settings remain explicit caller responsibilities.

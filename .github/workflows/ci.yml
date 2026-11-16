@@ -4,6 +4,7 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+  workflow_call:
 permissions:
   contents: read
 jobs:
@@ -18,6 +19,12 @@ jobs:
         with:
           sdk: ${{ matrix.sdk }}
       - run: dart pub get
+      - run: dart pub get
+        working-directory: example/extensions
+      - run: dart analyze --fatal-infos
+        working-directory: example/extensions
+      - run: dart run main.dart
+        working-directory: example/extensions
       - run: dart format --output=none --set-exit-if-changed lib test example benchmark
         if: matrix.sdk == 'stable'
       - run: dart analyze --fatal-infos
@@ -30,6 +37,8 @@ jobs:
       - run: dart run example/autoencoder.dart
       - run: dart run example/recurrent_sequences.dart
       - run: dart run example/evaluation.dart
+      - run: dart run example/custom_extensions.dart
+      - run: dart run example/checkpoint.dart
       - run: dart compile js example/neural_engine_example.dart -o /tmp/neural_engine.js
       - run: dart compile js example/som_colors.dart -o /tmp/som.js
       - run: dart compile js example/cnn_bars.dart -o /tmp/cnn.js
@@ -39,6 +48,10 @@ jobs:
       - run: node /tmp/autoencoder.js
       - run: dart compile js example/recurrent_sequences.dart -o /tmp/recurrent.js
       - run: node /tmp/recurrent.js
+      - run: dart compile js example/checkpoint.dart -o /tmp/checkpoint.js
+      - run: node /tmp/checkpoint.js
+      - run: dart compile js example/custom_extensions.dart -o /tmp/extensions.js
+      - run: node /tmp/extensions.js
       - run: dart pub publish --dry-run
         if: matrix.sdk == 'stable'
   flutter:

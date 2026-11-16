@@ -8,7 +8,7 @@ Kohonen self-organizing maps, trainable 2D CNNs and dense autoencoder examples.
 Train locally and export versioned JSON models. No runtime dependencies, Flutter imports, native bindings
 or network access in the core.
 
-[Architecture and diagrams](doc/architecture.md) · [Sequence models](doc/recurrent.md) · [Evaluation](doc/evaluation.md) · [Model tutorials](doc/models.md) · [Guia didático](doc/models.pt-BR.md) · [Português](README.pt-BR.md) · [Concepts and architecture](doc/architecture.md) · [Flutter lab](example/flutter_lab/README.md) · [Contributing](CONTRIBUTING.md)
+[Extension contracts](doc/extending.md) · [Persistence/checkpoints](doc/persistence.md) · [Architecture and diagrams](doc/architecture.md) · [Sequence models](doc/recurrent.md) · [Evaluation](doc/evaluation.md) · [Model tutorials](doc/models.md) · [Guia didático](doc/models.pt-BR.md) · [Português](README.pt-BR.md) · [Concepts and architecture](doc/architecture.md) · [Flutter lab](example/flutter_lab/README.md) · [Contributing](CONTRIBUTING.md)
 
 **Source version:** 0.2.0. See the [release preparation](doc/release_0.2.0.md). Publication remains a manual step.
 
@@ -75,6 +75,9 @@ These packages have independent cores.
 
 ## Features
 
+- Fitted scaler JSON and fixed-epoch training checkpoints with Adam/SGD state.
+- Independent external consumer validating custom models, losses and optimizers.
+
 - Explicit model/trainer contracts and documented source/class architecture.
 - RNN, LSTM and GRU cells with full BPTT, isolated state and JSON models.
 - Training-only normalization, classification/regression metrics and reproducible [workload measurements](doc/benchmarks/README.md).
@@ -139,9 +142,8 @@ final restored = NeuralNetwork.fromJson(
 );
 ```
 
-Import `dart:convert`. File/network IO belongs to the application. Models contain
-architecture, seed and weights; optimizer moments and training progress are not
-saved. A subsequent `fit` continues from current weights with fresh optimizer
+Import `dart:convert`. File/network IO belongs to the application. Inference models contain architecture, seed and weights. For optimizer moments
+and progress use the separate [TrainingSession checkpoint](doc/persistence.md). A subsequent `fit` continues from current weights with fresh optimizer
 state and a fresh seeded shuffle sequence. Parameter ordering is documented in
 [architecture](doc/architecture.md).
 
@@ -157,6 +159,8 @@ dart run example/cnn_bars.dart
 dart run example/autoencoder.dart
 dart run example/recurrent_sequences.dart
 dart run example/evaluation.dart
+dart run example/custom_extensions.dart
+dart run example/checkpoint.dart
 ```
 
 The [Flutter lab](example/flutter_lab/README.md) has separate MLP, SOM, CNN and

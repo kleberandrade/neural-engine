@@ -21,6 +21,8 @@ dart run example/cnn_bars.dart
 dart run example/autoencoder.dart
 dart run example/recurrent_sequences.dart
 dart run example/evaluation.dart
+dart run example/custom_extensions.dart
+dart run example/checkpoint.dart
 dart compile js example/neural_engine_example.dart -o /tmp/neural_engine.js
 dart pub publish --dry-run
 ```
@@ -34,3 +36,7 @@ CI. Confirm the version has not been published. First publish uses the verified
 kleberandrade.dev publisher through the usual authorized pub.dev flow. This
 repository does not publish automatically on push or tag. Create a release tag
 only for a reviewed release, never just to test automation.
+
+Validate `example/extensions` as its own package (`dart pub get`, `dart analyze`,
+`dart run main.dart`). It must never import lib/src. Checkpoint changes need
+continuous-versus-split replay tests comparing weights and optimizer state.

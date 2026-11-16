@@ -1,13 +1,32 @@
 import 'dart:math' as math;
 import 'feature_transform.dart';
+import '../contracts/json_model.dart';
+import '../persistence/json_validation.dart';
 
 /// Maps training min/max to 0/1 without clipping held-out values.
-class MinMaxScaler implements FeatureTransform {
+class MinMaxScaler implements FeatureTransform, JsonModel {
   final List<double> minima;
   final List<double> ranges;
   MinMaxScaler._(List<double> minima, List<double> ranges)
       : minima = List.unmodifiable(minima),
         ranges = List.unmodifiable(ranges);
+
+  /// Restores fitted training statistics without fitting on new observations.
+  factory MinMaxScaler.fromJson(Map<String, dynamic> json) {
+    requireFormat(json, 'neural_engine_min_max_scaler');
+    final first = finiteVector(json['minima']);
+    final second =
+        finiteVector(json['ranges'], length: first.length, positive: true);
+    return MinMaxScaler._(first, second);
+  }
+  @override
+  Map<String, Object?> toJson() => {
+        'format': 'neural_engine_min_max_scaler',
+        'version': 1,
+        'minima': List<double>.of(minima),
+        'ranges': List<double>.of(ranges)
+      };
+
   factory MinMaxScaler.fit(List<List<double>> training) {
     if (training.isEmpty || training.first.isEmpty) {
       throw ArgumentError('Empty training data.');

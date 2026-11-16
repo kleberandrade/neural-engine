@@ -1,6 +1,8 @@
 # 0.2.0 release preparation
 
-Source version 0.2.0 groups the architecture refactor and model/evaluation features.
+Source version 0.2.0 groups the architecture refactor, model/evaluation features,
+external contract validation and resumable persistence. Version 0.1.0 is already
+published; 0.2.0 must be published as a new version.
 This document prepares a manual release; it does not imply a pub.dev publication.
 
 ## API review
@@ -11,6 +13,9 @@ This document prepares a manual release; it does not imply a pub.dev publication
 - CNN adds optional validation, patience, minDelta and gradient clipping arguments.
 - Recurrent models are many-to-one with zero state per sequence, full BPTT and reset-before GRU.
 - No unimplemented family is presented as available.
+- Fitted scalers have validated v1 JSON codecs.
+- TrainingSession preserves Adam/SGD state across fixed-epoch checkpoints.
+- Independent consumer exercises custom model/loss/optimizer and codecs.
 - Core still has no runtime dependencies or Flutter imports.
 
 ## Verification before publication
@@ -28,6 +33,8 @@ dart run example/cnn_bars.dart
 dart run example/autoencoder.dart
 dart run example/recurrent_sequences.dart
 dart run example/evaluation.dart
+dart run example/custom_extensions.dart
+dart run example/checkpoint.dart
 dart doc
 dart pub publish --dry-run
 ```
@@ -45,5 +52,10 @@ before publishing. Do not overwrite an already published version.
 After a reviewed successful dry-run, the maintainer can publish through the
 normal authorized `dart pub publish` flow and associate the verified publisher.
 Only after confirming the published artifact should release metadata and
-installation instructions be updated to that hosted version. This task prepares
-the source and checks; no automatic publish/tag workflow is enabled.
+installation instructions be updated to that hosted version. The tag-scoped `.github/workflows/publish.yml` is prepared for `v0.2.0`, after the
+full reusable CI succeeds. It uses the Dart-maintained publishing workflow and
+OIDC. Pub.dev automated publishing is a separate administrative permission and
+must be explicitly enabled for `kleberandrade/neural-engine` and `v{{version}}`
+before creating the release tag. Until then, use the authorized manual CLI flow.
+Never place a personal Pub token in Git or workflow source. Transfer the package
+to verified publisher `kleberandrade.dev` as requested and verify package ownership.

@@ -119,3 +119,22 @@ classDiagram
 Class names refer to Dart types. Free numerical functions `spatialForward` and
 `spatialBackward` are intentionally described in the structure/training documents,
 not invented as classes in this diagram. SOM is not a DifferentiableModel.
+
+
+## Optional persistence contracts
+
+```mermaid
+classDiagram
+  direction TB
+  Optimizer <|-- CheckpointOptimizer
+  OptimizerState <|-- CheckpointOptimizerState
+  CheckpointOptimizer <|.. Adam
+  CheckpointOptimizer <|.. SGD
+  TrainingSession --> MiniBatchTrainer
+  TrainingSession --> CheckpointOptimizer
+  TrainingSession --> CheckpointOptimizerState
+  TrainingSession --> TrainingCheckpoint
+```
+
+A custom plain Optimizer remains usable without implementing checkpoint support.
+TrainingSession.restore accepts explicit application-owned model/optimizer decoders.

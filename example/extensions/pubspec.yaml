@@ -1,0 +1,10 @@
+name: neural_engine_extension_consumer
+description: Independent consumer of neural_engine public contracts.
+publish_to: none
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+dependencies:
+  neural_engine:
+    path: ../..
+dev_dependencies:
+  lints: '>=3.0.0 <7.0.0'

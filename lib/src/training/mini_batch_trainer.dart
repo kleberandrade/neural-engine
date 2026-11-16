@@ -9,6 +9,9 @@ class MiniBatchTrainer<I> {
   TrainingHistory fit({
     required DifferentiableModel<I> model,
     int? seed,
+    OptimizerState? optimizerState,
+    int epochOffset = 0,
+    bool epochSeededShuffle = false,
     double? maxGradientNorm,
     required List<I> inputs,
     required List<List<double>> targets,
@@ -22,7 +25,9 @@ class MiniBatchTrainer<I> {
     int? patience,
     double minDelta = 0,
   }) {
-    if ((maxGradientNorm != null &&
+    if (epochOffset < 0 ||
+        (epochSeededShuffle && seed == null) ||
+        (maxGradientNorm != null &&
             (!maxGradientNorm.isFinite || maxGradientNorm <= 0)) ||
         epochs <= 0 ||
         batchSize <= 0 ||
@@ -34,15 +39,15 @@ class MiniBatchTrainer<I> {
       throw ArgumentError('Invalid training or validation configuration.');
     }
     // Validate complete datasets before any weight updates.
-    model.evaluate(inputs: inputs, targets: targets, loss: loss);
+    _finiteLoss(model.evaluate(inputs: inputs, targets: targets, loss: loss));
     if (validationInputs != null) {
-      model.evaluate(
+      _finiteLoss(model.evaluate(
         inputs: validationInputs,
         targets: validationTargets!,
         loss: loss,
-      );
+      ));
     }
-    final state = optimizer.createState(model.parameterCount);
+    final state = optimizerState ?? optimizer.createState(model.parameterCount);
     final random = math.Random(seed);
     final order = List.generate(inputs.length, (i) => i);
     final losses = <double>[];
@@ -53,7 +58,17 @@ class MiniBatchTrainer<I> {
     var stale = 0;
     var stopped = false;
     for (var epoch = 0; epoch < epochs; epoch++) {
-      if (shuffle) order.shuffle(random);
+      if (epochSeededShuffle) {
+        for (var i = 0; i < order.length; i++) {
+          order[i] = i;
+        }
+        if (shuffle) {
+          order.shuffle(math.Random(
+              (seed! + (epochOffset + epoch) * 0x9e3779b9) & 0x7fffffff));
+        }
+      } else if (shuffle) {
+        order.shuffle(random);
+      }
       for (var start = 0; start < order.length; start += batchSize) {
         final end = math.min(start + batchSize, order.length);
         final average = List<double>.filled(model.parameterCount, 0);
@@ -98,13 +113,14 @@ class MiniBatchTrainer<I> {
         }
         model.parameters = candidate;
       }
-      losses.add(model.evaluate(inputs: inputs, targets: targets, loss: loss));
+      losses.add(_finiteLoss(
+          model.evaluate(inputs: inputs, targets: targets, loss: loss)));
       if (validationInputs != null) {
-        final value = model.evaluate(
+        final value = _finiteLoss(model.evaluate(
           inputs: validationInputs,
           targets: validationTargets!,
           loss: loss,
-        );
+        ));
         validationLosses.add(value);
         if (value < best - minDelta) {
           best = value;
@@ -130,4 +146,11 @@ class MiniBatchTrainer<I> {
       bestEpoch: bestEpoch,
     );
   }
+}
+
+double _finiteLoss(double value) {
+  if (!value.isFinite) {
+    throw StateError('Model evaluation must return a finite loss.');
+  }
+  return value;
 }

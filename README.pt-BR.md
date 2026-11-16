@@ -4,7 +4,7 @@ Redes neurais em Dart puro para aplicativos Flutter e serviços Dart. Treine
 MLPs e CNNs com backpropagation, SGD ou Adam, organize dados com SOM de Kohonen
 e explore autoencoders densos. Exporte modelos em JSON versionado. Núcleo sem dependências de execução.
 
-[Arquitetura, estrutura e diagramas](doc/architecture.md) · [RNN/LSTM/GRU](doc/recurrent.pt-BR.md) · [Métricas e normalização](doc/evaluation.pt-BR.md) · [Guia didático dos modelos](doc/models.pt-BR.md) · [English](README.md) · [Arquitetura](doc/architecture.md) · [Laboratório Flutter](example/flutter_lab/README.md)
+[Extensibilidade](doc/extending.pt-BR.md) · [Persistência e checkpoints](doc/persistence.pt-BR.md) · [Arquitetura, estrutura e diagramas](doc/architecture.md) · [RNN/LSTM/GRU](doc/recurrent.pt-BR.md) · [Métricas e normalização](doc/evaluation.pt-BR.md) · [Guia didático dos modelos](doc/models.pt-BR.md) · [English](README.md) · [Arquitetura](doc/architecture.md) · [Laboratório Flutter](example/flutter_lab/README.md)
 
 **Versão do código-fonte:** 0.2.0. Veja a [preparação da release](doc/release_0.2.0.md). Publicação é uma etapa manual.
 
@@ -62,6 +62,9 @@ void main() {
 
 ## Recursos
 
+- JSON dos normalizadores e checkpoints de sessão com estado de Adam/SGD.
+- Consumidor independente validando modelo, perda e otimizador customizados.
+
 - Contratos de modelo/treinador e estrutura documentada com diagramas de classes.
 - RNN, LSTM e GRU com BPTT completo, estado isolado e JSON.
 - Normalização ajustada no treino, métricas e [medições locais reproduzíveis](doc/benchmarks/README.md).
@@ -94,8 +97,8 @@ restaura os pesos da melhor época qualificada, mesmo ao atingir o limite de
 épocas. `bestEpoch` começa em 1. O histórico mantém todas as épocas executadas.
 
 `toJson()` produz o modelo; `NeuralNetwork.fromJson(...)` restaura arquitetura e
-pesos. Use `dart:convert` para codificar/decodificar. O formato não contém momentos
-do Adam ou progresso de treinamento. Cada chamada a `fit` reinicia o estado do
+pesos. Use `dart:convert` para codificar/decodificar. O JSON de inferência não contém momentos do Adam; use
+[checkpoints de TrainingSession](doc/persistence.pt-BR.md) para retomar sessões. Cada chamada a `fit` reinicia o estado do
 otimizador e a sequência de embaralhamento a partir da seed.
 
 ## Exemplos e validação
@@ -110,6 +113,8 @@ dart run example/cnn_bars.dart
 dart run example/autoencoder.dart
 dart run example/recurrent_sequences.dart
 dart run example/evaluation.dart
+dart run example/custom_extensions.dart
+dart run example/checkpoint.dart
 dart analyze --fatal-infos
 dart test
 ```

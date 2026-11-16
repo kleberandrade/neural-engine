@@ -68,3 +68,18 @@ CI follow-up: both Dart jobs passed, including minimum SDK, JavaScript examples
 and publish dry-run. Four of five Flutter tests passed; the drawing action was
 built in the sliver cache but outside the viewport. The test now scrolls until
 the actual button is hit-testable before sending the pointer event.
+
+## Extensibility and persistence completion
+
+An independent Dart consumer now supplies a Huber loss, momentum optimizer and
+linear model through public contracts, including custom checkpoint codecs.
+Fitted scaler JSON restores training statistics without refitting. TrainingSession
+retains Adam/SGD state and uses absolute-epoch shuffles, with checkpoints only at
+completed fit boundaries. Fixed-epoch sessions intentionally do not combine
+best-weight early stopping with newer optimizer moments.
+
+55 public tests pass locally, including exact full/split replay across Dense,
+CNN and all three recurrent variants for Adam/SGD, malformed state rejection,
+immutable snapshots and invalid custom model/optimizer boundaries. External
+consumer analysis and execution also pass independently. Pub.dev currently has
+0.1.0 under the user's uploader identity; 0.2.0 remains the release target.

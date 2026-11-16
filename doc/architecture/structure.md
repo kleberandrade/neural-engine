@@ -13,13 +13,14 @@ is under `lib/src`; its classes are exported selectively through the public
 | `lib/src/tensors/` | Immutable ImageTensor, HWC indexing | No model dependency |
 | `lib/src/losses/` | Loss interface; MSE, binary/ categorical CE in separate files | No trainer/model dependency |
 | `lib/src/optimizers/` | Optimizer/OptimizerState contracts; SGD, Adam | Flat vectors, no model dependency |
-| `lib/src/training/` | MiniBatchTrainer, TrainingHistory | Depends on model contract, not concrete family |
+| `lib/src/training/` | MiniBatchTrainer, TrainingHistory, TrainingSession | Depends on model contract, not concrete family |
 | `lib/src/models/dense/` | NeuralNetwork facade, DenseExecution, DensePass/derivatives | Numerical passes separate from lifecycle |
 | `lib/src/models/cnn/` | ConvolutionalNetwork, SpatialStage/Pass, separate forward/backward functions | Composes dense head and spatial passes |
 | `lib/src/models/som/` | SelfOrganizingMap, SomMatch, SomHistory | Competitive learning independent of supervised trainer |
 | `lib/src/models/recurrent/` | RecurrentNetwork, RecurrentCell interface, state/step/derivative types, kind | Sequence composition and BPTT |
 | `lib/src/models/recurrent/cells/` | SimpleRnnCell, LstmCell, GruCell, CellWeights | One transition implementation per file; affine helper shared |
 | `lib/src/preprocessing/` | FeatureTransform, StandardScaler, MinMaxScaler | Fit on training samples only |
+| `lib/src/persistence/` | TrainingCheckpoint, OptimizerCodec and boundary validation | IO stays in applications |
 | `lib/src/metrics/` | ClassificationMetrics, RegressionMetrics | Reporting, separate from optimization loss |
 | `test/` | Public behavior, finite differences, fixtures | Imports public library, not private implementation |
 | `example/` | Runnable Dart walkthroughs | Synthetic data, convergence checks |

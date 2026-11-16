@@ -1,13 +1,32 @@
 import 'dart:math' as math;
 import 'feature_transform.dart';
+import '../contracts/json_model.dart';
+import '../persistence/json_validation.dart';
 
 /// Population mean/std fitted with Welford's algorithm; constant scales are 1.
-class StandardScaler implements FeatureTransform {
+class StandardScaler implements FeatureTransform, JsonModel {
   final List<double> means;
   final List<double> scales;
   StandardScaler._(List<double> means, List<double> scales)
       : means = List.unmodifiable(means),
         scales = List.unmodifiable(scales);
+
+  /// Restores fitted training statistics without fitting on new observations.
+  factory StandardScaler.fromJson(Map<String, dynamic> json) {
+    requireFormat(json, 'neural_engine_standard_scaler');
+    final first = finiteVector(json['means']);
+    final second =
+        finiteVector(json['scales'], length: first.length, positive: true);
+    return StandardScaler._(first, second);
+  }
+  @override
+  Map<String, Object?> toJson() => {
+        'format': 'neural_engine_standard_scaler',
+        'version': 1,
+        'means': List<double>.of(means),
+        'scales': List<double>.of(scales)
+      };
+
   factory StandardScaler.fit(List<List<double>> training) {
     if (training.isEmpty || training.first.isEmpty) {
       throw ArgumentError('Empty training data.');
