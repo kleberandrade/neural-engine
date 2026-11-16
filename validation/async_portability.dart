@@ -19,19 +19,39 @@ Future<void> check<I>(AsyncDemoRecipe recipe,
       epochs: 3,
       batchSize: recipe.batchSize,
       maxGradientNorm: 1);
-  final async =
-      await AsyncTrainingTask.start(recipe.request(recipe.initial, 3)).result;
-  if (jsonEncode(sync.checkpoint().toJson()) !=
-      jsonEncode(async.checkpoint.toJson())) {
-    throw StateError('${recipe.family}: asynchronous training diverged.');
+  for (final frequency in [1, 4, 16]) {
+    final task = AsyncTrainingTask.start(recipe.request(recipe.initial, 3,
+        batchesPerYield: frequency,
+        evaluationSamplesPerYield: 1,
+        maxWorkDuration:
+            frequency == 16 ? const Duration(milliseconds: 2) : null));
+    final evaluations = <EvaluationProgress>[];
+    final subscription = task.evaluationProgress.listen(evaluations.add);
+    final result = await task.result;
+    await subscription.cancel();
+    if (jsonEncode(sync.checkpoint().toJson()) !=
+        jsonEncode(result.checkpoint.toJson())) {
+      throw StateError('${recipe.family}: policy $frequency diverged.');
+    }
+    if (evaluations.isEmpty ||
+        evaluations.any((e) => !e.incremental) ||
+        !evaluations.any((e) => e.phase == TrainingPhase.trainingPreflight) ||
+        !evaluations
+            .any((e) => e.phase == TrainingPhase.validationEvaluation) ||
+        evaluations.any(
+            (e) => e.samplesCompleted < e.totalSamples && e.loss != null)) {
+      throw StateError(
+          '${recipe.family}: invalid incremental progress transport.');
+    }
+    if (recipe
+        .predictions(result.checkpoint)
+        .expand((v) => v)
+        .any((v) => !v.isFinite)) {
+      throw StateError('Nonfinite prediction.');
+    }
   }
-  if (recipe
-      .predictions(async.checkpoint)
-      .expand((v) => v)
-      .any((v) => !v.isFinite)) {
-    throw StateError('Nonfinite prediction.');
-  }
-  print('${recipe.family}: exact synchronous/automatic checkpoint equality');
+  print(
+      '${recipe.family}: exact synchronous/automatic checkpoint equality across yield policies');
 }
 
 Future<void> main() async {

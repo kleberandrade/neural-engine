@@ -1,26 +1,30 @@
-# 0.4.0 plan: scheduling and measured allocation work
+# 0.4.0: scheduling and measured follow-up
 
-Status: planned, not implemented in 0.3.0. The scope follows the
-[responsiveness protocol/results](benchmarks/responsiveness.md), current executor
-boundaries and the [real-data examples](real_world.md), rather than adding models.
+Status: implemented locally, validation/publication pending. This replaces the
+original plan with explicit delivery status; incomplete evidence is not a
+completed performance claim. See [measurement protocol and observations](benchmarks/scheduling_0.4.0.md).
 
-| Priority | Evidence / reason | Proposed work | Acceptance check |
-| --- | --- | --- | --- |
-| P1 | Within Chrome, batch 8 reduced CNN wall time but increased observed timer lag relative to batch 1; changing batches also changes math | Hold batch size fixed and vary batchesPerYield before proposing an explicit scheduling budget | Identical weights/moments for every yield frequency; archive wall time and event-loop observations with sample counts |
-| P1 | Browser batches yield, but dataset validation/evaluation still execute as full units | Incremental, chunked evaluation using explicit progress steps | Identical losses and checkpoints on each runtime; browser timer/input opportunity between chunks; cancellation never reports a partial epoch |
-| P1 | Timers/RSS are proxies and do not expose allocation sites or physical frame jank | Capture allocation profiles and real Flutter integration traces on a named device plus Chrome release build | Archive exact build, hardware, dataset, profile method and raw measurements; report frame percentiles separately from event-loop delays |
-| P2 | Every batch builds gradient/candidate vectors in the shared executor; actual allocation dominance remains unmeasured | Profile first, then reuse buffers at measured hot sites | No public aliasing of reused buffers; all finite-difference and exact-replay tests pass; compare allocated bytes and throughput using equal workloads with independent warmups |
-| P2 | Tiny native workloads show visible isolate startup/transport cost | Measure dataset transfer and investigate a reusable worker lifecycle | Keep automatic native behavior explicit; no hidden size-based heuristic; test worker shutdown, repeated jobs, errors and cancellation |
-| P2 | 1 ms timer samples can be absent for short jobs, and memory sampling misses peaks | Broaden workloads and repeats; separate startup vs steady state | Record sample counts, build mode, units and memory metric; avoid percentile claims from insufficient samples |
-| P3 | The fixed GRU recipe loses to both temporal baselines | Add a new validation-led forecasting experiment, preserving the current reference example | Define selection protocol before new test evaluation; compare rolling/recursive modes explicitly; never tune the published 1959–1960 test |
+| Priority | Work | Status / acceptance |
+| --- | --- | --- |
+| P1 | Hold batch size fixed while varying yield frequency | Implemented. CNN/GRU, 3 repetitions, ten policies/family combinations; all complete checkpoints match in the local native report. Flutter native/Chrome CI capture pending. |
+| P1 | Incremental preflight and training/validation evaluation | Implemented. Optional SampleLossModel, typed steps, ordered sum then one division, separate evaluation stream; custom reductions retain atomic fallback. Tests cover all supervised families, cancellation and complete optimizer state. |
+| P1 | Explicit optional scheduling budget | Implemented between indivisible units; defaults unchanged. A budget cannot impose a hard frame deadline. |
+| P1 | Actual release frame traces and allocation profiles | Collectors/workflow implemented; successful CI evidence pending. Native FrameTiming and Chrome traces are separate from timer observations. Physical-device capture remains outstanding. |
+| P2 | Profile before reusing buffers | No buffer reuse shipped. Baseline/current allocation capture must succeed before selecting measured sites or changing extension ownership contracts. |
+| P2 | Broader workloads/repetitions | Implemented fixed-batch CNN/GRU matrix with sample counts, units and checkpoint equality; no universal performance claim. |
+| P2 | Startup/transfer study and reusable workers | Deferred. Fresh-isolate lifecycle stays explicit; port cleanup/error/cancellation tests remain. No pool or automatic crossover heuristic. |
+| P3 | Validation-led forecasting, preserving the reference test | Implemented separate four-candidate experiment, rolling vs recursive validation and matching baselines. Published 1959–1960 test excluded; selected GRU still loses to seasonal validation baselines. No new test/generalization claim. |
 
-## Proposed order
+## Release gates
 
-1. Establish device/release-build traces and allocation baseline.
-2. Measure yield frequency at fixed batch size, then introduce incremental evaluation without changing arithmetic order or replay.
-3. Optimize only measured allocation hot spots and retest all model families.
-4. Re-run the same workloads and publish before/after observations with limits.
+1. Pass minimum/stable Dart, compiled JavaScript and Flutter interaction checks.
+2. Capture successful allocation and native/Chrome release-frame CI results on
+   the final source and archive metadata/raw reports with their limits.
+3. Review bilingual guides, pub.dev dry run and v1 checkpoint compatibility.
+4. Publish v0.4.0 through the existing tag/OIDC workflow, then validate the exact
+   hosted artifact independently. Update the hosted consumer only after upload.
 
-No new model family, GPU support, web workers, new checkpoint version or automatic
-best-weight restoration is promised in this release plan. Such API choices need
-separate design evidence. Existing v1 checkpoints must remain readable.
+Physical-device evidence, measured buffer optimization and a reusable worker
+lifecycle are explicit follow-ups, not silently delivered features. No new model
+family, GPU support, Web Worker, checkpoint format or session early stopping is
+introduced.

@@ -1,0 +1,81 @@
+{
+  "protocolVersion": 1,
+  "trainTargets": 84,
+  "validationTargets": 24,
+  "trainEnd": "1956-12",
+  "validationEnd": "1958-12",
+  "testEvaluated": false,
+  "selection": "Minimum rolling validation MAE; stable candidate order breaks ties. Recursive scores are diagnostic only.",
+  "selectedCandidateIndex": 3,
+  "candidates": [
+    {
+      "hidden": 4,
+      "epochs": 40,
+      "rollingValidation": {
+        "maeThousands": 40.07630741826741,
+        "rmseThousands": 54.79700993114983
+      },
+      "recursiveValidation": {
+        "maeThousands": 50.05071952874135,
+        "rmseThousands": 71.52989109047161
+      }
+    },
+    {
+      "hidden": 4,
+      "epochs": 100,
+      "rollingValidation": {
+        "maeThousands": 27.907048293260715,
+        "rmseThousands": 31.61292832459748
+      },
+      "recursiveValidation": {
+        "maeThousands": 43.39254954906689,
+        "rmseThousands": 49.304481090059745
+      }
+    },
+    {
+      "hidden": 8,
+      "epochs": 40,
+      "rollingValidation": {
+        "maeThousands": 30.75756086456306,
+        "rmseThousands": 38.916285280837876
+      },
+      "recursiveValidation": {
+        "maeThousands": 43.01646197852036,
+        "rmseThousands": 62.664705414777266
+      }
+    },
+    {
+      "hidden": 8,
+      "epochs": 100,
+      "rollingValidation": {
+        "maeThousands": 27.25088825357955,
+        "rmseThousands": 35.87494219712376
+      },
+      "recursiveValidation": {
+        "maeThousands": 49.2698381322978,
+        "rmseThousands": 62.08322862414553
+      }
+    }
+  ],
+  "baselines": {
+    "rollingPreviousMonth": {
+      "maeThousands": 35.875,
+      "rmseThousands": 43.983424908329575
+    },
+    "rollingPreviousYear": {
+      "maeThousands": 26.375,
+      "rmseThousands": 31.698448963106486
+    },
+    "recursiveLastMonth": {
+      "maeThousands": 69.20833333333333,
+      "rmseThousands": 90.58168505093437
+    },
+    "recursiveSeasonalCycle": {
+      "maeThousands": 46.458333333333336,
+      "rmseThousands": 49.25740215101347
+    }
+  },
+  "note": "Candidate selection uses validation; these scores are not an unbiased test estimate. The previously published 1959-1960 test is excluded. No claim of improved generalization.",
+  "runtime": "Dart 3.11.5 stable, macOS arm64",
+  "recordedDate": "2026-11-16"
+}

@@ -76,3 +76,29 @@ small floating-point differences. No real-time forecasting service is involved.
 
 A cancelled run does not evaluate the reserved test partition. These examples
 intentionally do not assert that a neural model must beat the baseline in CI.
+
+
+## Validation-led forecasting experiment (0.4.0)
+
+Run `dart run example/forecast_validation.dart`. The
+[protocol fixed before the run](benchmarks/forecast-validation-protocol.txt)
+compares four GRU candidates: hidden size 4 or 8, trained for 40 or 100 epochs.
+All use seed 42, Adam 0.01, batch 12, clipping 1, chronological order and the
+same training-only log scaler. Training ends December 1956; selection uses
+January 1957–December 1958 rolling validation MAE. Stable candidate order breaks
+ties. Recursive validation scores are diagnostic and cannot change the ranking.
+
+The parser takes only the first 120 observations. It never parses or evaluates
+the previously published 1959–1960 test. Rolling forecasts append an observed
+month after predicting it; recursive forecasts append predictions from December
+1956 onward. Baselines use the same information: observed previous month/year
+for rolling, repeated last month/last seasonal cycle for recursive forecasting.
+
+[Recorded validation results](benchmarks/forecast-validation-native.json) select
+8 hidden units and 100 epochs, with rolling MAE **27.25 thousand**, compared with
+**26.38** for the seasonal baseline. Recursive MAE is **49.27 thousand**, compared
+with **46.46** for the repeated seasonal cycle. Selection did not beat either
+seasonal baseline. These are validation scores used for selection, not a new
+unbiased test estimate. The earlier fixed reference example and its negative
+1959–1960 result remain unchanged. A generalization claim needs new independent
+data and a separately fixed evaluation protocol.

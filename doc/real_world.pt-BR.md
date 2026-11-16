@@ -73,3 +73,19 @@ Os testes verificam dados CSV espelhados, identidades sem sobreposição, scaler
 ajustado só com treino, janelas causais e baselines conhecidos. Um cancelamento
 não gera relatório do teste. O CI não exige que a rede supere o baseline. Para
 novos experimentos, defina o protocolo e a receita antes de consultar seu teste.
+
+
+## Seleção por validação (0.4.0)
+
+Execute `dart run example/forecast_validation.dart`. O experimento separado
+compara GRUs de 4/8 unidades e 40/100 épocas, com configuração fixa, treino até
+1956 e seleção pelo MAE de validação de 1957–1958. Previsão com histórico
+observado e previsão recursiva são reportadas separadamente; apenas a primeira
+participa da seleção. O parser lê somente as 120 primeiras observações e não
+avalia o teste já publicado de 1959–1960.
+
+A receita selecionada (8 unidades, 100 épocas) obteve MAE de validação de 27,25
+mil, contra 26,38 da referência sazonal. No modo recursivo, 49,27 contra 46,46.
+A seleção não superou essas referências. Esses valores são usados na seleção,
+não estimativas imparciais de teste. O exemplo anterior continua preservado.
+Veja o [protocolo e os resultados](real_world.md#validation-led-forecasting-experiment-040).

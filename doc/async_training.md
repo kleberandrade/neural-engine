@@ -1,6 +1,6 @@
-# Asynchronous training (0.3.0)
+# Asynchronous training (0.4.0)
 
-The asynchronous API is introduced in 0.3.0. The core still has no Flutter or
+The asynchronous API was introduced in 0.3.0; 0.4.0 adds incremental evaluation and explicit scheduling controls. The core still has no Flutter or
 runtime package dependency.
 
 ## Choose an execution mode
@@ -89,18 +89,65 @@ IO belongs to the application. The checkpoint is the existing version-1 format.
   control/error/result ports are closed when the task finishes. No force-kill API
   is exposed because it cannot guarantee a complete epoch checkpoint.
 
+## Evaluation progress and scheduling controls (0.4.0)
+
+```dart
+final task = AsyncTrainingTask.start(AsyncTrainingRequest(
+  checkpoint: session.checkpoint(), inputs: inputs, targets: targets,
+  loss: TrainingLoss.binaryCrossEntropy, epochs: 100, batchSize: 2,
+  batchesPerYield: 4,
+  evaluationSamplesPerYield: 8,
+  maxWorkDuration: const Duration(milliseconds: 8),
+));
+final evaluationSubscription = task.evaluationProgress.listen((p) {
+  print('${p.phase.name}: ${p.samplesCompleted}/${p.totalSamples}');
+  // p.loss is null until the entire dataset reduction completes.
+});
+final result = await task.result;
+await evaluationSubscription.cancel();
+```
+
+`TrainingSession.fitAsync` accepts the same three scheduling options and an
+`onEvaluationProgress` callback. Defaults remain one batch between pauses,
+32 samples per evaluation block and no elapsed-time budget. The budget checks
+elapsed work between indivisible units; it cannot interrupt a batch, sample or
+custom atomic evaluator. It does not guarantee an 8 ms frame or deadline.
+
+Preflight checks all training/validation samples before any weight update. The
+same executor subsequently reports `trainingEvaluation` and
+`validationEvaluation` blocks. `epochComplete` remains the only committed epoch
+boundary. Cancelling during evaluation finishes that epoch; cancelling during
+preflight still validates all data and returns an unchanged checkpoint when valid.
+The evaluation stream is broadcast without replay and closes on success/failure;
+use `task.result` for errors. Partial evaluation events never contain partial
+mean losses. This stream is separate from the existing epoch-progress stream.
+
+Built-in models implement optional `SampleLossModel<I>`. Its dataset reduction
+adds each finite per-sample loss in original input order and divides once by the
+sample count. Chunks do not average their own means. Fused sigmoid/BCE and
+softmax/CCE retain stable logit calculations. An external model with a different
+reduction keeps its original atomic `evaluate` method and reports
+`incremental == false`; it need not implement a new interface.
+
+Old request JSON without the new fields decodes with defaults. Checkpoints stay
+at version 1; scheduling settings belong to a request, not optimizer state.
+
 ## Web scheduling and limits
 
-`MiniBatchTrainer.steps` is the shared numerical iterator. The synchronous path
-exhausts it immediately. The asynchronous session awaits a zero-duration **timer**
-after `batchesPerYield` batches (default 1) and after each epoch. A microtask alone
-would not yield to browser rendering or input.
+`MiniBatchTrainer.events` is the shared typed numerical iterator; the legacy
+`steps` adapter retains its null-per-batch/final-history contract. Synchronous
+training exhausts the iterator immediately. Async training awaits a zero-duration
+**timer** after the configured batch count, every evaluation chunk and every
+epoch, or when the optional elapsed work budget has been reached. A microtask
+alone would not yield to rendering or input.
 
-This is cooperative scheduling, not browser parallelism or a Web Worker. One large
-batch, one sample's CNN/BPTT gradient, full-dataset evaluation and JSON encoding
-remain synchronous units. Use smaller batches/models/datasets to keep these units
-short. More batches per yield can reduce scheduling overhead but increase UI
-latency. No hard frame-time or cancellation-latency guarantee is made.
+This is cooperative scheduling, not browser parallelism or a Web Worker. A batch,
+one sample's CNN/BPTT computation, a non-opted-in custom evaluator and JSON encoding
+remain synchronous units. Request serialization and native dataset transfer also
+have caller-side costs. Use smaller batches/models if a single unit is too long.
+Changing yield frequency leaves batch size and the arithmetic order unchanged.
+No hard frame-time or cancellation-latency guarantee is made. See the
+[measurement protocol](benchmarks/scheduling_0.4.0.md).
 
 All math and optimizer updates match synchronous TrainingSession.fit on the same
 runtime. Exact replay requires identical data/order, loss, batch size, clipping,
@@ -146,7 +193,7 @@ flowchart TD
   Task --> Web["Web cooperative runner"]
   Native --> Session["TrainingSession.fitAsync"]
   Web --> Session
-  Session --> Batches["Shared MiniBatchTrainer.steps"]
+  Session --> Batches["Shared MiniBatchTrainer.events"]
   Session --> Snapshot["Epoch checkpoint + progress"]
 ```
 

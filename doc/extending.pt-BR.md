@@ -49,3 +49,13 @@ Esses contratos não prometem extensão automática de toda família. Uma nova
 Uma `RecurrentCell` pode ser implementada/combinada pela aplicação, mas o seletor
 integrado `RecurrentKind` e seu JSON reconhecem apenas RNN/LSTM/GRU conhecidos.
 Novas famílias numéricas continuam exigindo gradientes, testes e documentação.
+
+
+## Avaliação incremental opcional (0.4.0)
+
+Implemente `SampleLossModel<I>` somente quando `evaluate` corresponder exatamente
+à soma das perdas finitas `sampleLoss` na ordem das entradas, dividida uma única
+vez pelo número de amostras. Preserve perdas fundidas com logits e os contratos
+de snapshots. Reduções diferentes continuam no avaliador atômico existente,
+com `incremental == false` no progresso. Não há novo método obrigatório em
+DifferentiableModel, Loss ou OptimizerState. Veja o [guia assíncrono](async_training.pt-BR.md).

@@ -9,6 +9,41 @@ import '../example/extensions/linear_model.dart';
 String snapshot(TrainingCheckpoint c) => jsonEncode(c.toJson());
 void main() {
   for (final family in ['MLP', 'CNN', 'RNN', 'LSTM', 'GRU', 'Autoencoder']) {
+    test('$family: sample losses match independent public dataset evaluation',
+        () {
+      final recipe = AsyncDemoRecipe(family);
+      final loss = switch (recipe.loss) {
+        TrainingLoss.meanSquaredError => const MeanSquaredError(),
+        TrainingLoss.binaryCrossEntropy => const BinaryCrossEntropy(),
+        TrainingLoss.categoricalCrossEntropy => const CategoricalCrossEntropy(),
+      };
+      void check<I>(DifferentiableModel<I> model) {
+        var total = 0.0;
+        final samples = model as SampleLossModel<I>;
+        for (var i = 0; i < recipe.inputs.length; i++) {
+          total += samples.sampleLoss(
+              input: recipe.inputs[i] as I,
+              target: recipe.targets[i],
+              loss: loss);
+        }
+        expect(
+            total / recipe.inputs.length,
+            model.evaluate(
+                inputs: recipe.inputs.cast<I>(),
+                targets: recipe.targets,
+                loss: loss));
+      }
+
+      if (family == 'CNN') {
+        check<ImageTensor>(ConvolutionalNetwork.fromJson(recipe.initial.model));
+      } else if (['RNN', 'LSTM', 'GRU'].contains(family)) {
+        check<List<List<double>>>(
+            RecurrentNetwork.fromJson(recipe.initial.model));
+      } else {
+        check<List<double>>(NeuralNetwork.fromJson(recipe.initial.model));
+      }
+    });
+
     for (final execution in [
       TrainingExecution.cooperative,
       TrainingExecution.isolate
@@ -211,6 +246,20 @@ void main() {
         batchesPerYield: 100000,
         maxWorkDuration: const Duration(microseconds: 1));
     expect(model.observedBetweenBatches, isTrue);
+  });
+  test('0.3 request JSON retains default scheduling and complete state',
+      () async {
+    final recipe = AsyncDemoRecipe('MLP');
+    final old = recipe.request(recipe.initial, 2).toJson()
+      ..remove('evaluationSamplesPerYield')
+      ..remove('maxWorkMicroseconds');
+    final original =
+        await AsyncTrainingTask.start(recipe.request(recipe.initial, 2)).result;
+    final restored =
+        await AsyncTrainingTask.start(AsyncTrainingRequest.fromJson(old))
+            .result;
+    expect(snapshot(restored.checkpoint), snapshot(original.checkpoint));
+    expect(restored.history.losses, original.history.losses);
   });
   test('invalid scheduling options reject before any update', () async {
     final recipe = AsyncDemoRecipe('MLP');

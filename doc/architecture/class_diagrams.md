@@ -24,6 +24,8 @@ classDiagram
   }
   class MiniBatchTrainer {
     fit(model, inputs, targets)
+    events()
+    steps()
   }
   Predictor <|-- DifferentiableModel
   ParameterizedModel <|-- DifferentiableModel
@@ -31,6 +33,10 @@ classDiagram
   DifferentiableModel <|.. ConvolutionalNetwork
   DifferentiableModel <|.. RecurrentNetwork
   MiniBatchTrainer --> DifferentiableModel
+  MiniBatchTrainer --> SampleLossModel : optional reduction
+  SampleLossModel <|.. NeuralNetwork
+  SampleLossModel <|.. ConvolutionalNetwork
+  SampleLossModel <|.. RecurrentNetwork
 ```
 
 ## Training collaborators
@@ -139,21 +145,24 @@ classDiagram
 A custom plain Optimizer remains usable without implementing checkpoint support.
 TrainingSession.restore accepts explicit application-owned model/optimizer decoders.
 
-## Asynchronous lifecycle (0.3.0)
+## Asynchronous lifecycle (0.4.0)
 
 ```mermaid
 classDiagram
   direction TB
   AsyncTrainingTask --> AsyncTrainingRequest : copies request
   AsyncTrainingTask --> TrainingCancellation : owns
-  AsyncTrainingTask --> TrainingProgress : streams
+  AsyncTrainingTask --> TrainingProgress : epoch stream
+  AsyncTrainingTask --> EvaluationProgress : evaluation stream
   AsyncTrainingTask --> AsyncTrainingResult : completes
   AsyncTrainingResult --> TrainingCheckpoint : contains
   AsyncTrainingResult --> TrainingHistory : contains
   TrainingSession --> TrainingCancellation : observes
   TrainingSession --> TrainingProgress : reports
   TrainingSession --> AsyncTrainingResult : returns
-  TrainingSession --> MiniBatchTrainer : consumes steps
+  TrainingSession --> MiniBatchTrainer : consumes typed events
+  MiniBatchTrainer --> TrainingStep : yields
+  TrainingSession --> CooperativeScheduler : pauses between units
 ```
 
 Platform transport uses conditional imports and top-level functions, not a new

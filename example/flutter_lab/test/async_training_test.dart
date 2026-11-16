@@ -30,6 +30,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(page());
+    await reveal(tester, 'async-start', -250);
     await tester
         .runAsync(() => tester.tap(find.byKey(const ValueKey('async-start'))));
     await tester.pump();
@@ -80,6 +81,7 @@ void main() {
   testWidgets('disposing an active page safely cancels its task',
       (tester) async {
     await tester.pumpWidget(page());
+    await reveal(tester, 'async-start', -250);
     await tester
         .runAsync(() => tester.tap(find.byKey(const ValueKey('async-start'))));
     await tester.pumpWidget(const SizedBox());

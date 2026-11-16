@@ -7,6 +7,7 @@
 - Keep custom reductions on their original atomic evaluate method unless they opt into the incremental contract.
 - Add fixed-batch yield-policy measurements, VM allocation profiling, and native/Chrome release-mode frame probes.
 - Expose scheduling controls and evaluation progress in the Flutter lab.
+- Add a validation-only GRU selection experiment with causal rolling/recursive forecasts and seasonal baselines, excluding the previously published test.
 
 ## 0.3.0
 

@@ -1,6 +1,6 @@
-# Treinamento assíncrono — 0.3.0
+# Treinamento assíncrono — 0.4.0
 
-A API assíncrona é introduzida na 0.3.0. O núcleo continua em Dart puro.
+A API assíncrona foi introduzida na 0.3.0; a 0.4.0 adiciona avaliação incremental. O núcleo continua em Dart puro.
 
 ## Qual execução escolher?
 
@@ -78,12 +78,12 @@ em caso de falha: mantenha o último snapshot válido.
 ## Por que a web precisa de outra estratégia?
 
 Isolates não estão disponíveis nesse caminho de compilação web. O mesmo executor
-numérico da API síncrona passa a ceder tempo ao navegador após cada mini-batch,
+numérico da API síncrona cede tempo após os lotes configurados e blocos de avaliação,
 usando um timer de duração zero. Uma microtask sozinha não permitiria renderizar
 ou receber entrada. `batchesPerYield` controla a frequência das pausas.
 
 Isso não é paralelismo nem Web Worker. Um lote grande, o gradiente de uma sequência
-longa, a avaliação do conjunto completo e a serialização ainda são operações
+longa, um avaliador externo não incremental e a serialização ainda são operações
 síncronas. Reduza lotes/modelos/dados quando essas unidades demorarem. A API não
 promete um limite rígido de duração de frame ou latência de cancelamento.
 
@@ -118,3 +118,37 @@ A [estrutura](architecture/structure.md), os
 Os testes comparam os cinco modelos com Adam e SGD nos dois modos, cancelamento,
 retomada, erros, dados isolados, contratos externos e interação Flutter. O exemplo
 Dart também é compilado para JavaScript e exige um marcador de conclusão no Node.
+
+
+## Avaliação incremental e pausas (0.4.0)
+
+`AsyncTrainingRequest` e `TrainingSession.fitAsync` aceitam
+`evaluationSamplesPerYield` (padrão 32), `batchesPerYield` (padrão 1) e
+`maxWorkDuration` opcional. Por exemplo, blocos de 8 amostras, 4 lotes entre
+pausas e `const Duration(milliseconds: 8)`. O orçamento é verificado entre
+unidades de trabalho; um lote ou uma amostra demorada pode ultrapassá-lo.
+Não é uma garantia de tempo de quadro.
+
+Assine `task.evaluationProgress` ou passe `onEvaluationProgress` à sessão.
+`EvaluationProgress` informa fase, época, amostras concluídas e total. `loss` é
+nulo nos blocos parciais: a perda só aparece ao terminar a redução completa.
+As fases incluem verificação inicial de treino/validação e avaliação posterior
+de treino/validação. O stream de progresso por época continua separado;
+somente épocas completas geram checkpoints. Ambos os streams são broadcast,
+sem replay, fecham no sucesso ou falha, e os erros chegam por `task.result`.
+
+Os modelos nativos implementam `SampleLossModel<I>`: somam perdas por amostra
+na ordem original e dividem uma única vez pelo total. Não se calcula uma média
+das médias dos blocos. BCE/CCE fundidas preservam os logits estáveis. Modelos
+externos continuam usando sua redução `evaluate` atômica, com
+`incremental == false`, até optarem por esse contrato.
+
+A verificação inicial agora também é dividida em blocos, antes de qualquer
+atualização. Cancelar nessa fase termina a verificação e retorna o checkpoint
+original se os dados forem válidos. Cancelar durante a avaliação de uma época
+termina essa época e sua validação antes de salvar. Uma pausa usa timer de
+duração zero; não é paralelismo web. JSON, uma amostra e um lote continuam
+unidades indivisíveis. A versão dos checkpoints permanece 1; requisições antigas
+sem os campos novos usam os padrões. Consulte o
+[guia atualizado em inglês](async_training.md) e o
+[protocolo de medidas](benchmarks/scheduling_0.4.0.md).

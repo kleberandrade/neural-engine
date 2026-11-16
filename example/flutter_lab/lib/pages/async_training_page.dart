@@ -104,6 +104,7 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
       _task = job;
       _error = null;
       _progress = null;
+      _evaluation = null;
       _cancelling = false;
       _status = compare ? 'Comparing uninterrupted run' : 'Training';
       if (!compare) {

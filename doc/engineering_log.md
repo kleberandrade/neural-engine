@@ -83,3 +83,33 @@ CNN and all three recurrent variants for Adam/SGD, malformed state rejection,
 immutable snapshots and invalid custom model/optimizer boundaries. External
 consumer analysis and execution also pass independently. Pub.dev currently has
 0.1.0 under the user's uploader identity; 0.2.0 remains the release target.
+
+## 0.4.0 local implementation and release gates
+
+Added optional sample-loss evaluation, typed trainer phases, chunked preflight
+and epoch evaluation, a separate evaluation progress stream, configurable pause
+frequency and an optional between-unit work budget. Legacy custom evaluators and
+steps adapters retain their contracts; v1 checkpoints and complete-epoch
+cancellation remain. Flutter exposes the controls and progress.
+
+Local verification: 125 core tests pass on Dart 3.11.5/macOS arm64. Core and
+Flutter analyzers are clean. The strengthened native and compiled-JavaScript
+portability consumer verifies all six demo recipes across yield policies,
+including evaluation-event transport and complete optimizer/checkpoint equality.
+The new validation-only forecasting CLI also completes in native Dart and
+JavaScript. The Flutter release frame-probe source compiles to JavaScript;
+this compilation alone is not a release-build trace or interaction test.
+
+The fixed-batch native matrix and four-candidate validation forecast results are
+archived under doc/benchmarks. Forecast selection remains behind seasonal
+baselines, excludes the previously published test, and makes no generalization
+claim. Allocation/profile and native/Chrome release-frame collectors are prepared,
+but successful remote evidence remains a release gate. No buffer reuse or worker
+pool has been added before profiling. Physical-device frame evidence is outstanding.
+
+Commits are saved locally. Push/publication are blocked in this execution
+environment: shell GitHub DNS is unavailable and GitHub Desktop has no accessible
+window. No v0.4.0 tag or pub.dev upload has been made. Resume with a visible
+repository window, push, inspect CI/performance results, correct any failures,
+then publish through the existing OIDC workflow and verify the exact hosted
+artifact. Keep the hosted consumer pinned to 0.3.0 until 0.4.0 exists publicly.

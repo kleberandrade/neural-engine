@@ -46,3 +46,8 @@ inference-only figures above.
 See [protocol and observations](responsiveness.md), [fixed real-data results](real-world-results.json)
 and the [0.4.0 plan](../roadmap_0.4.0.md). Event-loop delay is not rendered FPS;
 sampled memory is not allocation profiling.
+
+
+For the fixed-batch 0.4.0 yield matrix, allocation collector and release-frame
+probe status, see [scheduling evidence](scheduling_0.4.0.md). Validation-only
+forecast selection has a [separate frozen protocol](forecast-validation-protocol.txt).

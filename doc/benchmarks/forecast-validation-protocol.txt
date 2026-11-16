@@ -1,0 +1,7 @@
+0.4.0 validation-only protocol fixed before running candidates:
+- Parse observations Jan 1949-Dec 1958 only, excluding published 1959-1960 test.
+- Training targets Jan 1950-Dec 1956, training-only log StandardScaler.
+- Four candidates in stable order: hidden4 epochs40, hidden4 epochs100, hidden8 epochs40, hidden8 epochs100. GRU, seed42, Adam0.01, batch12, clipping1, no shuffle.
+- Rank by rolling one-step validation MAE Jan1957-Dec1958, tie by candidate order. Report recursive 24-month validation separately; it cannot alter selection.
+- Same-unit baselines: previous observed month / year for rolling; repeat last month / last seasonal cycle for recursive.
+- Report validation, never a new test score or an unbiased generalization estimate. Original fixed-recipe report unchanged.

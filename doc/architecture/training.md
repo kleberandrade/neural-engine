@@ -53,13 +53,23 @@ fixed epochs, with no silent reuse of early-stopping weights and mismatched
 optimizer moments. A failed session must restore a previous valid checkpoint.
 See [persistence](../persistence.md) for exact-replay requirements.
 
-## Async scheduling (0.3.0)
+## Async scheduling (0.4.0)
 
-MiniBatchTrainer.fit drains the same steps iterator used by fitAsync. The iterator
-yields after each committed batch. TrainingSession.fitAsync uses retained optimizer
+MiniBatchTrainer.fit and fitAsync consume the same typed events iterator. It
+yields preflight/evaluation chunks, committed batches and epoch boundaries.
+The legacy steps adapter keeps its null-per-batch/final-history contract. TrainingSession.fitAsync uses retained optimizer
 state and absolute epoch shuffles, yields via timers, reports complete epochs, and
 checks cancellation only at epoch boundaries. Concurrent session training/checkpoint
 calls are rejected. Async sessions have fixed epochs and optional validation metrics,
 without best-weight restoration. AsyncTrainingTask selects native isolate transport
 or web cooperative execution using conditional imports. Built-in codecs are separate
 from the model-agnostic trainer. See [async lifecycle](../async_training.md).
+
+
+Built-in `SampleLossModel` implementations preserve the public evaluate reduction:
+add per-sample losses in input order and divide once, retaining fused logit math.
+The optional contract does not change DifferentiableModel. Custom models without
+it keep atomic evaluation. Async scheduling pauses after each evaluation block,
+configured batches and complete epochs, with an optional between-unit elapsed
+work budget. Partial evaluation loss is null; only a complete dataset reports a
+mean. An evaluation event is not a checkpoint boundary.

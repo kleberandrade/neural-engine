@@ -10,8 +10,31 @@ import '../example/flutter_lab/lib/real_world/iris_dataset.dart';
 import '../example/flutter_lab/lib/real_world/passenger_dataset.dart';
 import '../example/flutter_lab/lib/real_world/iris_experiment.dart';
 import '../example/flutter_lab/lib/real_world/passenger_experiment.dart';
+import '../example/flutter_lab/lib/real_world/forecast_validation.dart';
 
 void main() {
+  test('validation forecasts enforce causal rolling and recursive inputs', () {
+    final original = ForecastValidation();
+    final changed = original.observations.toList();
+    for (var i = ForecastValidation.trainEnd; i < changed.length; i++) {
+      changed[i] *= 2;
+    }
+    final altered = ForecastValidation(observations: changed);
+    expect(original.observations, hasLength(120));
+    expect(original.scaler.toJson(), altered.scaler.toJson());
+    double infer(List<List<double>> input) => input.last.single + 0.1;
+    final rolling = original.predict(infer, recursive: false);
+    final changedRolling = altered.predict(infer, recursive: false);
+    expect(rolling.first, changedRolling.first);
+    expect(rolling[1], isNot(changedRolling[1]));
+    expect(original.predict(infer, recursive: true),
+        altered.predict(infer, recursive: true));
+    expect(() => ForecastValidation(observations: [...changed, 100]),
+        throwsArgumentError);
+    expect(() => original.predict((_) => double.infinity, recursive: true),
+        throwsStateError);
+  });
+
   test('offline embedded datasets equal the pinned CSV observations', () {
     expect(irisCsv, File('example/data/iris.csv').readAsStringSync());
     expect(airPassengersCsv,

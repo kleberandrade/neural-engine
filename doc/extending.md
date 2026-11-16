@@ -35,3 +35,15 @@ SpatialLayer execution/serialization still requires explicit CNN support; new
 RecurrentCell implementations can be composed by applications, while the built-in
 RecurrentKind selector and JSON support known RNN/LSTM/GRU variants only. These
 interfaces do not pretend to be a universal layer registry or autodiff engine.
+
+
+## Optional incremental evaluation (0.4.0)
+
+Implement `SampleLossModel<I>` only when `evaluate` is exactly the sum of finite
+`sampleLoss(input, target, loss)` values in input order, divided once by the
+sample count. Keep prediction/input/parameter snapshot contracts and preserve any
+fused logit losses. The trainer can then pause between configurable evaluation
+blocks without changing reduction order. Models with weighted, stateful or other
+reductions should retain their existing atomic evaluator. Their evaluation
+progress explicitly reports `incremental == false`. No new method is required
+on DifferentiableModel, Loss or OptimizerState. See [async scheduling](async_training.md).

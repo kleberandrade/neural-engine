@@ -6,15 +6,15 @@ is under `lib/src`; its classes are exported selectively through the public
 
 | Directory | Classes / responsibility | Dependency rule |
 | --- | --- | --- |
-| `lib/src/contracts/` | Predictor, ParameterizedModel, DifferentiableModel, UnsupervisedModel, JsonModel | No concrete model dependency |
+| `lib/src/contracts/` | Predictor, ParameterizedModel, DifferentiableModel, SampleLossModel, UnsupervisedModel, JsonModel | No concrete model dependency |
 | `lib/src/activations/` | Activation and its Jacobian-vector products | Math only |
 | `lib/src/layers/` | Dense specification | Activation only |
 | `lib/src/layers/spatial/` | SpatialLayer, Conv2D, MaxPool2D, ConvolutionPadding | Specs, not training loops |
 | `lib/src/tensors/` | Immutable ImageTensor, HWC indexing | No model dependency |
 | `lib/src/losses/` | Loss interface; MSE, binary/ categorical CE in separate files | No trainer/model dependency |
 | `lib/src/optimizers/` | Optimizer/OptimizerState contracts; SGD, Adam | Flat vectors, no model dependency |
-| `lib/src/training/` | MiniBatchTrainer, TrainingHistory, TrainingSession | Depends on model contract, not concrete family |
-| `lib/src/training/async/` | AsyncTrainingTask, request/result/progress/cancellation; native/web transport and built-in codecs | Platform code isolated; only worker codecs know concrete models |
+| `lib/src/training/` | MiniBatchTrainer, TrainingStep/Phase, evaluation steps, TrainingHistory, TrainingSession | Depends on model contract, not concrete family |
+| `lib/src/training/async/` | AsyncTrainingTask, request/result/epoch and evaluation progress/cancellation, CooperativeScheduler; native/web transport and built-in codecs | Platform code isolated; only worker codecs know concrete models |
 | `lib/src/models/dense/` | NeuralNetwork facade, DenseExecution, DensePass/derivatives | Numerical passes separate from lifecycle |
 | `lib/src/models/cnn/` | ConvolutionalNetwork, SpatialStage/Pass, separate forward/backward functions | Composes dense head and spatial passes |
 | `lib/src/models/som/` | SelfOrganizingMap, SomMatch, SomHistory | Competitive learning independent of supervised trainer |

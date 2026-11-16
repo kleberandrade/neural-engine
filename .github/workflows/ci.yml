@@ -37,11 +37,14 @@ jobs:
       - run: dart run example/autoencoder.dart
       - run: dart run example/recurrent_sequences.dart
       - run: dart run example/real_world.dart
+      - run: dart run example/forecast_validation.dart
       - run: dart run example/evaluation.dart
       - run: dart run example/custom_extensions.dart
       - run: dart run validation/async_portability.dart
       - run: dart run example/async_training.dart
       - run: dart run example/checkpoint.dart
+      - run: dart compile js example/forecast_validation.dart -o /tmp/forecast_validation.js
+      - run: node validation/run_async_js.cjs /tmp/forecast_validation.js "Validation-only forecasting passed"
       - run: dart compile js example/real_world.dart -o /tmp/real_world.js
       - run: node validation/run_async_js.cjs /tmp/real_world.js "Real-world examples passed"
       - run: dart compile js example/neural_engine_example.dart -o /tmp/neural_engine.js
