@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0 (unreleased)
+
+- Add optional SampleLossModel and incremental preflight/training/validation evaluation, preserving sample order, fused losses and v1 checkpoint replay.
+- Add typed executor phases, a separate evaluation-progress stream, configurable evaluation blocks and an explicit between-unit work-duration budget.
+- Keep custom reductions on their original atomic evaluate method unless they opt into the incremental contract.
+- Add fixed-batch yield-policy measurements, VM allocation profiling, and native/Chrome release-mode frame probes.
+- Expose scheduling controls and evaluation progress in the Flutter lab.
+
 ## 0.3.0
 
 - Add offline Iris classification and chronological AirPassengers forecasting examples shared by Dart/Flutter, with training-only scalers, reserved tests, baselines and dataset provenance.

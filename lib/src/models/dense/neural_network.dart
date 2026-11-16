@@ -1,3 +1,4 @@
+import '../../contracts/sample_loss_model.dart';
 import '../../activations/activation.dart';
 import '../../layers/dense.dart';
 import '../../losses/loss.dart';
@@ -9,7 +10,11 @@ import '../../training/training_history.dart';
 import 'dense_execution.dart';
 
 /// Dense feedforward facade. Training uses the same trainer as CNN/recurrent models.
-class NeuralNetwork implements DifferentiableModel<List<double>>, JsonModel {
+class NeuralNetwork
+    implements
+        DifferentiableModel<List<double>>,
+        SampleLossModel<List<double>>,
+        JsonModel {
   final DenseExecution _execution;
   NeuralNetwork(
       {required int inputSize, required List<Dense> layers, int? seed})
@@ -35,6 +40,12 @@ class NeuralNetwork implements DifferentiableModel<List<double>>, JsonModel {
           .outputs
           .skip(1)
           .map((v) => List<double>.unmodifiable(v)));
+  @override
+  double sampleLoss(
+          {required List<double> input,
+          required List<double> target,
+          required Loss loss}) =>
+      _execution.sampleLoss(input: input, target: target, loss: loss);
   @override
   double evaluate(
           {required List<List<double>> inputs,

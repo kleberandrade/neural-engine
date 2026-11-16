@@ -1,6 +1,6 @@
 name: neural_engine
 description: Pure Dart neural networks with MLP, CNN, SOM, RNN, LSTM and GRU, asynchronous training, resumable checkpoints and educational Flutter examples.
-version: 0.3.0
+version: 0.4.0
 repository: https://github.com/kleberandrade/neural-engine
 issue_tracker: https://github.com/kleberandrade/neural-engine/issues
 environment:

@@ -1,3 +1,4 @@
+import '../../contracts/sample_loss_model.dart';
 import '../../activations/activation.dart';
 import '../../contracts/differentiable_model.dart';
 import '../../contracts/json_model.dart';
@@ -18,7 +19,10 @@ import 'cells/gru_cell.dart';
 /// Many-to-one recurrent model with a dense projection of the final hidden state.
 /// Each sequence starts at zero state; full BPTT, no truncation or padding/masks.
 class RecurrentNetwork
-    implements DifferentiableModel<List<List<double>>>, JsonModel {
+    implements
+        DifferentiableModel<List<List<double>>>,
+        SampleLossModel<List<List<double>>>,
+        JsonModel {
   final int inputSize, hiddenSize, outputSize;
   final RecurrentKind kind;
   final Activation outputActivation;
@@ -79,6 +83,13 @@ class RecurrentNetwork
   @override
   List<double> predict(List<List<double>> input) =>
       _head.predict(_forward(input).last.state.hidden);
+  @override
+  double sampleLoss(
+          {required List<List<double>> input,
+          required List<double> target,
+          required Loss loss}) =>
+      _head.sampleLoss(
+          input: _forward(input).last.state.hidden, target: target, loss: loss);
   @override
   double evaluate(
       {required List<List<List<double>>> inputs,

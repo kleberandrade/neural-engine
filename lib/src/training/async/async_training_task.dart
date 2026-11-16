@@ -1,3 +1,4 @@
+import 'evaluation_progress.dart';
 import 'dart:async';
 import 'async_training_request.dart';
 import 'async_training_result.dart';
@@ -12,6 +13,8 @@ enum TrainingExecution { automatic, cooperative, isolate }
 /// An owned worker lifecycle: subscribe immediately, await result, cancel safely.
 /// Cancelling a progress subscription does not cancel training; call [cancel].
 class AsyncTrainingTask {
+  final _evaluation = StreamController<EvaluationProgress>.broadcast();
+  Stream<EvaluationProgress> get evaluationProgress => _evaluation.stream;
   final _cancellation = TrainingCancellation();
   final _progress = StreamController<TrainingProgress>.broadcast();
   late final Future<AsyncTrainingResult> result;
@@ -35,11 +38,14 @@ class AsyncTrainingTask {
       // Let the caller attach listeners (including for pre-start cancellation).
       await Future<void>.delayed(Duration.zero);
       return await (execution == TrainingExecution.isolate
-          ? platform.runInIsolate(request, _cancellation, _progress.add)
-          : runCooperatively(request, _cancellation, _progress.add));
+          ? platform.runInIsolate(request, _cancellation, _progress.add,
+              onEvaluationProgress: _evaluation.add)
+          : runCooperatively(request, _cancellation, _progress.add,
+              onEvaluationProgress: _evaluation.add));
     } finally {
       // Do not await close: a paused listener must not prevent result completion.
       unawaited(_progress.close());
+      unawaited(_evaluation.close());
     }
   }
 }

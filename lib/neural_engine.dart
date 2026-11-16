@@ -52,3 +52,7 @@ export 'src/training/async/async_training_task.dart';
 export 'src/training/async/training_cancellation.dart';
 export 'src/training/async/training_progress.dart';
 export 'src/training/async/worker_error.dart';
+
+export 'src/contracts/sample_loss_model.dart';
+export 'src/training/training_step.dart';
+export 'src/training/async/evaluation_progress.dart';

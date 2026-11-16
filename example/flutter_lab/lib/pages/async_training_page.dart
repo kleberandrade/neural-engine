@@ -19,6 +19,10 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
     with AutomaticKeepAliveClientMixin {
   String _family = 'MLP';
   int _goal = 100, _interactions = 0;
+  int _frequency = 1, _chunk = 32;
+  bool _budget = false;
+  EvaluationProgress? _evaluation;
+  StreamSubscription<EvaluationProgress>? _evaluationSubscription;
   AsyncTrainingTask? _task;
   StreamSubscription<TrainingProgress>? _subscription;
   TrainingCheckpoint? _checkpoint;
@@ -36,6 +40,7 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
   void dispose() {
     _task?.cancel();
     _subscription?.cancel();
+    _evaluationSubscription?.cancel();
     _json.dispose();
     super.dispose();
   }
@@ -89,7 +94,11 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
     final epochs =
         compare ? previous!.epochsCompleted : _goal - from.epochsCompleted;
     if (epochs <= 0) return;
-    final job = AsyncTrainingTask.start(recipe.request(from, epochs),
+    final job = AsyncTrainingTask.start(
+        recipe.request(from, epochs,
+            batchesPerYield: _frequency,
+            evaluationSamplesPerYield: _chunk,
+            maxWorkDuration: _budget ? const Duration(milliseconds: 8) : null),
         execution: widget.execution);
     setState(() {
       _task = job;
@@ -101,6 +110,9 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
         _losses.clear();
         _comparison = null;
       }
+    });
+    _evaluationSubscription = job.evaluationProgress.listen((p) {
+      if (mounted) setState(() => _evaluation = p);
     });
     _subscription = job.progress.listen((p) {
       if (mounted) {
@@ -138,6 +150,7 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
       }
     } finally {
       await _subscription?.cancel();
+      await _evaluationSubscription?.cancel();
       if (mounted) {
         setState(() {
           _task = null;
@@ -205,6 +218,42 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
                       onChanged: _busy || _checkpoint != null
                           ? null
                           : (v) => setState(() => _goal = v.round())),
+                  Wrap(
+                      spacing: 24,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        const Text('Batches between pauses'),
+                        DropdownButton<int>(
+                            key: const ValueKey('async-frequency'),
+                            value: _frequency,
+                            items: [
+                              for (final value in [1, 4, 16])
+                                DropdownMenuItem(
+                                    value: value, child: Text('$value'))
+                            ],
+                            onChanged: _busy
+                                ? null
+                                : (v) => setState(() => _frequency = v!)),
+                        const Text('Evaluation samples per block'),
+                        DropdownButton<int>(
+                            key: const ValueKey('async-evaluation-chunk'),
+                            value: _chunk,
+                            items: [
+                              for (final value in [8, 32, 128])
+                                DropdownMenuItem(
+                                    value: value, child: Text('$value'))
+                            ],
+                            onChanged: _busy
+                                ? null
+                                : (v) => setState(() => _chunk = v!)),
+                      ]),
+                  SwitchListTile(
+                      title: const Text('Use an 8 ms work budget'),
+                      subtitle: const Text(
+                          'Checked between batches and evaluation blocks; not a frame-time guarantee.'),
+                      value: _budget,
+                      onChanged:
+                          _busy ? null : (v) => setState(() => _budget = v)),
                   Wrap(spacing: 12, runSpacing: 8, children: [
                     FilledButton(
                         key: const ValueKey('async-start'),
@@ -242,6 +291,10 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
                   ]),
                   const SizedBox(height: 12),
                   Text(_status, key: const ValueKey('async-status')),
+                  if (_busy && _evaluation != null)
+                    Text(
+                        '${_evaluationLabel(_evaluation!.phase)}: ${_evaluation!.samplesCompleted}/${_evaluation!.totalSamples}',
+                        key: const ValueKey('async-evaluation-progress')),
                   if (_busy) LinearProgressIndicator(value: p?.fraction ?? 0),
                   if (p != null)
                     Text(
@@ -300,8 +353,16 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
                   const Text(
                       'MLP validation reuses XOR; other recipes use different synthetic noise/phases. '
                       'Exact replay requires the same runtime and platform. SOM uses its own unsupervised schedule. '
-                      'Web yields between batches: a large batch or full-dataset evaluation can still take a frame. '
+                      'Web yields between batches and evaluation blocks. A large indivisible unit can still take a frame. '
                       'Copy JSON explicitly to retain it after closing the app.'),
                 ])));
   }
 }
+
+String _evaluationLabel(TrainingPhase phase) => switch (phase) {
+      TrainingPhase.trainingPreflight => 'Checking training data',
+      TrainingPhase.validationPreflight => 'Checking validation data',
+      TrainingPhase.trainingEvaluation => 'Measuring training loss',
+      TrainingPhase.validationEvaluation => 'Measuring validation loss',
+      _ => 'Evaluation',
+    };

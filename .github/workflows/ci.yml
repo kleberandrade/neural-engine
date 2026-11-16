@@ -83,10 +83,18 @@ jobs:
       - name: Measure Chrome Flutter test runtime
         shell: bash
         run: flutter test --platform chrome test/responsiveness_test.dart --reporter expanded | tee /tmp/neural-chrome.log
+      - name: Measure fixed-batch native yield policies
+        shell: bash
+        run: flutter test test/yield_frequency_test.dart --reporter expanded | tee /tmp/neural-yield-native.log
+      - name: Measure fixed-batch Chrome yield policies
+        shell: bash
+        run: flutter test --platform chrome test/yield_frequency_test.dart --reporter expanded | tee /tmp/neural-yield-chrome.log
       - name: Extract responsiveness reports
         run: |
           python3 ../../validation/extract_measurements.py /tmp/neural-native.log /tmp/neural-metrics/flutter-native.json
           python3 ../../validation/extract_measurements.py /tmp/neural-chrome.log /tmp/neural-metrics/flutter-chrome.json
+          python3 ../../validation/extract_measurements.py /tmp/neural-yield-native.log /tmp/neural-metrics/yield-native.json NEURAL_YIELD 10
+          python3 ../../validation/extract_measurements.py /tmp/neural-yield-chrome.log /tmp/neural-metrics/yield-chrome.json NEURAL_YIELD 10
       - uses: actions/upload-artifact@v4
         with:
           name: flutter-responsiveness

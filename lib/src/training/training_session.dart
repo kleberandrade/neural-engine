@@ -1,3 +1,6 @@
+import 'training_step.dart';
+import 'async/evaluation_progress.dart';
+import 'async/cooperative_scheduler.dart';
 import 'dart:math' as math;
 import 'async/async_training_result.dart';
 import 'async/training_cancellation.dart';
@@ -102,6 +105,9 @@ class TrainingSession<I> {
     List<I>? validationInputs,
     List<List<double>>? validationTargets,
     int batchesPerYield = 1,
+    int evaluationSamplesPerYield = 32,
+    Duration? maxWorkDuration,
+    void Function(EvaluationProgress)? onEvaluationProgress,
     TrainingCancellation? cancellation,
     void Function(TrainingProgress)? onProgress,
   }) async {
@@ -109,6 +115,8 @@ class TrainingSession<I> {
     if (epochs <= 0 ||
         batchSize <= 0 ||
         batchesPerYield <= 0 ||
+        evaluationSamplesPerYield <= 0 ||
+        (maxWorkDuration != null && maxWorkDuration.inMicroseconds <= 0) ||
         (validationInputs == null) != (validationTargets == null) ||
         (maxGradientNorm != null &&
             (!maxGradientNorm.isFinite || maxGradientNorm <= 0))) {
@@ -119,57 +127,52 @@ class TrainingSession<I> {
     final losses = <double>[];
     final validationLosses = <double>[];
     try {
-      // Validate even a pre-cancelled job, without changing any weights.
-      final initial =
-          model.evaluate(inputs: inputs, targets: targets, loss: loss);
-      if (!initial.isFinite) throw StateError('Nonfinite training loss.');
-      if (validationInputs != null) {
-        final value = model.evaluate(
-            inputs: validationInputs, targets: validationTargets!, loss: loss);
-        if (!value.isFinite) throw StateError('Nonfinite validation loss.');
-      }
-      // A zero-duration timer yields to browser/UI events, not just microtasks.
-      await Future<void>.delayed(Duration.zero);
-      for (var epoch = 0; epoch < epochs; epoch++) {
-        if (cancellation?.isCancelled ?? false) break;
-        TrainingHistory? history;
-        var batches = 0;
-        for (final step in MiniBatchTrainer<I>().steps(
-          model: model,
-          optimizer: optimizer,
-          optimizerState: _state,
-          seed: seed,
-          epochOffset: _epochsCompleted,
-          epochSeededShuffle: true,
-          inputs: inputs,
-          targets: targets,
-          loss: loss,
-          epochs: 1,
-          batchSize: batchSize,
-          shuffle: shuffle,
-          maxGradientNorm: maxGradientNorm,
-          validationInputs: validationInputs,
-          validationTargets: validationTargets,
-        )) {
-          if (step != null) {
-            history = step;
-          } else if (++batches % batchesPerYield == 0) {
-            await Future<void>.delayed(Duration.zero);
-          }
+      final scheduler = CooperativeScheduler(batchesPerYield, maxWorkDuration);
+      // Allow pre-start cancellation and attach observers before preflight.
+      await scheduler.yieldNow();
+      for (final step in MiniBatchTrainer<I>().events(
+        model: model,
+        optimizer: optimizer,
+        optimizerState: _state,
+        seed: seed,
+        epochOffset: _epochsCompleted,
+        epochSeededShuffle: true,
+        inputs: inputs,
+        targets: targets,
+        loss: loss,
+        epochs: epochs,
+        batchSize: batchSize,
+        shuffle: shuffle,
+        maxGradientNorm: maxGradientNorm,
+        validationInputs: validationInputs,
+        validationTargets: validationTargets,
+        evaluationChunkSize: evaluationSamplesPerYield,
+        shouldStop: () => cancellation?.isCancelled ?? false,
+      )) {
+        if (step.isEvaluation) {
+          onEvaluationProgress?.call(EvaluationProgress(
+              phase: step.phase,
+              epoch: step.epoch,
+              samplesCompleted: step.samplesCompleted,
+              totalSamples: step.totalSamples,
+              loss: step.loss,
+              incremental: step.incremental));
         }
-        _epochsCompleted++;
-        losses.add(history!.losses.single);
-        validationLosses.addAll(history.validationLosses);
-        onProgress?.call(TrainingProgress(
-          epochsCompleted: _epochsCompleted,
-          requestedEpochs: epochs,
-          epochsThisRun: losses.length,
-          loss: losses.last,
-          validationLoss:
-              validationLosses.isEmpty ? null : validationLosses.last,
-          elapsed: clock.elapsed,
-        ));
-        await Future<void>.delayed(Duration.zero);
+        if (step.phase == TrainingPhase.epochComplete) {
+          _epochsCompleted = step.epoch;
+          losses.add(step.loss!);
+          if (step.validationLoss != null) {
+            validationLosses.add(step.validationLoss!);
+          }
+          onProgress?.call(TrainingProgress(
+              epochsCompleted: _epochsCompleted,
+              requestedEpochs: epochs,
+              epochsThisRun: losses.length,
+              loss: step.loss!,
+              validationLoss: step.validationLoss,
+              elapsed: clock.elapsed));
+        }
+        if (scheduler.shouldYield(step)) await scheduler.yieldNow();
       }
       clock.stop();
       // All iterators have completed: the checkpoint is at an epoch boundary.

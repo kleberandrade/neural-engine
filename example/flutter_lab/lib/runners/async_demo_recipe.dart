@@ -97,7 +97,10 @@ class AsyncDemoRecipe {
         8);
   }
 
-  AsyncTrainingRequest request(TrainingCheckpoint checkpoint, int epochs) =>
+  AsyncTrainingRequest request(TrainingCheckpoint checkpoint, int epochs,
+          {int batchesPerYield = 1,
+          int evaluationSamplesPerYield = 32,
+          Duration? maxWorkDuration}) =>
       AsyncTrainingRequest(
           checkpoint: checkpoint,
           inputs: inputs,
@@ -107,7 +110,10 @@ class AsyncDemoRecipe {
           loss: loss,
           epochs: epochs,
           batchSize: batchSize,
-          maxGradientNorm: 1);
+          maxGradientNorm: 1,
+          batchesPerYield: batchesPerYield,
+          evaluationSamplesPerYield: evaluationSamplesPerYield,
+          maxWorkDuration: maxWorkDuration);
 
   List<List<double>> predictions(TrainingCheckpoint checkpoint) {
     if (family == 'CNN') {

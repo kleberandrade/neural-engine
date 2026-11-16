@@ -1,3 +1,5 @@
+import 'evaluation_progress.dart';
+import '../training_step.dart';
 import '../../contracts/differentiable_model.dart';
 import '../../losses/loss.dart';
 import '../../losses/mean_squared_error.dart';
@@ -15,10 +17,9 @@ import 'async_training_result.dart';
 import 'training_cancellation.dart';
 import 'training_progress.dart';
 
-Future<AsyncTrainingResult> runCooperatively(
-    AsyncTrainingRequest request,
-    TrainingCancellation cancellation,
-    void Function(TrainingProgress) progress) {
+Future<AsyncTrainingResult> runCooperatively(AsyncTrainingRequest request,
+    TrainingCancellation cancellation, void Function(TrainingProgress) progress,
+    {void Function(EvaluationProgress)? onEvaluationProgress}) {
   final json = request.toJson();
   final checkpoint =
       TrainingCheckpoint.fromJson(json['checkpoint'] as Map<String, dynamic>);
@@ -35,7 +36,8 @@ Future<AsyncTrainingResult> runCooperatively(
         NeuralNetwork.fromJson,
         (value) => _vector(value),
         cancellation,
-        progress),
+        progress,
+        onEvaluationProgress),
     'neural_engine_recurrent' => _run<List<List<double>>>(
         json,
         checkpoint,
@@ -43,7 +45,8 @@ Future<AsyncTrainingResult> runCooperatively(
         RecurrentNetwork.fromJson,
         (value) => (value as List).map(_vector).toList(),
         cancellation,
-        progress),
+        progress,
+        onEvaluationProgress),
     'neural_engine_cnn' => _run<ImageTensor>(
           json, checkpoint, loss, ConvolutionalNetwork.fromJson, (value) {
         final tensor = value as Map<String, dynamic>;
@@ -52,7 +55,7 @@ Future<AsyncTrainingResult> runCooperatively(
             width: tensor['width'] as int,
             channels: tensor['channels'] as int,
             values: _vector(tensor['values']));
-      }, cancellation, progress),
+      }, cancellation, progress, onEvaluationProgress),
     _ => throw UnsupportedError(
         'Worker supports MLP, CNN, RNN, LSTM and GRU checkpoints.'),
   };
@@ -68,7 +71,8 @@ Future<AsyncTrainingResult> _run<I>(
     DifferentiableModel<I> Function(Map<String, dynamic>) decoder,
     I Function(Object?) inputDecoder,
     TrainingCancellation cancellation,
-    void Function(TrainingProgress) progress) {
+    void Function(TrainingProgress) progress,
+    void Function(EvaluationProgress)? onEvaluationProgress) {
   final session =
       TrainingSession<I>.restore(checkpoint: checkpoint, modelDecoder: decoder);
   return session.fitAsync(
@@ -84,6 +88,11 @@ Future<AsyncTrainingResult> _run<I>(
     shuffle: json['shuffle'] as bool,
     maxGradientNorm: json['maxGradientNorm'] as double?,
     batchesPerYield: json['batchesPerYield'] as int,
+    evaluationSamplesPerYield: (json['evaluationSamplesPerYield'] ?? 32) as int,
+    maxWorkDuration: json['maxWorkMicroseconds'] == null
+        ? null
+        : Duration(microseconds: json['maxWorkMicroseconds'] as int),
+    onEvaluationProgress: onEvaluationProgress,
     cancellation: cancellation,
     onProgress: progress,
   );
@@ -122,3 +131,20 @@ AsyncTrainingResult decodeResult(Map<String, dynamic> json) =>
       cancelled: json['cancelled'] as bool,
       elapsed: Duration(microseconds: json['elapsed'] as int),
     );
+
+Map<String, Object?> encodeEvaluation(EvaluationProgress p) => {
+      'phase': p.phase.name,
+      'epoch': p.epoch,
+      'samples': p.samplesCompleted,
+      'total': p.totalSamples,
+      'loss': p.loss,
+      'incremental': p.incremental,
+    };
+EvaluationProgress decodeEvaluation(Map<String, dynamic> json) =>
+    EvaluationProgress(
+        phase: TrainingPhase.values.byName(json['phase'] as String),
+        epoch: json['epoch'] as int,
+        samplesCompleted: json['samples'] as int,
+        totalSamples: json['total'] as int,
+        loss: (json['loss'] as num?)?.toDouble(),
+        incremental: json['incremental'] as bool);

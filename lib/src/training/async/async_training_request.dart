@@ -21,6 +21,14 @@ class AsyncTrainingRequest {
       throw ArgumentError(
           'Epochs, batch size and batches per yield must be positive.');
     }
+    final chunk = data['evaluationSamplesPerYield'] ?? 32;
+    final budget = data['maxWorkMicroseconds'];
+    if (chunk is! int ||
+        chunk <= 0 ||
+        (budget != null && (budget is! int || budget <= 0))) {
+      throw ArgumentError(
+          'Evaluation chunk and optional work budget must be positive integers.');
+    }
     final norm = data['maxGradientNorm'] as double?;
     if (norm != null && (!norm.isFinite || norm <= 0)) {
       throw ArgumentError('Gradient norm must be finite and positive.');
@@ -46,6 +54,8 @@ class AsyncTrainingRequest {
     List<Object>? validationInputs,
     List<List<double>>? validationTargets,
     int batchesPerYield = 1,
+    int evaluationSamplesPerYield = 32,
+    Duration? maxWorkDuration,
   }) {
     Object encodeInput(Object input) => input is ImageTensor
         ? {
@@ -65,6 +75,8 @@ class AsyncTrainingRequest {
       'shuffle': shuffle,
       'maxGradientNorm': maxGradientNorm,
       'batchesPerYield': batchesPerYield,
+      'evaluationSamplesPerYield': evaluationSamplesPerYield,
+      'maxWorkMicroseconds': maxWorkDuration?.inMicroseconds,
       'validationInputs': validationInputs?.map(encodeInput).toList(),
       'validationTargets': validationTargets,
     });

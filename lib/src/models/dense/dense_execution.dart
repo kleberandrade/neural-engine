@@ -118,6 +118,15 @@ class DenseExecution {
     return ordinary;
   }
 
+  double sampleLoss(
+      {required List<double> input,
+      required List<double> target,
+      required Loss loss}) {
+    _compatible(loss);
+    _vector(target, layers.last.units, 'target');
+    return _sampleLoss(forward(input), target, loss);
+  }
+
   /// Loss averaged over samples (MSE and BCE also average over outputs).
   double evaluate({
     required List<List<double>> inputs,

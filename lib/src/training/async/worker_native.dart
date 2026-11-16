@@ -1,3 +1,4 @@
+import 'evaluation_progress.dart';
 import 'dart:async';
 import 'dart:isolate';
 import 'async_training_request.dart';
@@ -9,10 +10,9 @@ import 'worker_error.dart';
 
 const supportsIsolates = true;
 
-Future<AsyncTrainingResult> runInIsolate(
-    AsyncTrainingRequest request,
-    TrainingCancellation cancellation,
-    void Function(TrainingProgress) progress) async {
+Future<AsyncTrainingResult> runInIsolate(AsyncTrainingRequest request,
+    TrainingCancellation cancellation, void Function(TrainingProgress) progress,
+    {void Function(EvaluationProgress)? onEvaluationProgress}) async {
   final receive = ReceivePort();
   final result = Completer<AsyncTrainingResult>();
   SendPort? control;
@@ -26,6 +26,9 @@ Future<AsyncTrainingResult> runInIsolate(
       switch (message['type']) {
         case 'progress':
           progress(decodeProgress(message['data'] as Map<String, dynamic>));
+        case 'evaluation':
+          onEvaluationProgress
+              ?.call(decodeEvaluation(message['data'] as Map<String, dynamic>));
         case 'result':
           result
               .complete(decodeResult(message['data'] as Map<String, dynamic>));
@@ -70,7 +73,9 @@ Future<void> _worker(List<Object> arguments) async {
     final result = await runCooperatively(
         AsyncTrainingRequest.fromJson(arguments[1] as Map<String, dynamic>),
         cancellation,
-        (p) => output.send({'type': 'progress', 'data': encodeProgress(p)}));
+        (p) => output.send({'type': 'progress', 'data': encodeProgress(p)}),
+        onEvaluationProgress: (p) =>
+            output.send({'type': 'evaluation', 'data': encodeEvaluation(p)}));
     output.send({'type': 'result', 'data': encodeResult(result)});
   } catch (error, stack) {
     output.send({'type': 'error', 'error': '$error', 'stack': '$stack'});

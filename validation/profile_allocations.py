@@ -126,3 +126,19 @@ output = pathlib.Path(args.out)
 output.parent.mkdir(parents=True, exist_ok=True)
 output.write_text(json.dumps(result, indent=2) + '\n')
 print('Saved allocation evidence:', output)
+
+from collections import Counter
+summary = {'protocol': result['protocol'], 'workloads': []}
+for workload in result['workloads']:
+    item = {key: value for key, value in workload.items() if key not in ['measurements', 'allocationStacks']}
+    item['measurements'] = []
+    for measurement in workload['measurements']:
+        classes = measurement['classes']
+        item['measurements'].append({'workload': measurement['workload'],
+            'totalAccumulatedBytes': sum(c['accumulatedBytes'] for c in classes),
+            'arrayAccumulatedBytes': sum(c['accumulatedBytes'] for c in classes if c['name'] in ['_List', '_GrowableList']),
+            'topClasses': sorted(classes, key=lambda c:c['accumulatedBytes'], reverse=True)[:10]})
+    item['topAllocationStacks'] = [{'frames': list(frames), 'samples': count}
+        for frames, count in Counter(tuple(stack) for stack in workload['allocationStacks']).most_common(8)]
+    summary['workloads'].append(item)
+print('NEURAL_ALLOCATION ' + json.dumps(summary, separators=(',', ':')))

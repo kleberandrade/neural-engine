@@ -3,6 +3,8 @@ import '../contracts/differentiable_model.dart';
 import '../losses/loss.dart';
 import '../optimizers/optimizer.dart';
 import 'training_history.dart';
+import 'training_step.dart';
+import 'evaluation_steps.dart';
 
 /// Shared supervised training lifecycle; model math stays in model executors.
 class MiniBatchTrainer<I> {
@@ -69,7 +71,53 @@ class MiniBatchTrainer<I> {
     int? patience,
     double minDelta = 0,
   }) sync* {
-    if (epochOffset < 0 ||
+    for (final step in events(
+        model: model,
+        seed: seed,
+        optimizerState: optimizerState,
+        epochOffset: epochOffset,
+        epochSeededShuffle: epochSeededShuffle,
+        maxGradientNorm: maxGradientNorm,
+        inputs: inputs,
+        targets: targets,
+        loss: loss,
+        optimizer: optimizer,
+        epochs: epochs,
+        batchSize: batchSize,
+        shuffle: shuffle,
+        validationInputs: validationInputs,
+        validationTargets: validationTargets,
+        patience: patience,
+        minDelta: minDelta)) {
+      if (step.phase == TrainingPhase.batchUpdate) yield null;
+      if (step.history != null) yield step.history;
+    }
+  }
+
+  /// Typed batch/evaluation/epoch units, shared by synchronous and async paths.
+  Iterable<TrainingStep> events({
+    required DifferentiableModel<I> model,
+    int? seed,
+    OptimizerState? optimizerState,
+    int epochOffset = 0,
+    bool epochSeededShuffle = false,
+    double? maxGradientNorm,
+    required List<I> inputs,
+    required List<List<double>> targets,
+    required Loss loss,
+    required Optimizer optimizer,
+    int epochs = 1000,
+    int batchSize = 32,
+    bool shuffle = true,
+    List<I>? validationInputs,
+    List<List<double>>? validationTargets,
+    int? patience,
+    double minDelta = 0,
+    int evaluationChunkSize = 32,
+    bool Function()? shouldStop,
+  }) sync* {
+    if (evaluationChunkSize <= 0 ||
+        epochOffset < 0 ||
         (epochSeededShuffle && seed == null) ||
         (maxGradientNorm != null &&
             (!maxGradientNorm.isFinite || maxGradientNorm <= 0)) ||
@@ -82,14 +130,24 @@ class MiniBatchTrainer<I> {
         (patience != null && validationInputs == null)) {
       throw ArgumentError('Invalid training or validation configuration.');
     }
-    // Validate complete datasets before any weight updates.
-    _finiteLoss(model.evaluate(inputs: inputs, targets: targets, loss: loss));
-    if (validationInputs != null) {
-      _finiteLoss(model.evaluate(
-        inputs: validationInputs,
-        targets: validationTargets!,
+    // Complete preflight before any weights change, but expose each chunk.
+    yield* evaluationSteps(
+        model: model,
+        inputs: inputs,
+        targets: targets,
         loss: loss,
-      ));
+        phase: TrainingPhase.trainingPreflight,
+        epoch: epochOffset,
+        chunkSize: evaluationChunkSize);
+    if (validationInputs != null) {
+      yield* evaluationSteps(
+          model: model,
+          inputs: validationInputs,
+          targets: validationTargets!,
+          loss: loss,
+          phase: TrainingPhase.validationPreflight,
+          epoch: epochOffset,
+          chunkSize: evaluationChunkSize);
     }
     final state = optimizerState ?? optimizer.createState(model.parameterCount);
     final random = math.Random(seed);
@@ -102,6 +160,7 @@ class MiniBatchTrainer<I> {
     var stale = 0;
     var stopped = false;
     for (var epoch = 0; epoch < epochs; epoch++) {
+      if (shouldStop?.call() ?? false) break;
       if (epochSeededShuffle) {
         for (var i = 0; i < order.length; i++) {
           order[i] = i;
@@ -156,16 +215,38 @@ class MiniBatchTrainer<I> {
           );
         }
         model.parameters = candidate;
-        yield null;
+        yield TrainingStep(TrainingPhase.batchUpdate,
+            epoch: epochOffset + epoch + 1,
+            samplesCompleted: end,
+            totalSamples: order.length);
       }
-      losses.add(_finiteLoss(
-          model.evaluate(inputs: inputs, targets: targets, loss: loss)));
-      if (validationInputs != null) {
-        final value = _finiteLoss(model.evaluate(
-          inputs: validationInputs,
-          targets: validationTargets!,
+      double? trainingLoss;
+      for (final step in evaluationSteps(
+          model: model,
+          inputs: inputs,
+          targets: targets,
           loss: loss,
-        ));
+          phase: TrainingPhase.trainingEvaluation,
+          epoch: epochOffset + epoch + 1,
+          chunkSize: evaluationChunkSize)) {
+        yield step;
+        trainingLoss = step.loss;
+      }
+      losses.add(trainingLoss!);
+      double? validationValue;
+      if (validationInputs != null) {
+        for (final step in evaluationSteps(
+            model: model,
+            inputs: validationInputs,
+            targets: validationTargets!,
+            loss: loss,
+            phase: TrainingPhase.validationEvaluation,
+            epoch: epochOffset + epoch + 1,
+            chunkSize: evaluationChunkSize)) {
+          yield step;
+          validationValue = step.loss;
+        }
+        final value = validationValue!;
         validationLosses.add(value);
         if (value < best - minDelta) {
           best = value;
@@ -177,25 +258,24 @@ class MiniBatchTrainer<I> {
         }
         if (patience != null && stale >= patience) {
           stopped = true;
-          break;
         }
       }
+      yield TrainingStep(TrainingPhase.epochComplete,
+          epoch: epochOffset + epoch + 1,
+          loss: losses.last,
+          validationLoss: validationValue);
+      if (stopped) break;
     }
     if (patience != null && bestParameters != null) {
       model.parameters = bestParameters;
     }
-    yield TrainingHistory(
-      losses,
-      validationLosses,
-      stoppedEarly: stopped,
-      bestEpoch: bestEpoch,
-    );
+    yield TrainingStep(TrainingPhase.completed,
+        epoch: epochOffset + losses.length,
+        history: TrainingHistory(
+          losses,
+          validationLosses,
+          stoppedEarly: stopped,
+          bestEpoch: bestEpoch,
+        ));
   }
-}
-
-double _finiteLoss(double value) {
-  if (!value.isFinite) {
-    throw StateError('Model evaluation must return a finite loss.');
-  }
-  return value;
 }

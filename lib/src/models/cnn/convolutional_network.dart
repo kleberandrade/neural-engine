@@ -1,3 +1,4 @@
+import '../../contracts/sample_loss_model.dart';
 import '../../activations/activation.dart';
 import '../../layers/spatial/conv2d.dart';
 import '../../layers/spatial/max_pool2d.dart';
@@ -21,7 +22,10 @@ import 'spatial_backward.dart';
 /// A stack of Conv2D/MaxPool2D layers, implicit Flatten and a dense head.
 /// Backpropagation trains convolution kernels and the dense head together.
 class ConvolutionalNetwork
-    implements DifferentiableModel<ImageTensor>, JsonModel {
+    implements
+        DifferentiableModel<ImageTensor>,
+        SampleLossModel<ImageTensor>,
+        JsonModel {
   final int inputHeight;
   final int inputWidth;
   final int inputChannels;
@@ -115,6 +119,15 @@ class ConvolutionalNetwork
   List<ImageTensor> featureMaps(ImageTensor input) =>
       List.unmodifiable(_forward(input).tensors.skip(1));
 
+  @override
+  double sampleLoss(
+          {required ImageTensor input,
+          required List<double> target,
+          required Loss loss}) =>
+      _head.sampleLoss(
+          input: _forward(input).tensors.last.values,
+          target: target,
+          loss: loss);
   @override
   double evaluate(
       {required List<ImageTensor> inputs,
