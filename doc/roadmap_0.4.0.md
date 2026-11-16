@@ -6,6 +6,7 @@ boundaries and the [real-data examples](real_world.md), rather than adding model
 
 | Priority | Evidence / reason | Proposed work | Acceptance check |
 | --- | --- | --- | --- |
+| P1 | Within Chrome, batch 8 reduced CNN wall time but increased observed timer lag relative to batch 1; changing batches also changes math | Hold batch size fixed and vary batchesPerYield before proposing an explicit scheduling budget | Identical weights/moments for every yield frequency; archive wall time and event-loop observations with sample counts |
 | P1 | Browser batches yield, but dataset validation/evaluation still execute as full units | Incremental, chunked evaluation using explicit progress steps | Identical losses and checkpoints on each runtime; browser timer/input opportunity between chunks; cancellation never reports a partial epoch |
 | P1 | Timers/RSS are proxies and do not expose allocation sites or physical frame jank | Capture allocation profiles and real Flutter integration traces on a named device plus Chrome release build | Archive exact build, hardware, dataset, profile method and raw measurements; report frame percentiles separately from event-loop delays |
 | P2 | Every batch builds gradient/candidate vectors in the shared executor; actual allocation dominance remains unmeasured | Profile first, then reuse buffers at measured hot sites | No public aliasing of reused buffers; all finite-difference and exact-replay tests pass; compare allocated bytes and throughput using equal workloads with independent warmups |
@@ -16,7 +17,7 @@ boundaries and the [real-data examples](real_world.md), rather than adding model
 ## Proposed order
 
 1. Establish device/release-build traces and allocation baseline.
-2. Introduce incremental evaluation without changing arithmetic order or replay.
+2. Measure yield frequency at fixed batch size, then introduce incremental evaluation without changing arithmetic order or replay.
 3. Optimize only measured allocation hot spots and retest all model families.
 4. Re-run the same workloads and publish before/after observations with limits.
 

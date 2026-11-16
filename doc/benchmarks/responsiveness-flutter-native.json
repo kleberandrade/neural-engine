@@ -1,0 +1,433 @@
+{
+  "host": "Flutter test / native headless engine",
+  "runtime": "3.14.0 (stable) (Wed Nov 4 16:28:39 2026 -0800) on \"linux_x64\"",
+  "os": "linux",
+  "processors": 4,
+  "memoryMetric": "process RSS (all isolates)",
+  "seed": 42,
+  "timerIntervalUs": 1000,
+  "workloads": "AsyncDemoRecipe defaults, Adam 0.02, gradient clipping 1; batch size overridden",
+  "measurementNotes": "One process; sampled memory is not allocated bytes or an exact peak; JS heap and native RSS are incomparable. Wall time includes serialization/startup. Timer delays are not frame times. Three repetitions are descriptive, not confidence intervals.",
+  "rows": [
+    {
+      "family": "MLP",
+      "requestedExecution": "automatic",
+      "batchSize": 1,
+      "epochs": 8,
+      "repetitions": 3,
+      "wallTraining": {
+        "samples": 3,
+        "medianUs": 5513,
+        "p95Us": 8035,
+        "maxUs": 8035
+      },
+      "eventLoopDelay": {
+        "samples": 13,
+        "medianUs": 0,
+        "p95Us": 1633,
+        "maxUs": 1633
+      },
+      "heartbeatCount": 13,
+      "cancellationLatency": {
+        "samples": 3,
+        "medianUs": 648,
+        "p95Us": 1892,
+        "maxUs": 1892
+      },
+      "cancelAfterProgressEpoch": 2,
+      "completedEpochsOnCancel": [
+        3,
+        3,
+        3
+      ],
+      "memoryStartBytes": 133468160,
+      "sampledPeakBytes": 141488128,
+      "memoryEndBytes": 138698752
+    },
+    {
+      "family": "MLP",
+      "requestedExecution": "automatic",
+      "batchSize": 8,
+      "epochs": 8,
+      "repetitions": 3,
+      "wallTraining": {
+        "samples": 3,
+        "medianUs": 2408,
+        "p95Us": 3308,
+        "maxUs": 3308
+      },
+      "eventLoopDelay": {
+        "samples": 4,
+        "medianUs": 507,
+        "p95Us": 906,
+        "maxUs": 906
+      },
+      "heartbeatCount": 4,
+      "cancellationLatency": {
+        "samples": 3,
+        "medianUs": 516,
+        "p95Us": 519,
+        "maxUs": 519
+      },
+      "cancelAfterProgressEpoch": 2,
+      "completedEpochsOnCancel": [
+        3,
+        3,
+        3
+      ],
+      "memoryStartBytes": 139653120,
+      "sampledPeakBytes": 145752064,
+      "memoryEndBytes": 137699328
+    },
+    {
+      "family": "MLP",
+      "requestedExecution": "cooperative",
+      "batchSize": 1,
+      "epochs": 8,
+      "repetitions": 3,
+      "wallTraining": {
+        "samples": 3,
+        "medianUs": 2533,
+        "p95Us": 4125,
+        "maxUs": 4125
+      },
+      "eventLoopDelay": {
+        "samples": 5,
+        "medianUs": 606,
+        "p95Us": 977,
+        "maxUs": 977
+      },
+      "heartbeatCount": 5,
+      "cancellationLatency": {
+        "samples": 3,
+        "medianUs": 167,
+        "p95Us": 185,
+        "maxUs": 185
+      },
+      "cancelAfterProgressEpoch": 2,
+      "completedEpochsOnCancel": [
+        2,
+        2,
+        2
+      ],
+      "memoryStartBytes": 137756672,
+      "sampledPeakBytes": 139042816,
+      "memoryEndBytes": 138616832
+    },
+    {
+      "family": "MLP",
+      "requestedExecution": "cooperative",
+      "batchSize": 8,
+      "epochs": 8,
+      "repetitions": 3,
+      "wallTraining": {
+        "samples": 3,
+        "medianUs": 1402,
+        "p95Us": 1640,
+        "maxUs": 1640
+      },
+      "eventLoopDelay": {
+        "samples": 1,
+        "medianUs": 154,
+        "p95Us": 154,
+        "maxUs": 154
+      },
+      "heartbeatCount": 1,
+      "cancellationLatency": {
+        "samples": 3,
+        "medianUs": 114,
+        "p95Us": 127,
+        "maxUs": 127
+      },
+      "cancelAfterProgressEpoch": 2,
+      "completedEpochsOnCancel": [
+        2,
+        2,
+        2
+      ],
+      "memoryStartBytes": 138616832,
+      "sampledPeakBytes": 138964992,
+      "memoryEndBytes": 138772480
+    },
+    {
+      "family": "CNN",
+      "requestedExecution": "automatic",
+      "batchSize": 1,
+      "epochs": 8,
+      "repetitions": 3,
+      "wallTraining": {
+        "samples": 3,
+        "medianUs": 21100,
+        "p95Us": 29584,
+        "maxUs": 29584
+      },
+      "eventLoopDelay": {
+        "samples": 59,
+        "medianUs": 0,
+        "p95Us": 626,
+        "maxUs": 2026
+      },
+      "heartbeatCount": 59,
+      "cancellationLatency": {
+        "samples": 3,
+        "medianUs": 2058,
+        "p95Us": 3086,
+        "maxUs": 3086
+      },
+      "cancelAfterProgressEpoch": 2,
+      "completedEpochsOnCancel": [
+        3,
+        3,
+        3
+      ],
+      "memoryStartBytes": 140013568,
+      "sampledPeakBytes": 153657344,
+      "memoryEndBytes": 142123008
+    },
+    {
+      "family": "CNN",
+      "requestedExecution": "automatic",
+      "batchSize": 8,
+      "epochs": 8,
+      "repetitions": 3,
+      "wallTraining": {
+        "samples": 3,
+        "medianUs": 10689,
+        "p95Us": 11698,
+        "maxUs": 11698
+      },
+      "eventLoopDelay": {
+        "samples": 28,
+        "medianUs": 2,
+        "p95Us": 762,
+        "maxUs": 953
+      },
+      "heartbeatCount": 28,
+      "cancellationLatency": {
+        "samples": 3,
+        "medianUs": 1392,
+        "p95Us": 2522,
+        "maxUs": 2522
+      },
+      "cancelAfterProgressEpoch": 2,
+      "completedEpochsOnCancel": [
+        3,
+        3,
+        3
+      ],
+      "memoryStartBytes": 142155776,
+      "sampledPeakBytes": 142692352,
+      "memoryEndBytes": 142692352
+    },
+    {
+      "family": "CNN",
+      "requestedExecution": "cooperative",
+      "batchSize": 1,
+      "epochs": 8,
+      "repetitions": 3,
+      "wallTraining": {
+        "samples": 3,
+        "medianUs": 13853,
+        "p95Us": 13890,
+        "maxUs": 13890
+      },
+      "eventLoopDelay": {
+        "samples": 38,
+        "medianUs": 18,
+        "p95Us": 656,
+        "maxUs": 831
+      },
+      "heartbeatCount": 38,
+      "cancellationLatency": {
+        "samples": 3,
+        "medianUs": 175,
+        "p95Us": 196,
+        "maxUs": 196
+      },
+      "cancelAfterProgressEpoch": 2,
+      "completedEpochsOnCancel": [
+        2,
+        2,
+        2
+      ],
+      "memoryStartBytes": 142708736,
+      "sampledPeakBytes": 142946304,
+      "memoryEndBytes": 142946304
+    },
+    {
+      "family": "CNN",
+      "requestedExecution": "cooperative",
+      "batchSize": 8,
+      "epochs": 8,
+      "repetitions": 3,
+      "wallTraining": {
+        "samples": 3,
+        "medianUs": 9963,
+        "p95Us": 10043,
+        "maxUs": 10043
+      },
+      "eventLoopDelay": {
+        "samples": 27,
+        "medianUs": 3,
+        "p95Us": 743,
+        "maxUs": 809
+      },
+      "heartbeatCount": 27,
+      "cancellationLatency": {
+        "samples": 3,
+        "medianUs": 152,
+        "p95Us": 153,
+        "maxUs": 153
+      },
+      "cancelAfterProgressEpoch": 2,
+      "completedEpochsOnCancel": [
+        2,
+        2,
+        2
+      ],
+      "memoryStartBytes": 142991360,
+      "sampledPeakBytes": 143110144,
+      "memoryEndBytes": 143110144
+    },
+    {
+      "family": "GRU",
+      "requestedExecution": "automatic",
+      "batchSize": 1,
+      "epochs": 8,
+      "repetitions": 3,
+      "wallTraining": {
+        "samples": 3,
+        "medianUs": 28052,
+        "p95Us": 42115,
+        "maxUs": 42115
+      },
+      "eventLoopDelay": {
+        "samples": 82,
+        "medianUs": 1,
+        "p95Us": 705,
+        "maxUs": 2316
+      },
+      "heartbeatCount": 82,
+      "cancellationLatency": {
+        "samples": 3,
+        "medianUs": 4005,
+        "p95Us": 4178,
+        "maxUs": 4178
+      },
+      "cancelAfterProgressEpoch": 2,
+      "completedEpochsOnCancel": [
+        3,
+        3,
+        3
+      ],
+      "memoryStartBytes": 143294464,
+      "sampledPeakBytes": 164249600,
+      "memoryEndBytes": 146223104
+    },
+    {
+      "family": "GRU",
+      "requestedExecution": "automatic",
+      "batchSize": 8,
+      "epochs": 8,
+      "repetitions": 3,
+      "wallTraining": {
+        "samples": 3,
+        "medianUs": 12956,
+        "p95Us": 14095,
+        "maxUs": 14095
+      },
+      "eventLoopDelay": {
+        "samples": 37,
+        "medianUs": 0,
+        "p95Us": 491,
+        "maxUs": 577
+      },
+      "heartbeatCount": 37,
+      "cancellationLatency": {
+        "samples": 3,
+        "medianUs": 1791,
+        "p95Us": 1794,
+        "maxUs": 1794
+      },
+      "cancelAfterProgressEpoch": 2,
+      "completedEpochsOnCancel": [
+        3,
+        3,
+        3
+      ],
+      "memoryStartBytes": 146264064,
+      "sampledPeakBytes": 147132416,
+      "memoryEndBytes": 147042304
+    },
+    {
+      "family": "GRU",
+      "requestedExecution": "cooperative",
+      "batchSize": 1,
+      "epochs": 8,
+      "repetitions": 3,
+      "wallTraining": {
+        "samples": 3,
+        "medianUs": 19089,
+        "p95Us": 19746,
+        "maxUs": 19746
+      },
+      "eventLoopDelay": {
+        "samples": 53,
+        "medianUs": 2,
+        "p95Us": 364,
+        "maxUs": 908
+      },
+      "heartbeatCount": 53,
+      "cancellationLatency": {
+        "samples": 3,
+        "medianUs": 179,
+        "p95Us": 185,
+        "maxUs": 185
+      },
+      "cancelAfterProgressEpoch": 2,
+      "completedEpochsOnCancel": [
+        2,
+        2,
+        2
+      ],
+      "memoryStartBytes": 147607552,
+      "sampledPeakBytes": 151257088,
+      "memoryEndBytes": 148045824
+    },
+    {
+      "family": "GRU",
+      "requestedExecution": "cooperative",
+      "batchSize": 8,
+      "epochs": 8,
+      "repetitions": 3,
+      "wallTraining": {
+        "samples": 3,
+        "medianUs": 12559,
+        "p95Us": 12742,
+        "maxUs": 12742
+      },
+      "eventLoopDelay": {
+        "samples": 34,
+        "medianUs": 0,
+        "p95Us": 806,
+        "maxUs": 833
+      },
+      "heartbeatCount": 34,
+      "cancellationLatency": {
+        "samples": 3,
+        "medianUs": 183,
+        "p95Us": 224,
+        "maxUs": 224
+      },
+      "cancelAfterProgressEpoch": 2,
+      "completedEpochsOnCancel": [
+        2,
+        2,
+        2
+      ],
+      "memoryStartBytes": 148156416,
+      "sampledPeakBytes": 148643840,
+      "memoryEndBytes": 148643840
+    }
+  ]
+}

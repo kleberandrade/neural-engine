@@ -18,3 +18,9 @@ real-data examples on native/JavaScript; dataset equality/hash checks; generated
 reference without warnings. Full Flutter tests, Chrome measurements, web build and
 package publication validation run in CI. Publication and exact hosted 0.3.0
 verification are recorded only after their workflows finish.
+
+The complete [source CI](https://github.com/kleberandrade/neural-engine/actions/runs/43960668085)
+passed with 98 Dart tests, nine Flutter widget tests, both measured Flutter hosts,
+minimum/stable Dart, hosted 0.2.1 regression validation, JavaScript examples, web
+build and package dry-run. See the permanent native/Chrome snapshots in
+`doc/benchmarks/`; release publication and exact hosted 0.3.0 checks follow separately.

@@ -57,3 +57,33 @@ GC are not controlled. The output labels those limits explicitly.
 The experiment motivates isolating evaluation and profiling allocation in 0.4.0;
 it does **not** prove that evaluation or any allocation site dominates wall time.
 See the [roadmap and acceptance checks](../roadmap_0.4.0.md).
+
+## Flutter native and Chrome observations
+
+Measured in [successful CI 43960668085](https://github.com/kleberandrade/neural-engine/actions/runs/43960668085)
+at source commit `79f1607`, Flutter stable on the Linux runner (Dart 3.14.0 native;
+Chrome 157 in the browser). Full permanent snapshots:
+[native](responsiveness-flutter-native.json) and [Chrome](responsiveness-flutter-chrome.json).
+These are the completed reports read from the job logs, also uploaded as a CI artifact.
+
+Selected cooperative cases from the same CI invocation:
+
+| Host / model / batch | Median wall ms | Timer delay p95 ms | Median cancel ms |
+| --- | ---: | ---: | ---: |
+| Native / CNN / 1 | 13.853 | 0.656 | 0.175 |
+| Native / CNN / 8 | 9.963 | 0.743 | 0.152 |
+| Chrome / CNN / 1 | 637.601 | 3.500 | 4.400 |
+| Chrome / CNN / 8 | 170.101 | 5.600 | 4.200 |
+| Chrome / GRU / 1 | 911.200 | 3.299 | 4.400 |
+| Chrome / GRU / 8 | 212.400 | 5.600 | 4.300 |
+
+Chrome CNN sampled JS-heap peaks were 221,336,263 / 222,915,591 bytes for batches
+1 / 8. Native CNN process-RSS samples were 142,946,304 / 143,110,144 bytes. Those
+are host-wide observations with different meanings; they cannot establish a
+per-model allocation reduction or a native-vs-web memory efficiency ranking.
+
+Larger batches correlated here with lower wall time and greater browser timer
+lag. Changing batch size also changes the optimizer update count and training
+trajectory, so this is not an isolated scheduler experiment. The next experiment
+must hold batch size/math fixed and vary only `batchesPerYield` before choosing
+any new scheduling policy. No physical-device frame-rate claim is made.
