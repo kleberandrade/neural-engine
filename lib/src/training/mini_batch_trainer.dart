@@ -25,6 +25,50 @@ class MiniBatchTrainer<I> {
     int? patience,
     double minDelta = 0,
   }) {
+    return steps(
+      model: model,
+      seed: seed,
+      optimizerState: optimizerState,
+      epochOffset: epochOffset,
+      epochSeededShuffle: epochSeededShuffle,
+      maxGradientNorm: maxGradientNorm,
+      inputs: inputs,
+      targets: targets,
+      loss: loss,
+      optimizer: optimizer,
+      epochs: epochs,
+      batchSize: batchSize,
+      shuffle: shuffle,
+      validationInputs: validationInputs,
+      validationTargets: validationTargets,
+      patience: patience,
+      minDelta: minDelta,
+    ).last!;
+  }
+
+  /// Shared incremental executor. Null marks a completed mini-batch; the final
+  /// value is the history. Exhaust this iterator to commit the entire fit.
+  /// Used by TrainingSession's cooperative runner; abandoning it mid-epoch
+  /// leaves partial updates and must not be represented as a checkpoint.
+  Iterable<TrainingHistory?> steps({
+    required DifferentiableModel<I> model,
+    int? seed,
+    OptimizerState? optimizerState,
+    int epochOffset = 0,
+    bool epochSeededShuffle = false,
+    double? maxGradientNorm,
+    required List<I> inputs,
+    required List<List<double>> targets,
+    required Loss loss,
+    required Optimizer optimizer,
+    int epochs = 1000,
+    int batchSize = 32,
+    bool shuffle = true,
+    List<I>? validationInputs,
+    List<List<double>>? validationTargets,
+    int? patience,
+    double minDelta = 0,
+  }) sync* {
     if (epochOffset < 0 ||
         (epochSeededShuffle && seed == null) ||
         (maxGradientNorm != null &&
@@ -112,6 +156,7 @@ class MiniBatchTrainer<I> {
           );
         }
         model.parameters = candidate;
+        yield null;
       }
       losses.add(_finiteLoss(
           model.evaluate(inputs: inputs, targets: targets, loss: loss)));
@@ -139,7 +184,7 @@ class MiniBatchTrainer<I> {
     if (patience != null && bestParameters != null) {
       model.parameters = bestParameters;
     }
-    return TrainingHistory(
+    yield TrainingHistory(
       losses,
       validationLosses,
       stoppedEarly: stopped,

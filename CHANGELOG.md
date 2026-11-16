@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 (unreleased)
+
+- Add native isolate workers and cooperative web mini-batches through AsyncTrainingTask.
+- Share the synchronous batch executor with TrainingSession.fitAsync; support custom model/loss/optimizer contracts cooperatively.
+- Stream epoch progress, training/validation loss and elapsed time; cancel at complete epoch boundaries and resume existing JSON checkpoints.
+- Add an Async training Flutter tab for MLP/CNN/RNN/LSTM/GRU/autoencoder with live charts, cancellation, load/resume and asynchronous reference comparison.
+- Add bilingual scheduling/lifecycle guides, platform limits, architecture diagrams and native/JavaScript/Flutter lifecycle tests.
 
 ## 0.2.1
 

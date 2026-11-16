@@ -4,7 +4,7 @@ import 'huber_loss.dart';
 import 'momentum_optimizer.dart';
 import 'linear_model.dart';
 
-void main() {
+Future<void> main() async {
   final inputs = <List<double>>[
     [-1],
     [-0.5],
@@ -57,7 +57,7 @@ void main() {
       checkpoint: checkpoint,
       modelDecoder: LinearModel.fromJson,
       optimizerDecoder: MomentumOptimizer.fromJson);
-  resumed.fit(
+  await resumed.fitAsync(
       inputs: inputs, targets: targets, loss: loss, epochs: 12, batchSize: 3);
   if (jsonEncode(full.checkpoint().toJson()) !=
       jsonEncode(resumed.checkpoint().toJson())) {

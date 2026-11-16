@@ -26,6 +26,14 @@ conventions, learning steps, practical experiments and evaluation limits.
 RNN, LSTM and reset-before GRU are implemented as many-to-one models. See
 [sequence forecasting](https://github.com/kleberandrade/neural-engine/blob/main/doc/recurrent.md) and the Flutter Sequences tab.
 
+## Asynchronous training (next 0.3.0)
+
+The development branch adds native isolates, cooperative web batches, epoch
+progress and safe cancellation/resume for MLP, CNN and recurrent models.
+See the [async guide](https://github.com/kleberandrade/neural-engine/blob/main/doc/async_training.md)
+and the Flutter **Async training** tab. These APIs are not in published 0.2.1;
+use the source checkout until 0.3.0 is released.
+
 ## Install
 
 ```yaml

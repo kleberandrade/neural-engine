@@ -52,3 +52,14 @@ boundaries; ordinary fit retains its existing fresh-run behavior. Sessions use
 fixed epochs, with no silent reuse of early-stopping weights and mismatched
 optimizer moments. A failed session must restore a previous valid checkpoint.
 See [persistence](../persistence.md) for exact-replay requirements.
+
+## Async scheduling (0.3.0)
+
+MiniBatchTrainer.fit drains the same steps iterator used by fitAsync. The iterator
+yields after each committed batch. TrainingSession.fitAsync uses retained optimizer
+state and absolute epoch shuffles, yields via timers, reports complete epochs, and
+checks cancellation only at epoch boundaries. Concurrent session training/checkpoint
+calls are rejected. Async sessions have fixed epochs and optional validation metrics,
+without best-weight restoration. AsyncTrainingTask selects native isolate transport
+or web cooperative execution using conditional imports. Built-in codecs are separate
+from the model-agnostic trainer. See [async lifecycle](../async_training.md).

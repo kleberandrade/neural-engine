@@ -73,3 +73,13 @@ file. No storage plugin is required, including on web. The pure Dart
 [checkpoint example](../checkpoint.dart) explains the core API; the
 [hosted consumer](../../validation/hosted/README.md) demonstrates actual file IO.
 SOM's independent neighborhood/decay schedule is outside `TrainingSession`.
+
+## Async training (0.3.0 development)
+
+Use **Async training** for MLP/CNN/RNN/LSTM/GRU/autoencoder with native isolates or
+cooperative web batches, live epoch/loss/validation/time, interaction counter,
+cancel, copy/load JSON, resume and asynchronous uninterrupted-run comparison.
+The old model visualization tabs remain standalone recipes. SOM has a separate
+unsupervised schedule. Web compute in old tabs is not a parallel worker.
+See [English](../../doc/async_training.md) / [Português](../../doc/async_training.pt-BR.md)
+for epoch-boundary cancellation and browser scheduling limits.

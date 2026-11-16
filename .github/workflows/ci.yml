@@ -38,6 +38,8 @@ jobs:
       - run: dart run example/recurrent_sequences.dart
       - run: dart run example/evaluation.dart
       - run: dart run example/custom_extensions.dart
+      - run: dart run validation/async_portability.dart
+      - run: dart run example/async_training.dart
       - run: dart run example/checkpoint.dart
       - run: dart compile js example/neural_engine_example.dart -o /tmp/neural_engine.js
       - run: dart compile js example/som_colors.dart -o /tmp/som.js
@@ -49,6 +51,10 @@ jobs:
       - run: dart compile js example/recurrent_sequences.dart -o /tmp/recurrent.js
       - run: node /tmp/recurrent.js
       - run: dart compile js example/checkpoint.dart -o /tmp/checkpoint.js
+      - run: dart compile js example/async_training.dart -o /tmp/async_training.js
+      - run: node validation/run_async_js.cjs /tmp/async_training.js
+      - run: dart compile js validation/async_portability.dart -o /tmp/async_portability.js
+      - run: node validation/run_async_js.cjs /tmp/async_portability.js
       - run: node /tmp/checkpoint.js
       - run: dart compile js example/custom_extensions.dart -o /tmp/extensions.js
       - run: node /tmp/extensions.js

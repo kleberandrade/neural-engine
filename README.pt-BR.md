@@ -21,6 +21,14 @@ O [guia completo](https://github.com/kleberandrade/neural-engine/blob/main/doc/m
 dados, os passos de treinamento e experimentos para modificar. Os dados são
 sintéticos e gerados localmente. RNN, LSTM e GRU estão implementados com saída no último passo; veja o guia de sequências.
 
+## Treinamento assíncrono (próxima 0.3.0)
+
+A branch de desenvolvimento inclui isolates no nativo, mini-batches cooperativos
+na web, progresso e cancelamento com retomada. Veja o
+[guia didático](https://github.com/kleberandrade/neural-engine/blob/main/doc/async_training.pt-BR.md)
+e a aba **Async training** no Flutter. A API ainda não está na versão publicada
+0.2.1; use o checkout até a publicação da 0.3.0.
+
 ## Instalação
 
 ```yaml

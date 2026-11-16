@@ -14,6 +14,7 @@ is under `lib/src`; its classes are exported selectively through the public
 | `lib/src/losses/` | Loss interface; MSE, binary/ categorical CE in separate files | No trainer/model dependency |
 | `lib/src/optimizers/` | Optimizer/OptimizerState contracts; SGD, Adam | Flat vectors, no model dependency |
 | `lib/src/training/` | MiniBatchTrainer, TrainingHistory, TrainingSession | Depends on model contract, not concrete family |
+| `lib/src/training/async/` | AsyncTrainingTask, request/result/progress/cancellation; native/web transport and built-in codecs | Platform code isolated; only worker codecs know concrete models |
 | `lib/src/models/dense/` | NeuralNetwork facade, DenseExecution, DensePass/derivatives | Numerical passes separate from lifecycle |
 | `lib/src/models/cnn/` | ConvolutionalNetwork, SpatialStage/Pass, separate forward/backward functions | Composes dense head and spatial passes |
 | `lib/src/models/som/` | SelfOrganizingMap, SomMatch, SomHistory | Competitive learning independent of supervised trainer |
@@ -49,3 +50,8 @@ Avoid adding interfaces with no consumer; contracts above are used in execution.
 Flutter checkpoint UI lives in `pages/checkpoint_page.dart`; its pure Dart
 worker and reference comparison live in `runners/checkpoint_runner.dart`. No
 Flutter rendering or clipboard API is imported by the worker or package core.
+
+Async Flutter lifecycle lives in `pages/async_training_page.dart`; portable recipes
+live in `runners/async_demo_recipe.dart`. The asynchronous core separates request,
+result, progress, cancellation, task orchestration, codecs and platform transports
+into their own files. See [scheduling](../async_training.md).

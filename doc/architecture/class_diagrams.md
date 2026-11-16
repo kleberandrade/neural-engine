@@ -138,3 +138,25 @@ classDiagram
 
 A custom plain Optimizer remains usable without implementing checkpoint support.
 TrainingSession.restore accepts explicit application-owned model/optimizer decoders.
+
+## Asynchronous lifecycle (0.3.0)
+
+```mermaid
+classDiagram
+  direction TB
+  AsyncTrainingTask --> AsyncTrainingRequest : copies request
+  AsyncTrainingTask --> TrainingCancellation : owns
+  AsyncTrainingTask --> TrainingProgress : streams
+  AsyncTrainingTask --> AsyncTrainingResult : completes
+  AsyncTrainingResult --> TrainingCheckpoint : contains
+  AsyncTrainingResult --> TrainingHistory : contains
+  TrainingSession --> TrainingCancellation : observes
+  TrainingSession --> TrainingProgress : reports
+  TrainingSession --> AsyncTrainingResult : returns
+  TrainingSession --> MiniBatchTrainer : consumes steps
+```
+
+Platform transport uses conditional imports and top-level functions, not a new
+model inheritance hierarchy. Native workers reconstruct built-in codecs in their
+own isolate. Cooperative custom sessions still target DifferentiableModel and
+CheckpointOptimizer. [Scheduling and lifecycle details](../async_training.md).

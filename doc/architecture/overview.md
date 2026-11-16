@@ -58,3 +58,10 @@ acrescentar explicitamente suporte ao executor espacial e ao codec da CNN.
 Cada feature exige teste público, documentação em inglês/português e, para uma
 família nova, exemplo Dart e demonstração Flutter. Para alterações numéricas,
 verifique derivadas por diferenças finitas e comportamento no limite.
+
+## Asynchronous execution
+
+See [async training](../async_training.md). Numerical batch updates are shared,
+while platform scheduling/transport and serializable worker codecs are separated
+under `training/async/`. The session remains model-agnostic. A result checkpoint
+commits a complete epoch; cancellation never represents partial work as complete.
