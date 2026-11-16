@@ -23,10 +23,10 @@ sintéticos e gerados localmente. RNN, LSTM e GRU estão implementados com saíd
 
 ## Treinamento assíncrono (0.3.0)
 
-A branch de desenvolvimento inclui isolates no nativo, mini-batches cooperativos
+A versão 0.3.0 inclui isolates no nativo, mini-batches cooperativos
 na web, progresso e cancelamento com retomada. Veja o
 [guia didático](https://github.com/kleberandrade/neural-engine/blob/main/doc/async_training.pt-BR.md)
-e a aba **Async training** no Flutter. A release 0.3.0 está em finalização; instalar exige o artefato publicado.
+e a aba **Async training** no Flutter. Use a versão 0.3.0 ou mais recente para essas APIs.
 Veja os [exemplos reais](https://github.com/kleberandrade/neural-engine/blob/main/doc/real_world.pt-BR.md),
 [medições](https://github.com/kleberandrade/neural-engine/blob/main/doc/benchmarks/responsiveness.md) e
 [plano da 0.4.0](https://github.com/kleberandrade/neural-engine/blob/main/doc/roadmap_0.4.0.md).

@@ -28,10 +28,10 @@ RNN, LSTM and reset-before GRU are implemented as many-to-one models. See
 
 ## Asynchronous training (0.3.0)
 
-The development branch adds native isolates, cooperative web batches, epoch
+Version 0.3.0 adds native isolates, cooperative web batches, epoch
 progress and safe cancellation/resume for MLP, CNN and recurrent models.
 See the [async guide](https://github.com/kleberandrade/neural-engine/blob/main/doc/async_training.md)
-and the Flutter **Async training** tab. The 0.3.0 release is being finalized; installation requires the published artifact.
+and the Flutter **Async training** tab. Use version 0.3.0 or newer for these APIs.
 See [real data examples](https://github.com/kleberandrade/neural-engine/blob/main/doc/real_world.md),
 [responsiveness measurements](https://github.com/kleberandrade/neural-engine/blob/main/doc/benchmarks/responsiveness.md) and the
 [0.4.0 plan](https://github.com/kleberandrade/neural-engine/blob/main/doc/roadmap_0.4.0.md).

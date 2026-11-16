@@ -78,8 +78,10 @@ jobs:
       - run: flutter analyze --fatal-infos
       - run: flutter test --exclude-tags benchmark
       - name: Measure native Flutter test runtime
+        shell: bash
         run: flutter test test/responsiveness_test.dart --reporter expanded | tee /tmp/neural-native.log
       - name: Measure Chrome Flutter test runtime
+        shell: bash
         run: flutter test --platform chrome test/responsiveness_test.dart --reporter expanded | tee /tmp/neural-chrome.log
       - name: Extract responsiveness reports
         run: |

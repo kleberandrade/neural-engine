@@ -4,7 +4,7 @@ library;
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../../benchmark/responsiveness.dart';
+import 'package:neural_engine_lab/benchmarks/responsiveness.dart';
 
 void main() {
   test('record real event-loop, cancellation and memory measurements',

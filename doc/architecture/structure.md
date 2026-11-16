@@ -60,5 +60,7 @@ Real-data recipes are pure Dart under `example/flutter_lab/lib/real_world/` so
 the Flutter package can import them normally. `example/real_world.dart` imports
 those same files as a CLI walkthrough; no Flutter import enters those recipes.
 CSV snapshots and provenance live in `example/data/`, mirrored byte-for-byte in
-Dart constants for offline browser use. Responsiveness probes live in `benchmark/`
-with conditional native/browser memory adapters; measurement code is not core API.
+Dart constants for offline browser use. Responsiveness probes have CLI entry points in `benchmark/` and a shared pure-Dart
+implementation in `example/flutter_lab/lib/benchmarks/`, with conditional native/browser
+memory adapters. This package placement supports Flutter Chrome compilation; measurement
+code is not core API.
