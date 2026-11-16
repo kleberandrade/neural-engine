@@ -63,3 +63,8 @@ numerical recurrent gradients across every parameter, shared CNN stopping,
 normalization, known metric values, clipping and SOM grid diagnostics. Sequence
 CLI asserts held-out synthetic MSE and JSON roundtrip for all three cells.
 The latest CI must be checked independently for Flutter and publication dry-run.
+
+CI follow-up: both Dart jobs passed, including minimum SDK, JavaScript examples
+and publish dry-run. Four of five Flutter tests passed; the drawing action was
+built in the sliver cache but outside the viewport. The test now scrolls until
+the actual button is hit-testable before sending the pointer event.

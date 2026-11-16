@@ -39,14 +39,17 @@ void main() {
       expect(tester.takeException(), isNull);
       expect(find.byType(CustomPaint), findsWidgets);
       if (name == 'cnn') {
-        await tester.scrollUntilVisible(
-            find.byKey(const ValueKey('classify-drawing')), 250,
-            scrollable: find
-                .descendant(
-                    of: find.byType(ListView).last,
-                    matching: find.byType(Scrollable))
-                .first);
-        await tester.tap(find.byKey(const ValueKey('classify-drawing')));
+        final button = find.byKey(const ValueKey('classify-drawing'));
+        // A tall drawing panel can be built in the sliver cache while its button
+        // is still off screen. Scroll until it can receive a real pointer event.
+        for (var attempt = 0;
+            attempt < 20 && button.hitTestable().evaluate().isEmpty;
+            attempt++) {
+          await tester.drag(find.byType(ListView).last, const Offset(0, -250));
+          await tester.pumpAndSettle();
+        }
+        expect(button.hitTestable(), findsOneWidget);
+        await tester.tap(button);
         await tester.pump();
         expect(find.textContaining('Drawing probabilities'), findsOneWidget);
       }
