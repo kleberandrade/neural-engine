@@ -1,5 +1,7 @@
 # neural_engine
 
+![Neural Engine Model Lab: conceptual connected layers](doc/images/lab-cover.svg)
+
 [![Dart CI](https://github.com/kleberandrade/neural-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/kleberandrade/neural-engine/actions/workflows/ci.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/kleberandrade/neural-engine/blob/main/LICENSE)
 
@@ -11,6 +13,10 @@ or network access in the core.
 [Extension contracts](https://github.com/kleberandrade/neural-engine/blob/main/doc/extending.md) · [Persistence/checkpoints](https://github.com/kleberandrade/neural-engine/blob/main/doc/persistence.md) · [Architecture and diagrams](https://github.com/kleberandrade/neural-engine/blob/main/doc/architecture.md) · [Sequence models](https://github.com/kleberandrade/neural-engine/blob/main/doc/recurrent.md) · [Evaluation](https://github.com/kleberandrade/neural-engine/blob/main/doc/evaluation.md) · [Model tutorials](https://github.com/kleberandrade/neural-engine/blob/main/doc/models.md) · [Guia didático](https://github.com/kleberandrade/neural-engine/blob/main/doc/models.pt-BR.md) · [Português](https://github.com/kleberandrade/neural-engine/blob/main/README.pt-BR.md) · [Flutter lab](https://github.com/kleberandrade/neural-engine/blob/main/example/flutter_lab/README.md) · [Contributing](https://github.com/kleberandrade/neural-engine/blob/main/CONTRIBUTING.md)
 
 **Package:** [neural_engine](https://pub.dev/packages/neural_engine), by verified publisher [kleberandrade.dev](https://pub.dev/publishers/kleberandrade.dev). See the [changelog](https://github.com/kleberandrade/neural-engine/blob/main/CHANGELOG.md).
+
+**Interactive laboratory:** [Open the web lab](https://kleberandrade.github.io/neural-engine/) · [Scenario guide and browser limits](doc/lab_scenarios.md) · [Validation evidence](doc/lab_validation.md).
+
+![Real browser capture of XOR training and its decision surface](doc/images/lab-mlp-desktop.jpg)
 
 ## Models and runnable examples
 

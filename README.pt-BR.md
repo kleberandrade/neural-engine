@@ -1,5 +1,7 @@
 # neural_engine
 
+[Laboratório online](https://kleberandrade.github.io/neural-engine/) · [Cenários e limites (EN)](doc/lab_scenarios.md) · [Validação e capturas reais (EN)](doc/lab_validation.md)
+
 Redes neurais em Dart puro para aplicativos Flutter e serviços Dart. Treine
 MLPs e CNNs com backpropagation, SGD ou Adam, organize dados com SOM de Kohonen
 e explore autoencoders densos. Exporte modelos em JSON versionado. Núcleo sem dependências de execução.

@@ -76,6 +76,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.50.0'
           cache: true
       - run: flutter pub get
       - run: flutter analyze --fatal-infos
@@ -102,7 +103,11 @@ jobs:
         with:
           name: flutter-responsiveness
           path: /tmp/neural-metrics/*.json
-      - run: flutter build web
+      - run: flutter build web --release --no-web-resources-cdn --base-href /neural-engine/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: neural-lab-web
+          path: example/flutter_lab/build/web
   hosted:
     runs-on: ubuntu-latest
     strategy:
@@ -120,3 +125,30 @@ jobs:
       - run: dart pub deps --json
       - run: dart analyze --fatal-infos
       - run: dart run main.dart
+
+  pages:
+    name: Publish neural network laboratory
+    needs: [dart, flutter, hosted]
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - uses: actions/download-artifact@v4
+        with:
+          name: neural-lab-web
+          path: public
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+      - uses: actions/deploy-pages@v4
+        id: deployment

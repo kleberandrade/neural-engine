@@ -1,6 +1,6 @@
 # Neural Engine Model Lab
 
-Six independent tabs train models using locally generated data:
+Eight independent tabs train models using locally generated data:
 
 | Tab | Training | Visualizations |
 | --- | --- | --- |
@@ -11,9 +11,16 @@ Six independent tabs train models using locally generated data:
 | Sequences | RNN, LSTM and GRU on the same six-step sine input | Model comparison, loss, next prediction, hidden/memory states |
 | Checkpoints | Save/load and 40 + 60 epoch Adam continuation for five model families | Editable JSON, bytes, loss, predictions and exact reference comparison |
 
+Validated toolchain: **Flutter 3.50.0 / Dart 3.14.0**. The Dart core retains its
+Dart >=3.3.0 contract; this lab targets Flutter >=3.50.0. CI pins the Flutter
+version and the app lockfile records compatible resolved dependencies.
+
+[Open the web laboratory](https://kleberandrade.github.io/neural-engine/) ·
+[Scenario guide](../../doc/lab_scenarios.md) · [Validation and real captures](../../doc/lab_validation.md)
+
 ```sh
 flutter pub get
-flutter test
+flutter test --exclude-tags benchmark
 flutter run -d chrome
 ```
 
@@ -25,7 +32,7 @@ for the meaning of each model, data shapes, experiments and limitations.
 Models run on demand; selecting a tab does not train automatically. Training uses
 `compute` (a worker isolate on native platforms, the main event loop on Flutter
 Web). Web training can briefly block; use dedicated workers for larger workloads.
-Core training is synchronous. Plots refer to the last completed run.
+The standalone model runners are synchronous; the core also exposes asynchronous training. Plots refer to the last completed run.
 
 CNN image and channel sliders inspect held-out noise samples. Feature maps use
 per-channel contrast normalization, not an absolute scale across filters.
@@ -79,7 +86,9 @@ SOM's independent neighborhood/decay schedule is outside `TrainingSession`.
 Use **Async training** for MLP/CNN/RNN/LSTM/GRU/autoencoder with native isolates or
 cooperative web batches, live epoch/loss/validation/time, interaction counter,
 cancel, copy/load JSON, resume and asynchronous uninterrupted-run comparison.
-The old model visualization tabs remain standalone recipes. SOM has a separate
+The old model visualization tabs remain standalone recipes. Pause finishes the current epoch and saves a resumable checkpoint; Reset clears the experiment when idle.
+Architecture, data counts and hyperparameters are visible with training and validation curves.
+Imported checkpoints must match the bounded recipe. SOM has a separate
 unsupervised schedule. Web compute in old tabs is not a parallel worker.
 See [English](../../doc/async_training.md) / [Português](../../doc/async_training.pt-BR.md)
 for epoch-boundary cancellation and browser scheduling limits.
@@ -90,3 +99,10 @@ The **Real data** tab runs the same offline Iris and AirPassengers recipes as
 `dart run example/real_world.dart`. It reports reserved-test metrics and simple
 baselines, including when the GRU loses. [Tutorial](../../doc/real_world.pt-BR.md).
 The benchmark-tagged test records native/Chrome event-loop observations, not FPS.
+
+## Static hosting
+
+The CI workflow builds with `--release --no-web-resources-cdn --base-href /neural-engine/`.
+GitHub Pages deployment depends on the Dart, Flutter and hosted-consumer test jobs.
+Pull requests build but never deploy. The Web renderer and fonts are bundled for
+the first-party static host; no paid service or backend is required.
