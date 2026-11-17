@@ -1,16 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
+
 // ignore: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neural_engine/neural_engine.dart';
+
 import '../runners/async_demo_recipe.dart';
-import '../painters/curve_painter.dart';
+import '../widgets/loss_chart.dart';
 
 class AsyncTrainingPage extends StatefulWidget {
   final TrainingExecution execution;
-  const AsyncTrainingPage(
-      {super.key, this.execution = TrainingExecution.automatic});
+  const AsyncTrainingPage({
+    super.key,
+    this.execution = TrainingExecution.automatic,
+  });
   @override
   State<AsyncTrainingPage> createState() => _AsyncTrainingPageState();
 }
@@ -33,6 +37,9 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
   String? _error, _comparison;
   Duration _elapsed = Duration.zero;
   bool _cancelling = false;
+  bool _pausing = false;
+  final _validationLosses = <double>[];
+  final _recipes = <String, AsyncDemoRecipe>{};
   bool get _busy => _task != null;
   @override
   bool get wantKeepAlive => true;
@@ -45,13 +52,39 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
     super.dispose();
   }
 
+  void _reset() {
+    setState(() {
+      _checkpoint = null;
+      _progress = null;
+      _evaluation = null;
+      _comparison = null;
+      _error = null;
+      _losses.clear();
+      _validationLosses.clear();
+      _json.clear();
+      _elapsed = Duration.zero;
+      _status = 'Ready';
+    });
+  }
+
+  void _stop({required bool pause}) {
+    _task!.cancel();
+    setState(() {
+      _cancelling = true;
+      _pausing = pause;
+      _status = pause
+          ? 'Pausing after current epoch'
+          : 'Cancelling after current epoch';
+    });
+  }
+
   void _saveJson() {
     _json.text = jsonEncode({
       'format': 'neural-engine-async-lab',
       'version': 1,
       'family': _family,
       'goal': _goal,
-      'checkpoint': _checkpoint!.toJson()
+      'checkpoint': _checkpoint!.toJson(),
     });
   }
 
@@ -66,6 +99,7 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
       final recipe = AsyncDemoRecipe(family);
       final checkpoint = TrainingCheckpoint.fromJson(
           data['checkpoint'] as Map<String, dynamic>);
+      recipe.validateCheckpoint(checkpoint);
       recipe.predictions(checkpoint);
       final goal = data['goal'] as int;
       if (goal < 10 || goal > 1000 || checkpoint.epochsCompleted > goal) {
@@ -76,6 +110,7 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
         _goal = goal;
         _checkpoint = checkpoint;
         _losses.clear();
+        _validationLosses.clear();
         _progress = null;
         _comparison = null;
         _error = null;
@@ -88,7 +123,8 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
 
   Future<void> _run({bool resume = false, bool compare = false}) async {
     FocusScope.of(context).unfocus();
-    final recipe = AsyncDemoRecipe(_family);
+    final recipe =
+        _recipes.putIfAbsent(_family, () => AsyncDemoRecipe(_family));
     final previous = _checkpoint;
     final from = resume ? previous! : recipe.initial;
     final epochs =
@@ -106,9 +142,11 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
       _progress = null;
       _evaluation = null;
       _cancelling = false;
+      _pausing = false;
       _status = compare ? 'Comparing uninterrupted run' : 'Training';
       if (!compare) {
         _losses.clear();
+        _validationLosses.clear();
         _comparison = null;
       }
     });
@@ -119,7 +157,12 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
       if (mounted) {
         setState(() {
           _progress = p;
-          if (!compare) _losses.add(p.loss);
+          if (!compare) {
+            _losses.add(p.loss);
+            if (p.validationLoss != null) {
+              _validationLosses.add(p.validationLoss!);
+            }
+          }
         });
       }
     });
@@ -137,7 +180,7 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
           _saveJson();
         }
         _status = result.cancelled
-            ? 'Cancelled at epoch ${result.checkpoint.epochsCompleted}'
+            ? '${_pausing ? 'Paused' : 'Cancelled'} at epoch ${result.checkpoint.epochsCompleted}'
             : compare
                 ? 'Comparison complete'
                 : 'Completed at epoch ${result.checkpoint.epochsCompleted}';
@@ -166,6 +209,8 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
     super.build(context);
     final completed = _checkpoint?.epochsCompleted ?? 0;
     final p = _progress;
+    final recipe =
+        _recipes.putIfAbsent(_family, () => AsyncDemoRecipe(_family));
     return Center(
         child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 1000),
@@ -177,7 +222,8 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
                       style: Theme.of(context).textTheme.headlineSmall),
                   const Text(
                       'Native: dedicated isolate. Web: cooperative mini-batches. Cancel completes the current epoch '
-                      'and saves model + Adam state. Resume uses the same data, loss, batch size and seed.'),
+                      'and saves model + Adam state. Pause uses the same safe boundary; Resume continues from that checkpoint. '
+                      'Start fresh discards the saved run. Copy JSON before closing the app.'),
                   Wrap(
                       spacing: 24,
                       crossAxisAlignment: WrapCrossAlignment.center,
@@ -192,9 +238,10 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
                                 'RNN',
                                 'LSTM',
                                 'GRU',
-                                'Autoencoder'
+                                'Autoencoder',
                               ])
-                                DropdownMenuItem(value: name, child: Text(name))
+                                DropdownMenuItem(
+                                    value: name, child: Text(name)),
                             ],
                             onChanged: _busy
                                 ? null
@@ -204,14 +251,34 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
                                       _progress = null;
                                       _comparison = null;
                                       _losses.clear();
+                                      _validationLosses.clear();
                                       _json.clear();
                                       _error = null;
                                       _status = 'Ready';
                                     })),
                         Text('Target total epochs: $_goal'),
                       ]),
+                  Card(
+                      child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(recipe.architecture,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium),
+                                Text(
+                                    '${recipe.inputs.length} training · ${recipe.validationInputs.length} validation samples'),
+                                Text(
+                                    'Adam · learning rate 0.02 · batch ${recipe.batchSize} · seed 42 · gradient clip 1'),
+                                Text('Loss: ${recipe.loss.name}'),
+                                Text(recipe.dataDescription),
+                              ]))),
                   Slider(
                       key: const ValueKey('async-epochs'),
+                      semanticFormatterCallback: (v) =>
+                          '${v.round()} target epochs',
                       value: _goal.toDouble(),
                       min: 10,
                       max: 1000,
@@ -223,14 +290,15 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
                       spacing: 24,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        const Text('Batches between pauses'),
+                        const Text('Batches per UI yield'),
                         DropdownButton<int>(
                             key: const ValueKey('async-frequency'),
                             value: _frequency,
                             items: [
                               for (final value in [1, 4, 16])
                                 DropdownMenuItem(
-                                    value: value, child: Text('$value'))
+                                    value: value,
+                                    child: Text('$value batches')),
                             ],
                             onChanged: _busy
                                 ? null
@@ -242,7 +310,8 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
                             items: [
                               for (final value in [8, 32, 128])
                                 DropdownMenuItem(
-                                    value: value, child: Text('$value'))
+                                    value: value,
+                                    child: Text('$value samples')),
                             ],
                             onChanged: _busy
                                 ? null
@@ -261,16 +330,22 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
                         onPressed: _busy ? null : () => _run(),
                         child: const Text('Start fresh')),
                     OutlinedButton(
+                        key: const ValueKey('async-pause'),
+                        onPressed: !_busy ||
+                                _cancelling ||
+                                _status == 'Comparing uninterrupted run'
+                            ? null
+                            : () => _stop(pause: true),
+                        child: const Text('Pause training')),
+                    OutlinedButton(
+                        key: const ValueKey('async-reset'),
+                        onPressed: _busy ? null : _reset,
+                        child: const Text('Reset experiment')),
+                    OutlinedButton(
                         key: const ValueKey('async-cancel'),
                         onPressed: !_busy || _cancelling
                             ? null
-                            : () {
-                                _task!.cancel();
-                                setState(() {
-                                  _cancelling = true;
-                                  _status = 'Cancelling after current epoch';
-                                });
-                              },
+                            : () => _stop(pause: false),
                         child: const Text('Cancel safely')),
                     OutlinedButton(
                         key: const ValueKey('async-resume'),
@@ -291,7 +366,10 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
                         child: Text('UI interactions: $_interactions')),
                   ]),
                   const SizedBox(height: 12),
-                  Text(_status, key: const ValueKey('async-status')),
+                  Semantics(
+                      liveRegion: true,
+                      child:
+                          Text(_status, key: const ValueKey('async-status'))),
                   if (_busy && _evaluation != null)
                     Text(
                         '${_evaluationLabel(_evaluation!.phase)}: ${_evaluation!.samplesCompleted}/${_evaluation!.totalSamples}',
@@ -310,13 +388,10 @@ class _AsyncTrainingPageState extends State<AsyncTrainingPage>
                     Text(_error!, key: const ValueKey('async-error')),
                   if (_comparison != null)
                     Text(_comparison!, key: const ValueKey('async-comparison')),
-                  if (_losses.isNotEmpty) ...[
-                    const Text('Training loss · current run only'),
-                    SizedBox(
-                        height: 160,
-                        child: CustomPaint(
-                            painter: CurvePainter(List.of(_losses)))),
-                  ],
+                  if (_losses.isNotEmpty)
+                    LossChart(
+                        training: List.of(_losses),
+                        validation: List.of(_validationLosses)),
                   if (_checkpoint != null && !_busy) ...[
                     const Text('First validation predictions'),
                     for (final prediction

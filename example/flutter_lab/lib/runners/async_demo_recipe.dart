@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:neural_engine/neural_engine.dart';
+
 import '../data/xor_dataset.dart';
 import '../data/bar_dataset.dart';
 import '../data/sequence_dataset.dart';
@@ -37,7 +40,7 @@ class AsyncDemoRecipe {
           TrainingLoss.binaryCrossEntropy,
           checkpoint(NeuralNetwork(inputSize: 2, seed: 42, layers: [
             Dense(8, activation: Activation.tanh),
-            Dense(1, activation: Activation.sigmoid)
+            Dense(1, activation: Activation.sigmoid),
           ])),
           4);
     }
@@ -57,7 +60,7 @@ class AsyncDemoRecipe {
               seed: 42,
               layers: [
                 Conv2D(filters: 4, padding: ConvolutionPadding.same),
-                MaxPool2D()
+                MaxPool2D(),
               ],
               denseLayers: [
                 Dense(2, activation: Activation.softmax)
@@ -78,7 +81,7 @@ class AsyncDemoRecipe {
             Dense(6, activation: Activation.tanh),
             Dense(2, activation: Activation.tanh),
             Dense(6, activation: Activation.tanh),
-            Dense(8, activation: Activation.sigmoid)
+            Dense(8, activation: Activation.sigmoid),
           ])),
           8);
     }
@@ -97,10 +100,31 @@ class AsyncDemoRecipe {
         8);
   }
 
-  AsyncTrainingRequest request(TrainingCheckpoint checkpoint, int epochs,
-          {int batchesPerYield = 1,
-          int evaluationSamplesPerYield = 32,
-          Duration? maxWorkDuration}) =>
+  String get architecture => switch (family) {
+        'MLP' => 'MLP · 2 → 8 tanh → 1 sigmoid',
+        'CNN' => 'CNN · 6×6×1 → Conv 3×3×4 ReLU → Pool → Dense 2 softmax',
+        'Autoencoder' => 'Autoencoder · 8 → 6 → 2 → 6 → 8',
+        _ => '$family · 6 time steps × 1 feature → 6 hidden → 1 output',
+      };
+
+  String get dataDescription => switch (family) {
+        'MLP' =>
+          'XOR truth table. Validation reuses all four training rows; it is a fit check, not a generalization test.',
+        'CNN' =>
+          'Synthetic vertical/horizontal bars. Validation changes noise seed (99), not positions or shape families.',
+        'Autoencoder' =>
+          'Four familiar clean patterns with new noise (seed 99). The two latent values are not class labels.',
+        _ =>
+          'Six-step sine windows. Validation phases interleave training phases; this is not a time-separated forecast test.',
+      };
+
+  AsyncTrainingRequest request(
+    TrainingCheckpoint checkpoint,
+    int epochs, {
+    int batchesPerYield = 1,
+    int evaluationSamplesPerYield = 32,
+    Duration? maxWorkDuration,
+  }) =>
       AsyncTrainingRequest(
           checkpoint: checkpoint,
           inputs: inputs,
@@ -114,6 +138,28 @@ class AsyncDemoRecipe {
           batchesPerYield: batchesPerYield,
           evaluationSamplesPerYield: evaluationSamplesPerYield,
           maxWorkDuration: maxWorkDuration);
+
+  /// Accept only this bounded browser recipe, including optimizer and RNG seed.
+  void validateCheckpoint(TrainingCheckpoint checkpoint) {
+    if (checkpoint.seed != initial.seed ||
+        jsonEncode(_recipeShape(checkpoint.model)) !=
+            jsonEncode(_recipeShape(initial.model)) ||
+        jsonEncode(_recipeShape(checkpoint.optimizer)) !=
+            jsonEncode(_recipeShape(initial.optimizer))) {
+      throw const FormatException(
+          'Checkpoint architecture, optimizer or seed does not match this lab recipe.');
+    }
+    if (family == 'CNN') {
+      TrainingSession<ImageTensor>.restore(
+          checkpoint: checkpoint, modelDecoder: ConvolutionalNetwork.fromJson);
+    } else if (['RNN', 'LSTM', 'GRU'].contains(family)) {
+      TrainingSession<List<List<double>>>.restore(
+          checkpoint: checkpoint, modelDecoder: RecurrentNetwork.fromJson);
+    } else {
+      TrainingSession<List<double>>.restore(
+          checkpoint: checkpoint, modelDecoder: NeuralNetwork.fromJson);
+    }
+  }
 
   List<List<double>> predictions(TrainingCheckpoint checkpoint) {
     if (family == 'CNN') {
@@ -136,4 +182,17 @@ class AsyncDemoRecipe {
         .map((x) => model.predict(x as List<double>))
         .toList();
   }
+}
+
+// Compare configuration independent of JSON key ordering and learned weights.
+Object? _recipeShape(Object? value) {
+  if (value is Map<String, dynamic>) {
+    final keys = value.keys
+        .where((k) => k != 'parameters' && k != 'spatialParameters')
+        .toList()
+      ..sort();
+    return {for (final key in keys) key: _recipeShape(value[key])};
+  }
+  if (value is List) return value.map(_recipeShape).toList();
+  return value;
 }

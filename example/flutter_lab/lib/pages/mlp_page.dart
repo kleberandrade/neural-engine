@@ -58,6 +58,8 @@ class _MlpPageState extends State<MlpPage> {
                   Text('Hidden neurons: ${_units.round()}'),
                   Slider(
                       value: _units,
+                      semanticFormatterCallback: (v) =>
+                          '${v.round()} hidden neurons',
                       min: 2,
                       max: 16,
                       divisions: 14,
@@ -67,6 +69,8 @@ class _MlpPageState extends State<MlpPage> {
                   Text('Learning rate: ${_rate.toStringAsFixed(3)}'),
                   Slider(
                       value: _rate,
+                      semanticFormatterCallback: (v) =>
+                          'Learning rate ${v.toStringAsFixed(3)}',
                       min: 0.005,
                       max: 0.1,
                       divisions: 19,

@@ -1,9 +1,10 @@
 name: neural_engine_lab
-description: Interactive XOR training laboratory for neural_engine.
+description: Interactive neural network laboratory with model visualization, safe async training and held-out evaluation.
 publish_to: none
 version: 1.0.0
 environment:
   sdk: '>=3.3.0 <4.0.0'
+  flutter: '>=3.50.0'
 dependencies:
   flutter:
     sdk: flutter

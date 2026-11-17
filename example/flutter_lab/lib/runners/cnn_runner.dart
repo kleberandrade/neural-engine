@@ -23,6 +23,14 @@ Map<String, Object?> trainCnn() {
       epochs: 100,
       batchSize: 8);
   return {
+    'testAccuracy': ClassificationMetrics.fromLabels(
+            targets: test.targets.map((y) => y[0] == 1 ? 0 : 1).toList(),
+            predictions: test.images.map((x) {
+              final p = model.predict(x);
+              return p[0] >= p[1] ? 0 : 1;
+            }).toList(),
+            classCount: 2)
+        .accuracy,
     'model': model.toJson(),
     'curve': history.losses,
     'summary': 'Conv2D 6×6×4 → MaxPool 3×3×4 → Flatten 36 → Dense 2',

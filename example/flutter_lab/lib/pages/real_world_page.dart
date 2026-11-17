@@ -1,8 +1,11 @@
 import 'dart:async';
+
 // ignore: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:neural_engine/neural_engine.dart';
+
 import '../runners/real_world_runner.dart';
+import '../widgets/loss_chart.dart';
 
 class RealWorldPage extends StatefulWidget {
   const RealWorldPage({super.key});
@@ -18,6 +21,7 @@ class _RealWorldPageState extends State<RealWorldPage>
   TrainingProgress? _progress;
   Map<String, Object?>? _report;
   String? _error;
+  final _losses = <double>[], _validationLosses = <double>[];
   @override
   bool get wantKeepAlive => true;
   @override
@@ -36,10 +40,18 @@ class _RealWorldPageState extends State<RealWorldPage>
       _progress = null;
       _error = null;
       _status = 'Training';
+      _losses.clear();
+      _validationLosses.clear();
     });
     _subscription = job.progress.listen((p) {
       if (mounted) {
-        setState(() => _progress = p);
+        setState(() {
+          _progress = p;
+          _losses.add(p.loss);
+          if (p.validationLoss != null) {
+            _validationLosses.add(p.validationLoss!);
+          }
+        });
       }
     });
     try {
@@ -53,7 +65,10 @@ class _RealWorldPageState extends State<RealWorldPage>
       });
     } catch (error) {
       if (mounted) {
-        setState(() => _error = '$error');
+        setState(() {
+          _error = '$error';
+          _status = 'Failed; start again to retry';
+        });
       }
     } finally {
       await _subscription?.cancel();
@@ -85,7 +100,7 @@ class _RealWorldPageState extends State<RealWorldPage>
                       value: _name,
                       items: [
                         for (final name in ['Iris', 'AirPassengers'])
-                          DropdownMenuItem(value: name, child: Text(name))
+                          DropdownMenuItem(value: name, child: Text(name)),
                       ],
                       onChanged: _task != null
                           ? null
@@ -93,6 +108,9 @@ class _RealWorldPageState extends State<RealWorldPage>
                                 _name = v!;
                                 _report = null;
                                 _progress = null;
+                                _error = null;
+                                _losses.clear();
+                                _validationLosses.clear();
                                 _status = 'Ready';
                               })),
                   Text(_name == 'Iris'
@@ -101,6 +119,9 @@ class _RealWorldPageState extends State<RealWorldPage>
                       : 'GRU with 12 monthly lags. Train through 1956, validate in 1957–1958, test in 1959–1960. '
                           'One-step forecasts use observations available before each target, not a recursive 24-month forecast. '
                           'Compare MAE in thousands against previous-month and previous-year baselines.'),
+                  Text(_name == 'Iris'
+                      ? 'Adam 0.01 · batch 16 · 120 epochs · categorical cross entropy · seed 42'
+                      : 'GRU hidden size 8 · Adam 0.01 · batch 12 · 100 epochs · mean squared error · chronological order · seed 42'),
                   Wrap(spacing: 12, children: [
                     FilledButton(
                         key: const ValueKey('real-world-train'),
@@ -118,6 +139,10 @@ class _RealWorldPageState extends State<RealWorldPage>
                     Text(
                         'Epoch ${_progress!.epochsCompleted} · loss ${_progress!.loss.toStringAsFixed(5)} · validation ${_progress!.validationLoss?.toStringAsFixed(5)}'),
                   if (_error != null) Text(_error!),
+                  if (_losses.isNotEmpty)
+                    LossChart(
+                        training: List.of(_losses),
+                        validation: List.of(_validationLosses)),
                   if (report != null) ...[
                     Text('${report['dataset']} results',
                         key: const ValueKey('real-world-result')),
@@ -133,15 +158,15 @@ class _RealWorldPageState extends State<RealWorldPage>
                           scrollDirection: Axis.horizontal,
                           child: DataTable(columns: [
                             for (final key in rows.first.keys)
-                              DataColumn(label: Text(key))
+                              DataColumn(label: Text(key)),
                           ], rows: [
                             for (final row in rows)
                               DataRow(cells: [
                                 for (final value in row.values)
                                   DataCell(Text(value is double
                                       ? value.toStringAsFixed(2)
-                                      : '$value'))
-                              ])
+                                      : '$value')),
+                              ]),
                           ])),
                   ],
                   const SizedBox(height: 16),

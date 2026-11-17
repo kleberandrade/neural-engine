@@ -6,8 +6,11 @@ class PixelGrid extends StatelessWidget {
   final String title;
   final List<double> values;
   final int columns;
-  const PixelGrid(
-      {required this.title, required this.values, required this.columns});
+  const PixelGrid({
+    required this.title,
+    required this.values,
+    required this.columns,
+  });
   @override
   Widget build(BuildContext context) => SizedBox(
       width: 210,
@@ -21,10 +24,15 @@ class PixelGrid extends StatelessWidget {
             crossAxisSpacing: 2,
             mainAxisSpacing: 2,
             children: [
-              for (final v in values)
-                ColoredBox(
-                    color: Color.lerp(
-                        Colors.black, Colors.cyanAccent, v.clamp(0.0, 1.0))!)
+              for (var i = 0; i < values.length; i++)
+                Semantics(
+                    label:
+                        '$title row ${i ~/ columns + 1}, column ${i % columns + 1}: ${values[i].toStringAsFixed(3)}',
+                    child: Tooltip(
+                        message: values[i].toStringAsFixed(3),
+                        child: ColoredBox(
+                            color: Color.lerp(Colors.black, Colors.cyanAccent,
+                                values[i].clamp(0.0, 1.0))!))),
             ]),
       ]));
 }

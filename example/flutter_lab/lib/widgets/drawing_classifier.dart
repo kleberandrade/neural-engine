@@ -14,7 +14,7 @@ class _DrawingClassifierState extends State<DrawingClassifier> {
   final _pixels = List<double>.filled(36, 0);
   List<double>? _prediction;
   void _paint(Offset point) {
-    final x = (point.dx / 40).floor(), y = (point.dy / 40).floor();
+    final x = (point.dx / 48).floor(), y = (point.dy / 48).floor();
     if (x < 0 || x >= 6 || y < 0 || y >= 6) return;
     setState(() {
       _pixels[y * 6 + x] = 1;
@@ -28,25 +28,36 @@ class _DrawingClassifierState extends State<DrawingClassifier> {
         const SizedBox(height: 24),
         const Text('Draw a 6×6 pattern'),
         const Text(
-            'This model learned only vertical/horizontal bars. Arbitrary drawings can be outside its training distribution.'),
+            'Tap or use Tab and Enter to toggle pixels; drag to draw. This model learned only vertical/horizontal bars. Arbitrary drawings can be outside its training distribution.'),
         const SizedBox(height: 12),
         GestureDetector(
             key: const ValueKey('drawing-grid'),
             onTapDown: (d) => _paint(d.localPosition),
             onPanUpdate: (d) => _paint(d.localPosition),
             child: SizedBox(
-                width: 240,
-                height: 240,
+                width: 288,
+                height: 288,
                 child: GridView.count(
                     crossAxisCount: 6,
                     physics: const NeverScrollableScrollPhysics(),
                     mainAxisSpacing: 1,
                     crossAxisSpacing: 1,
                     children: [
-                      for (final value in _pixels)
-                        ColoredBox(
-                            color:
-                                value == 0 ? Colors.black : Colors.cyanAccent)
+                      for (var i = 0; i < _pixels.length; i++)
+                        Semantics(
+                            label:
+                                'Pixel row ${i ~/ 6 + 1}, column ${i % 6 + 1}',
+                            toggled: _pixels[i] == 1,
+                            child: InkWell(
+                                key: ValueKey('drawing-pixel-$i'),
+                                onTap: () => setState(() {
+                                      _pixels[i] = _pixels[i] == 0 ? 1 : 0;
+                                      _prediction = null;
+                                    }),
+                                child: ColoredBox(
+                                    color: _pixels[i] == 0
+                                        ? Colors.black
+                                        : Colors.cyanAccent))),
                     ]))),
         Wrap(spacing: 12, children: [
           OutlinedButton(

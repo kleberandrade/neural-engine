@@ -1,9 +1,12 @@
 // Keep compatibility with Flutter versions before the material_ui split.
 // ignore: deprecated_member_use
 import 'package:flutter/material.dart';
+
 import 'dart:math' as math;
+
 import 'package:flutter/foundation.dart';
 import 'package:neural_engine/neural_engine.dart';
+
 import '../data/demo_kind.dart';
 import '../runners/demo_runner.dart';
 import '../painters/curve_painter.dart';
@@ -73,6 +76,13 @@ class _ModelDemoState extends State<ModelDemo>
                   const SizedBox(height: 12),
                   const Text(
                       'Deterministic synthetic data · seed 42 · CPU training · educational example'),
+                  Text(isSom
+                      ? '6×6 map · 80 epochs · learning rate 0.5 → 0.05 · radius 3 → 0.4'
+                      : isCnn
+                          ? '16 training / 8 test images · Adam 0.02 · batch 8 · 100 epochs · categorical cross entropy'
+                          : '20 training / 20 test patterns · Adam 0.02 · batch 8 · 400 epochs · binary cross entropy'),
+                  const Text(
+                      'For live progress and safe stop/resume of supervised models, open Async training.'),
                   const SizedBox(height: 16),
                   Align(
                       alignment: Alignment.centerLeft,
@@ -94,6 +104,9 @@ class _ModelDemoState extends State<ModelDemo>
                     const SizedBox(height: 20),
                     Text(result['summary']! as String,
                         key: ValueKey('result-${widget.kind.name}')),
+                    if (isCnn)
+                      Text(
+                          'Held-out noise accuracy: ${((result['testAccuracy']! as double) * 100).toStringAsFixed(1)}%'),
                     const SizedBox(height: 16),
                     Text(isSom
                         ? 'Quantization error per epoch (Euclidean distance)'
@@ -148,6 +161,8 @@ class _ModelDemoState extends State<ModelDemo>
       Text('Test sample ${_sample + 1}/${samples.length}'),
       Slider(
           value: _sample.toDouble(),
+          semanticFormatterCallback: (v) =>
+              'Test sample ${v.round() + 1} of ${samples.length}',
           min: 0,
           max: (samples.length - 1).toDouble(),
           divisions: samples.length - 1,
@@ -185,6 +200,8 @@ class _ModelDemoState extends State<ModelDemo>
         const Text('Inspect filter channel'),
         Slider(
             value: _channel.toDouble(),
+            semanticFormatterCallback: (v) =>
+                'Convolution channel ${v.round()}',
             min: 0,
             max: 3,
             divisions: 3,
