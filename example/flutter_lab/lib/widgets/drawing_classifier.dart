@@ -32,7 +32,7 @@ class _DrawingClassifierState extends State<DrawingClassifier> {
         const SizedBox(height: 12),
         GestureDetector(
             key: const ValueKey('drawing-grid'),
-            onTapDown: (d) => _paint(d.localPosition),
+            onPanStart: (d) => _paint(d.localPosition),
             onPanUpdate: (d) => _paint(d.localPosition),
             child: SizedBox(
                 width: 288,

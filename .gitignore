@@ -1,6 +1,7 @@
 .dart_tool/
 .packages
 pubspec.lock
+!/example/flutter_lab/pubspec.lock
 build/
 coverage/
 doc/api/

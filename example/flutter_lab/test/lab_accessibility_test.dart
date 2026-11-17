@@ -69,6 +69,12 @@ void main() {
     await tester.pump();
     expect(tester.getSemantics(pixel), isSemantics(isToggled: false));
     expect(find.textContaining('Drawing probabilities'), findsNothing);
+    final heldTap = await tester.startGesture(
+        tester.getCenter(find.byKey(const ValueKey('drawing-pixel-0'))));
+    await tester.pump(const Duration(milliseconds: 200));
+    await heldTap.up();
+    await tester.pump();
+    expect(tester.getSemantics(pixel), isSemantics(isToggled: true));
     expect(tester.takeException(), isNull);
     semantics.dispose();
   });

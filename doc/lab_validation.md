@@ -24,7 +24,7 @@ catalog versions. These SDK constraints are retained without overrides.
 - Lab `flutter test --exclude-tags benchmark`: **13 passed**. Covers model training,
   narrow screens, CNN drawing, checkpoint recreation, load/resume/exact comparison,
   safe cancellation, pause/reset, disposal during work, numerical chart semantics
-  and keyboard pixel toggles.
+  keyboard pixel toggles and a prolonged pointer tap.
 - Native and Chrome `responsiveness_test.dart` + `yield_frequency_test.dart`: **2 passed on each platform**, recording real event-loop/cancellation observations and exact replay across fixed-batch policies. These measurements are descriptive and do not establish FPS or hardware-independent latency limits.
 - `dart format --output=none --set-exit-if-changed lib test example benchmark validation`:
   passed after final source edits. `git diff --check`: passed.
@@ -35,7 +35,10 @@ The new pause and mismatched-family interaction checks were observed failing
 before implementation. Visual inspection revealed a zero-width custom chart in a
 Column on mobile. A size assertion reproduced the failure (actual width 0); the
 chart now fills the available width, and both the assertion and browser inspection
-pass. Crapper, dryer and mutator were invoked for the changed Dart UI: the installed
+pass. A prolonged pointer tap also reproduced a parent/child gesture conflict;
+starting painting on pan instead of tap-down prevents a pixel from being toggled
+twice, while preserving drag painting. The interaction test now covers this case.
+Crapper, dryer and mutator were invoked for the changed Dart UI: the installed
 tools do not support Dart and reported no source files. No CRAP, duplication or
 mutation score is claimed.
 
