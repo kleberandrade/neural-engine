@@ -1,9 +1,9 @@
+import '../l10n/lab_copy.dart';
 import 'package:flutter/foundation.dart';
-// Keep compatibility with Flutter versions before the material_ui split.
-// ignore: deprecated_member_use
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import '../runners/checkpoint_runner.dart';
+import '../widgets/lab_design.dart';
 
 class CheckpointPage extends StatefulWidget {
   const CheckpointPage({super.key});
@@ -45,7 +45,10 @@ class _CheckpointPageState extends State<CheckpointPage>
         });
       }
     } catch (error) {
-      if (mounted) setState(() => _error = 'Checkpoint rejected: $error');
+      if (mounted) {
+        setState(() => _error =
+            'Could not restore this checkpoint. Select the matching model and use JSON exported by this walkthrough.');
+      }
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -55,7 +58,7 @@ class _CheckpointPageState extends State<CheckpointPage>
     await Clipboard.setData(ClipboardData(text: _json.text));
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
+          content: LabText(
               'JSON copied. Save it as a text file to keep it after closing the app.')));
     }
   }
@@ -66,110 +69,187 @@ class _CheckpointPageState extends State<CheckpointPage>
     final result = _result;
     return Center(
         child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 1000),
+            constraints: const BoxConstraints(maxWidth: 1240),
             child: ListView(
-                key: const ValueKey('checkpoint-scroll'),
-                padding: const EdgeInsets.all(24),
-                children: [
-                  Text('Save → load → resume',
-                      style: Theme.of(context).textTheme.headlineSmall),
-                  const Text(
-                      'Train 40 epochs, copy the checkpoint JSON and save it as a text file. '
-                      'You can close the app, reopen it, choose the same model and paste the JSON below. '
-                      'Load recreates the model and Adam state; resume adds 60 epochs. '
-                      'Compare with a fresh uninterrupted run on the same synthetic data.'),
-                  DropdownButton<String>(
-                      value: _family,
-                      items: [
-                        for (final family in [
-                          'MLP',
-                          'CNN',
-                          'RNN',
-                          'LSTM',
-                          'GRU'
-                        ])
-                          DropdownMenuItem(value: family, child: Text(family))
-                      ],
-                      onChanged: _busy
-                          ? null
-                          : (value) => setState(() {
-                                _family = value!;
-                                _result = null;
-                                _error = null;
-                                _json.clear();
-                              })),
-                  Wrap(spacing: 12, runSpacing: 8, children: [
-                    FilledButton(
-                        key: const ValueKey('checkpoint-start'),
-                        onPressed: _busy ? null : () => _run('start'),
-                        child: const Text('Train 40 epochs')),
-                    OutlinedButton(
-                        key: const ValueKey('checkpoint-load'),
-                        onPressed: _busy ? null : () => _run('load'),
-                        child: const Text('Load JSON')),
-                    OutlinedButton(
-                        key: const ValueKey('checkpoint-resume'),
-                        onPressed: _busy ? null : () => _run('resume'),
-                        child: const Text('Resume +60 epochs')),
-                    OutlinedButton(
-                        onPressed: _busy || _json.text.isEmpty ? null : _copy,
-                        child: const Text('Copy JSON to save'))
-                  ]),
-                  if (_busy) const LinearProgressIndicator(),
-                  if (_error != null)
-                    Text(_error!, key: const ValueKey('checkpoint-error')),
-                  const SizedBox(height: 12),
-                  if (result != null) ...[
-                    Text('Completed epochs: ${result['epochs']}',
-                        key: const ValueKey('checkpoint-result')),
-                    Text(
-                        'Mean training loss: ${(result['loss']! as double).toStringAsFixed(6)}'),
-                    Text('Checkpoint UTF-8: ${result['bytes']} bytes'),
-                    Text(
-                        'Full model + Adam state matches uninterrupted run: ${result['exact']}'),
-                    Text(
-                        'Maximum prediction difference: ${result['maxDifference']}'),
-                    SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: DataTable(columns: const [
-                          DataColumn(label: Text('Target')),
-                          DataColumn(label: Text('Restored prediction')),
-                          DataColumn(label: Text('Uninterrupted prediction'))
-                        ], rows: [
-                          for (var i = 0;
-                              i < (result['targets']! as List).length;
-                              i++)
-                            DataRow(cells: [
-                              for (final field in [
-                                'targets',
-                                'predictions',
-                                'reference'
-                              ])
-                                DataCell(Text(((result[field]! as List)[i]
-                                        as List<double>)
-                                    .map((v) => v.toStringAsFixed(4))
-                                    .join(', ')))
-                            ])
+              key: const ValueKey('checkpoint-scroll'),
+              padding: EdgeInsets.all(
+                  MediaQuery.sizeOf(context).width < 600 ? 18 : 32),
+              children: [
+                const LabHeader(
+                    kicker: 'Checkpoints / Reproducibility',
+                    title: 'Close the tab.\nKeep the learning.',
+                    description:
+                        'Save a model after 40 epochs, restore it and train 60 more. Then compare the full state with an uninterrupted 100-epoch run.',
+                    tags: [
+                      LabTag('40 + 60 = 100', color: labAccent),
+                      LabTag('Model + Adam state', color: labViolet),
+                      LabTag('Exact replay')
+                    ]),
+                LabPanel(
+                    eyebrow: '01 / THE WALKTHROUGH',
+                    title: 'One model. Two training sessions.',
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                              width: 240,
+                              child: DropdownButtonFormField<String>(
+                                  initialValue: _family,
+                                  decoration: InputDecoration(
+                                      labelText: tr(context, 'Model family')),
+                                  items: [
+                                    for (final family in [
+                                      'MLP',
+                                      'CNN',
+                                      'RNN',
+                                      'LSTM',
+                                      'GRU'
+                                    ])
+                                      DropdownMenuItem(
+                                          value: family, child: LabText(family))
+                                  ],
+                                  onChanged: _busy
+                                      ? null
+                                      : (v) => setState(() {
+                                            _family = v!;
+                                            _result = null;
+                                            _error = null;
+                                            _json.clear();
+                                          }))),
+                          const SizedBox(height: 20),
+                          Wrap(spacing: 10, runSpacing: 10, children: [
+                            FilledButton.icon(
+                                key: const ValueKey('checkpoint-start'),
+                                onPressed: _busy ? null : () => _run('start'),
+                                icon: const Icon(Icons.play_arrow_rounded,
+                                    size: 18),
+                                label: const LabText('Train 40 epochs')),
+                            OutlinedButton(
+                                key: const ValueKey('checkpoint-resume'),
+                                onPressed: _busy ? null : () => _run('resume'),
+                                child: const LabText('Resume +60 epochs')),
+                          ]),
+                          if (_busy)
+                            const Padding(
+                                padding: EdgeInsets.only(top: 16),
+                                child: LinearProgressIndicator()),
+                          if (result != null)
+                            Padding(
+                                padding: const EdgeInsets.only(top: 18),
+                                child: LabText(
+                                    'Completed epochs: ${result['epochs']}',
+                                    key: const ValueKey('checkpoint-result'),
+                                    style: const TextStyle(
+                                        color: labAccent,
+                                        fontWeight: FontWeight.w600))),
+                          const LabNotice(
+                              'Train first, copy the JSON below and save it as a text file. To restore, select the same model, paste the JSON and press Load JSON.'),
                         ])),
-                  ],
-                  const SizedBox(height: 12),
-                  TextField(
-                      key: const ValueKey('checkpoint-json'),
-                      controller: _json,
-                      enabled: !_busy,
-                      minLines: 5,
-                      maxLines: 8,
-                      decoration: const InputDecoration(
-                          labelText: 'Checkpoint JSON',
-                          border: OutlineInputBorder(),
-                          alignLabelWithHint: true)),
-                  const SizedBox(height: 12),
-                  const Text(
-                      'Exact continuation requires the same data/order, loss, batch size, '
-                      'clipping, SDK and platform. This demo fixes those settings. '
-                      'SOM uses its own fit/decay schedule and is not a TrainingSession model. '
-                      'Clipboard export is explicit; the app does not automatically write a file. '
-                      'On Flutter web, compute runs on the browser event loop.'),
-                ])));
+                if (result != null) ...[
+                  const SizedBox(height: 20),
+                  LabPanel(
+                      eyebrow: '02 / VERIFY THE REPLAY',
+                      title: 'Did the model remember everything?',
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Wrap(spacing: 42, runSpacing: 20, children: [
+                              LabMetric(
+                                  label: tr(context, 'Mean training loss'),
+                                  value: (result['loss']! as double)
+                                      .toStringAsFixed(6)),
+                              LabMetric(
+                                  label: tr(context, 'Checkpoint size'),
+                                  value: '${result['bytes']}',
+                                  detail: 'UTF-8 bytes',
+                                  color: labViolet),
+                              LabMetric(
+                                  label: tr(context, 'State matches reference'),
+                                  value: '${result['exact']}',
+                                  detail: 'Model + Adam state'),
+                            ]),
+                            const SizedBox(height: 22),
+                            LabText(
+                                'Full model + Adam state matches uninterrupted run: ${result['exact']}',
+                                style: const TextStyle(color: labAccent)),
+                            const SizedBox(height: 6),
+                            LabText(
+                                'Maximum prediction difference: ${result['maxDifference']}',
+                                style: const TextStyle(
+                                    color: labMuted, fontSize: 12)),
+                            const SizedBox(height: 18),
+                            SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: DataTable(columns: const [
+                                  DataColumn(label: LabText('Target')),
+                                  DataColumn(
+                                      label: LabText('Restored prediction')),
+                                  DataColumn(
+                                      label:
+                                          LabText('Uninterrupted prediction'))
+                                ], rows: [
+                                  for (var i = 0;
+                                      i < (result['targets']! as List).length;
+                                      i++)
+                                    DataRow(cells: [
+                                      for (final field in [
+                                        'targets',
+                                        'predictions',
+                                        'reference'
+                                      ])
+                                        DataCell(LabText(((result[field]!
+                                                as List)[i] as List<double>)
+                                            .map((v) => v.toStringAsFixed(4))
+                                            .join(', ')))
+                                    ])
+                                ])),
+                          ])),
+                ],
+                const SizedBox(height: 20),
+                LabPanel(
+                    eyebrow: '03 / SAVE & RESTORE',
+                    title: 'Your portable checkpoint',
+                    subtitle:
+                        'The JSON is the source of truth. Nothing is saved automatically when you close the tab.',
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextField(
+                              key: const ValueKey('checkpoint-json'),
+                              controller: _json,
+                              enabled: !_busy,
+                              minLines: 5,
+                              maxLines: 8,
+                              style: const TextStyle(
+                                  fontFamily: 'monospace', fontSize: 12),
+                              decoration: InputDecoration(
+                                  labelText: tr(context, 'Checkpoint JSON'),
+                                  alignLabelWithHint: true)),
+                          const SizedBox(height: 14),
+                          Wrap(spacing: 10, runSpacing: 10, children: [
+                            OutlinedButton.icon(
+                                onPressed:
+                                    _busy || _json.text.isEmpty ? null : _copy,
+                                icon: const Icon(Icons.copy_outlined, size: 16),
+                                label: const LabText('Copy JSON to save')),
+                            OutlinedButton(
+                                key: const ValueKey('checkpoint-load'),
+                                onPressed: _busy ? null : () => _run('load'),
+                                child: const LabText('Load JSON')),
+                          ]),
+                          if (_error != null)
+                            Padding(
+                                padding: const EdgeInsets.only(top: 16),
+                                child: LabText(_error!,
+                                    key: const ValueKey('checkpoint-error'),
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .error))),
+                        ])),
+                const LabNotice(
+                    'Exact continuation requires the same data, order, loss, batch size, clipping, SDK and platform. This walkthrough fixes those settings. Its JSON format differs from Async training. SOM uses a separate schedule. Browser compute can briefly block.'),
+              ],
+            )));
   }
 }

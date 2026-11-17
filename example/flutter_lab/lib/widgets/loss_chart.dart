@@ -1,5 +1,5 @@
-// ignore: deprecated_member_use
-import 'package:flutter/material.dart';
+import '../l10n/lab_copy.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../painters/curve_painter.dart';
 
@@ -21,19 +21,21 @@ class LossChart extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Loss by epoch · current run only'),
-        Text(summary),
+        const LabText('Loss by epoch · current run only'),
+        LabText(summary),
         if (validation.isNotEmpty)
-          const Text('Cyan line: training · Amber line with dots: validation'),
+          const LabText(
+              'Mint line: training · Gold line with dots: validation'),
         Semantics(
           image: true,
-          label:
-              'Loss curve over ${training.length} completed epochs. $summary',
+          label: tr(context,
+              'Loss curve over ${training.length} completed epochs. $summary'),
           child: SizedBox(
             width: double.infinity,
             height: 180,
             child: CustomPaint(
-              painter: CurvePainter(training, secondary: validation),
+              painter: CurvePainter(training,
+                  secondary: validation, epochLabel: tr(context, 'epochs')),
             ),
           ),
         ),

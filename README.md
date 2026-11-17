@@ -14,7 +14,10 @@ or network access in the core.
 
 **Package:** [neural_engine](https://pub.dev/packages/neural_engine), by verified publisher [kleberandrade.dev](https://pub.dev/publishers/kleberandrade.dev). See the [changelog](https://github.com/kleberandrade/neural-engine/blob/main/CHANGELOG.md).
 
-**Interactive laboratory:** [Open the web lab](https://kleberandrade.github.io/neural-engine/) · [Scenario guide and browser limits](doc/lab_scenarios.md) · [Validation evidence](doc/lab_validation.md).
+**Bilingual interactive laboratory:** [Open the web lab](https://kleberandrade.github.io/neural-engine/) · [Scenario guide and browser limits](doc/lab_scenarios.md) · [Validation evidence](doc/lab_validation.md).
+
+The integrated **Learn** area explains the implemented algorithms and formulas;
+**Examples** loads real recipes. EN/PT-BR switching preserves the active experiment.
 
 ![Real browser capture of XOR training and its decision surface](doc/images/lab-mlp-desktop.jpg)
 

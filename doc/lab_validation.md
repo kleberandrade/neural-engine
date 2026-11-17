@@ -1,5 +1,28 @@
 # Laboratory validation — 17 November 2026
 
+## UI, navigation and language revision
+
+The revised workbench replaces the flat tab strip with a responsive navbar and
+model sidebar/mobile picker. Laboratory, Learn and Examples preserve the active
+experiment. Loading a preset is explicit and protects an active run. The original
+N-shaped neural graph, favicon and circular Brazil/United Kingdom selectors are
+project-authored local vector/code assets under MIT; no runtime flag download or
+emoji is used. Language controls have named tooltips, selected borders, keyboard
+focus and 48 px targets. EN/PT-BR changes also update semantic language and retain
+model state. `shared_preferences` persists the locale where storage is available;
+blocked storage falls back to the current session. Checkpoints remain explicit exports.
+
+Learn uses the project's real model, recurrent, evaluation and persistence guides.
+It includes interpreted formulas, seven public-API code examples, nine implemented
+presets and exactly five exercises with objectives and completion criteria.
+Source-guide links choose the existing English or Portuguese document. No roadmap
+feature is presented as implemented. The UI uses Material UI 1.11.1,
+shared_preferences 2.5.6 and url_launcher 6.3.3, confined to the Flutter example.
+
+The deprecated Flutter service worker is retired only for this laboratory's exact
+scope, avoiding stale UI after deployment without touching another engine's cache.
+The generated bootstrap is syntax-checked. The shared Flutter SDK is unchanged.
+
 ## Scope and toolchain
 
 The initial checkout was clean at `179f81b` on `main`, with origin
@@ -18,13 +41,17 @@ catalog versions. These SDK constraints are retained without overrides.
 ## Checks actually performed
 
 - Core `dart analyze --fatal-infos`: passed, no issues.
-- Core `dart test`: **132 passed**, including recipe validation for all six async
-  families, altered optimizer rejection and recurrent-family mismatch rejection.
+- Core baseline: **132 passed**, including all six async recipes and invalid-checkpoint rejection.
+- Additional pure-Dart checks: **7 displayed Learn examples compiled and ran**;
+  **1 composed-copy regression passed**, preserving API names and Portuguese words.
+  These add up to 140 test cases across the validated core/content runs.
 - Lab `flutter analyze --fatal-infos`: passed, no issues.
-- Lab `flutter test --exclude-tags benchmark`: **13 passed**. Covers model training,
+- Lab `flutter test --exclude-tags benchmark`: **18 passed**. Covers model training,
   narrow screens, CNN drawing, checkpoint recreation, load/resume/exact comparison,
   safe cancellation, pause/reset, disposal during work, numerical chart semantics
-  keyboard pixel toggles and a prolonged pointer tap.
+  keyboard pixel toggles and a prolonged pointer tap. Also covers section/language
+  state retention, persisted PT-BR preference, loading the two-neuron preset,
+  navbar keyboard activation, real guide links, 320 px navigation and enlarged text.
 - Native and Chrome `responsiveness_test.dart` + `yield_frequency_test.dart`: **2 passed on each platform**, recording real event-loop/cancellation observations and exact replay across fixed-batch policies. These measurements are descriptive and do not establish FPS or hardware-independent latency limits.
 - `dart format --output=none --set-exit-if-changed lib test example benchmark validation`:
   passed after final source edits. `git diff --check`: passed.
@@ -46,15 +73,15 @@ mutation score is claimed.
 
 A local release build was served at the same `/neural-engine/` prefix used by
 Pages. Browser accessibility was enabled and its tree inspected. Desktop and
-390×844 layouts were exercised, including horizontal tab navigation, vertical
-scrolling, readable recipe cards, wrapped controls and full-width curves.
+390×844 layouts were exercised, including the responsive navbar, circular flags,
+vertical scrolling, readable recipe cards, wrapped controls and full-width curves.
 
 XOR reached binary cross entropy **0.000200** in the standalone 800-epoch recipe.
 An async CNN accepted an interaction while training, paused at epoch 46, retained
 its checkpoint and resumed to epoch 100 (training loss 0.000233; validation
 0.000204). These values describe that deterministic browser run, not performance
 or generalization guarantees. A fresh 100-epoch MLP run produced matching
-training/reused-validation losses of 0.027850, shown on the mobile capture.
+training/reused-validation losses of 0.027850, recorded during the initial validation. Current captures show the revised workbench and integrated learning area.
 
 Iris completed 120 epochs in the browser with training/validation/test counts
 87/28/32, test accuracy **0.875**, macro F1 **0.872727** and majority-baseline
@@ -63,9 +90,9 @@ accuracy **0.3125**. Its training and validation losses were 0.005297 and
 
 ![Actual desktop browser: trained XOR loss and decision surface](images/lab-mlp-desktop.jpg)
 
-![Actual 390×844 browser: completed async MLP, accessible numerical summary and full-width loss curve](images/lab-async-mobile.jpg)
+![Actual browser: Portuguese integrated learning, algorithm explanations and interpreted formulas](images/lab-learn-pt.jpg)
 
-![Actual browser: Iris held-out metrics, partition sizes, confusion matrix and baseline](images/lab-iris-evaluation.jpg)
+![Actual mobile browser: responsive navbar, circular flags and integrated learning](images/lab-learn-mobile.jpg)
 
 The cover SVG is an original conceptual diagram, not a screenshot. Screenshot
 files are actual browser captures. A complete screen-reader product audit and
@@ -81,7 +108,9 @@ mobile-device hardware testing were not performed.
 4. Tested behavior and fixed the chart width found during visual inspection.
 5. Added an English scenario guide ending in five practical exercises, preserved
    Portuguese material, refreshed web metadata and created an original cover.
-6. Prepared GitHub Actions static hosting with the correct base path. Deployment
+6. Added responsive navigation, original branding, circular flags, full EN/PT-BR
+   copy, locale persistence, source-backed lessons and real preset loading.
+7. Prepared GitHub Actions static hosting with the correct base path. Deployment
    waits for Dart, Flutter and hosted-consumer checks; pull requests cannot deploy.
 
 No pub.dev release, version tag, paid service, newsletter or external message was

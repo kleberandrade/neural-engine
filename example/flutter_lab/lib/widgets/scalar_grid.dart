@@ -1,6 +1,5 @@
-// Keep compatibility with Flutter versions before the material_ui split.
-// ignore: deprecated_member_use
-import 'package:flutter/material.dart';
+import '../l10n/lab_copy.dart';
+import 'package:material_ui/material_ui.dart';
 import 'dart:math' as math;
 
 /// Contrast uses min/max, while tooltips show the original numerical values.
@@ -22,8 +21,8 @@ class ScalarGrid extends StatelessWidget {
         child: SizedBox(
             width: 260,
             child: Column(children: [
-              Text(title),
-              Text(
+              LabText(title),
+              LabText(
                   'min ${low.toStringAsFixed(3)} · max ${high.toStringAsFixed(3)}'),
               GridView.count(
                   crossAxisCount: columns,

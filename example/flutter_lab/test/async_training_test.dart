@@ -1,26 +1,16 @@
+import 'scroll_helpers.dart';
 import 'dart:convert';
 
 import 'package:neural_engine_lab/runners/async_demo_recipe.dart';
-// ignore: deprecated_member_use
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:neural_engine/neural_engine.dart';
 import 'package:neural_engine_lab/pages/async_training_page.dart';
 
 import 'widget_test.dart' show waitForResult;
 
-Future<void> reveal(WidgetTester tester, String key, double delta) async {
-  for (var i = 0; i < 30; i++) {
-    await tester.pump();
-    if (find.byKey(ValueKey(key)).hitTestable().evaluate().isNotEmpty) return;
-    final origin =
-        tester.getTopLeft(find.byKey(const ValueKey('async-scroll'))) +
-            const Offset(8, 100);
-    await tester.dragFrom(origin, Offset(0, delta));
-    await tester.pump();
-  }
-  fail('Could not reveal $key');
-}
+Future<void> reveal(WidgetTester tester, String key, double delta) =>
+    revealControl(tester, 'async-scroll', key, delta);
 
 Widget page() => const MaterialApp(
     home: Scaffold(
@@ -78,7 +68,8 @@ void main() {
     await reveal(tester, 'async-load', 250);
     await tester.tap(find.byKey(const ValueKey('async-load')));
     await tester.pump();
-    expect(find.byKey(const ValueKey('async-error')), findsOneWidget);
+    expect(find.byKey(const ValueKey('async-error')).hitTestable(),
+        findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -145,7 +136,8 @@ void main() {
     await reveal(tester, 'async-load', 250);
     await tester.tap(find.byKey(const ValueKey('async-load')));
     await tester.pump();
-    expect(find.byKey(const ValueKey('async-error')), findsOneWidget);
+    expect(find.byKey(const ValueKey('async-error')).hitTestable(),
+        findsOneWidget);
     expect(find.textContaining('Loaded at epoch'), findsNothing);
   });
 

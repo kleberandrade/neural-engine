@@ -1,13 +1,13 @@
-// Keep compatibility with Flutter versions before the material_ui split.
-// ignore: deprecated_member_use
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'dart:math' as math;
 
 class CurvePainter extends CustomPainter {
   final List<double> values;
   final List<double> secondary;
-  CurvePainter(this.values, {this.secondary = const []});
+  final String epochLabel;
+  CurvePainter(this.values,
+      {this.secondary = const [], this.epochLabel = 'epochs'});
   @override
   void paint(Canvas canvas, Size size) {
     if (values.isEmpty) return;
@@ -40,13 +40,16 @@ class CurvePainter extends CustomPainter {
             ..style = PaintingStyle.stroke);
     }
 
-    curve(values, Colors.cyanAccent);
-    curve(secondary, Colors.amberAccent, dots: true);
+    curve(values, const Color(0xFF8DE0CC));
+    curve(secondary, const Color(0xFFF2CA86), dots: true);
     for (final item in [
       (maxValue.toStringAsFixed(3), Offset(0, area.top)),
       ('0', Offset(22, area.bottom - 10)),
       ('1', Offset(area.left, area.bottom + 6)),
-      ('${values.length} epochs', Offset(area.right - 90, area.bottom + 6)),
+      (
+        '${values.length} $epochLabel',
+        Offset(area.right - 90, area.bottom + 6)
+      ),
     ]) {
       final text = TextPainter(
           text: TextSpan(
@@ -60,5 +63,7 @@ class CurvePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(CurvePainter old) =>
-      !identical(values, old.values) || !identical(secondary, old.secondary);
+      !identical(values, old.values) ||
+      !identical(secondary, old.secondary) ||
+      epochLabel != old.epochLabel;
 }

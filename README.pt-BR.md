@@ -1,5 +1,8 @@
 # neural_engine
 
+A interface oferece Laboratório, Aprender e Exemplos em inglês e português brasileiro,
+com bandeiras circulares, preferência de idioma salva e preservação do experimento.
+
 [Laboratório online](https://kleberandrade.github.io/neural-engine/) · [Cenários e limites (EN)](doc/lab_scenarios.md) · [Validação e capturas reais (EN)](doc/lab_validation.md)
 
 Redes neurais em Dart puro para aplicativos Flutter e serviços Dart. Treine

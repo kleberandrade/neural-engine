@@ -1,6 +1,5 @@
-// Keep compatibility with Flutter versions before the material_ui split.
-// ignore: deprecated_member_use
-import 'package:flutter/material.dart';
+import '../l10n/lab_copy.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ColorMap extends StatelessWidget {
   final String title;
@@ -10,7 +9,7 @@ class ColorMap extends StatelessWidget {
   Widget build(BuildContext context) => SizedBox(
       width: 260,
       child: Column(children: [
-        Text(title),
+        LabText(title),
         const SizedBox(height: 8),
         GridView.count(
             crossAxisCount: 6,

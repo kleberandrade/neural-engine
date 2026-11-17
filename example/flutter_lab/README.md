@@ -1,6 +1,7 @@
 # Neural Engine Model Lab
 
-Eight independent tabs train models using locally generated data:
+The responsive navbar opens **Laboratory**, **Learn**, **Examples**, documentation and GitHub.
+The laboratory preserves eight independent model workspaces:
 
 | Tab | Training | Visualizations |
 | --- | --- | --- |
@@ -10,6 +11,8 @@ Eight independent tabs train models using locally generated data:
 | Autoencoder | Denoising, Dense 8→6→2→6→8 | Noisy input, clean target, reconstruction, latent coordinates |
 | Sequences | RNN, LSTM and GRU on the same six-step sine input | Model comparison, loss, next prediction, hidden/memory states |
 | Checkpoints | Save/load and 40 + 60 epoch Adam continuation for five model families | Editable JSON, bytes, loss, predictions and exact reference comparison |
+| Async training | Bounded MLP/CNN/RNN/LSTM/GRU/autoencoder recipes | Live train/validation loss, pause/cancel/resume, JSON and exact replay |
+| Real data | Offline Iris MLP and AirPassengers GRU | Live curves, reserved-test metrics, confusion matrix, predictions and baselines |
 
 Validated toolchain: **Flutter 3.50.0 / Dart 3.14.0**. The Dart core retains its
 Dart >=3.3.0 contract; this lab targets Flutter >=3.50.0. CI pins the Flutter
@@ -25,7 +28,7 @@ flutter run -d chrome
 ```
 
 Web runner files are bundled. Generate other platform runners with
-`flutter create --platforms=android,ios,macos .` as needed. UI is in English.
+`flutter create --platforms=android,ios,macos .` as needed. The complete UI and integrated lessons support English and Brazilian Portuguese.
 Read the [English tutorial](../../doc/models.md) or [guia em português](../../doc/models.pt-BR.md)
 for the meaning of each model, data shapes, experiments and limitations.
 
@@ -45,9 +48,34 @@ data and tiny networks are educational examples, not performance benchmarks or
 claims of real-world generalization.
 
 
+## Navigation, language and integrated learning
+
+The original N-shaped neural graph is drawn in Flutter and supplied as a local
+SVG/favicon plus PNG icon variants. Circular Brazil and United Kingdom selectors
+are drawn locally, with language tooltips, selected borders, keyboard focus and
+48 px targets. These project-authored geometric assets are covered by MIT.
+
+Switching sections or EN/PT-BR preserves the model, controls and training session.
+`shared_preferences` persists the language where storage is available; if access
+is blocked, the app retains the selection for the current session. It does not
+automatically persist checkpoints. `url_launcher` opens real source documentation
+in a new tab; the native app also uses the platform browser when available.
+
+**Learn** covers the implemented MLP, SOM, CNN, autoencoder and RNN/LSTM/GRU
+algorithms, evaluation and exact continuation. Each chapter includes an interpreted
+formula, a real public-API snippet, an implemented preset and its English/PT-BR
+source guide. References precede exactly five exercises with objectives and
+completion criteria. **Examples** loads nine deterministic recipes without
+starting training. Loading an MLP preset changes its hidden size; real-data presets
+select Iris or AirPassengers. Active runs are protected from recipe replacement.
+
+The UI targets Material UI 1.11.1, shared_preferences 2.5.6 and url_launcher 6.3.3
+on the validated Flutter SDK. These remain confined to the example application;
+the Dart core has no Flutter or runtime dependencies.
+
 ## Source organization
 
-`main.dart` only starts the application. `app.dart` owns the theme; `pages/`
+`main.dart` loads the optional saved language preference and starts the application. `app.dart` owns the theme and locale; `l10n/` owns translations; `content/` owns source-backed lessons, links and presets; `pages/`
 owns navigation and state; `runners/` owns compute entry points; `data/` owns
 synthetic fixtures; `widgets/` and `painters/` own rendering. `datasets.dart` and
 `sequence_dataset.dart` are pure Dart fixture exports for CLI programs.
@@ -76,7 +104,7 @@ resuming this fixed walkthrough requires epoch 40. This page uses the fixed
 synthetic datasets and training recipe in `runners/checkpoint_runner.dart`.
 
 Clipboard export is explicit and does not automatically create a filesystem
-file. No storage plugin is required, including on web. The pure Dart
+file. Checkpoints are never stored automatically. The optional preference store persists only the selected language, not models, datasets or JSON. The pure Dart
 [checkpoint example](../checkpoint.dart) explains the core API; the
 [hosted consumer](../../validation/hosted/README.md) demonstrates actual file IO.
 SOM's independent neighborhood/decay schedule is outside `TrainingSession`.

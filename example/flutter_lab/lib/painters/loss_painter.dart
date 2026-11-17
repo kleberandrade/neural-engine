@@ -1,12 +1,11 @@
-// Keep compatibility with Flutter versions before the material_ui split.
-// ignore: deprecated_member_use
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'dart:math' as math;
 import 'plot_text.dart';
 
 class LossPainter extends CustomPainter {
   final List<double> losses;
-  LossPainter(this.losses);
+  final String epochLabel;
+  LossPainter(this.losses, {this.epochLabel = 'epochs'});
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
@@ -28,16 +27,17 @@ class LossPainter extends CustomPainter {
     canvas.drawPath(
         path,
         Paint()
-          ..color = Colors.cyanAccent
+          ..color = const Color(0xFF8DE0CC)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2);
     paintPlotLabel(canvas, maxLoss.toStringAsFixed(2), Offset(0, area.top));
     paintPlotLabel(canvas, '0', Offset(18, area.bottom - 12));
     paintPlotLabel(canvas, '1', Offset(area.left, area.bottom + 8));
-    paintPlotLabel(canvas, '${losses.length} epochs',
+    paintPlotLabel(canvas, '${losses.length} $epochLabel',
         Offset(area.right - 85, area.bottom + 8));
   }
 
   @override
-  bool shouldRepaint(LossPainter old) => !identical(losses, old.losses);
+  bool shouldRepaint(LossPainter old) =>
+      !identical(losses, old.losses) || epochLabel != old.epochLabel;
 }

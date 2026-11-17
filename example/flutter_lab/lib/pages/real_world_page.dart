@@ -1,11 +1,12 @@
+import '../l10n/lab_copy.dart';
 import 'dart:async';
 
-// ignore: deprecated_member_use
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:neural_engine/neural_engine.dart';
 
 import '../runners/real_world_runner.dart';
 import '../widgets/loss_chart.dart';
+import '../widgets/lab_design.dart';
 
 class RealWorldPage extends StatefulWidget {
   const RealWorldPage({super.key});
@@ -22,6 +23,36 @@ class _RealWorldPageState extends State<RealWorldPage>
   Map<String, Object?>? _report;
   String? _error;
   final _losses = <double>[], _validationLosses = <double>[];
+  int _presetRevision = 0;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final navigation = LabNavigation.maybeOf(context);
+    if (navigation == null ||
+        navigation.revision == _presetRevision ||
+        navigation.example?.tab != 7) {
+      return;
+    }
+    _presetRevision = navigation.revision;
+    if (_task != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: LabText(
+                  'Finish or cancel the active run before loading another recipe.')));
+        }
+      });
+      return;
+    }
+    _name = navigation.example!.dataset!;
+    _report = null;
+    _progress = null;
+    _error = null;
+    _losses.clear();
+    _validationLosses.clear();
+    _status = 'Ready';
+  }
+
   @override
   bool get wantKeepAlive => true;
   @override
@@ -66,7 +97,7 @@ class _RealWorldPageState extends State<RealWorldPage>
     } catch (error) {
       if (mounted) {
         setState(() {
-          _error = '$error';
+          _error = 'Training failed. Try a fresh run with these settings.';
           _status = 'Failed; start again to retry';
         });
       }
@@ -83,96 +114,240 @@ class _RealWorldPageState extends State<RealWorldPage>
     super.build(context);
     final report = _report;
     final rows = report?['sampleRows'] as List<Map<String, Object>>?;
+    final iris = _name == 'Iris';
+    String number(String key) => (report![key]! as num).toStringAsFixed(3);
     return Center(
         child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 1000),
+            constraints: const BoxConstraints(maxWidth: 1240),
             child: ListView(
-                key: const ValueKey('real-world-scroll'),
-                padding: const EdgeInsets.all(24),
-                children: [
-                  Text('Real data · honest evaluation',
-                      style: Theme.of(context).textTheme.headlineSmall),
-                  const Text(
-                      'Pinned offline datasets with source attribution. Fixed recipes; test data is reserved for the final report. '
-                      'Results from a small classic dataset are educational, not a production-quality claim.'),
-                  DropdownButton<String>(
-                      key: const ValueKey('real-world-dataset'),
-                      value: _name,
-                      items: [
-                        for (final name in ['Iris', 'AirPassengers'])
-                          DropdownMenuItem(value: name, child: Text(name)),
-                      ],
-                      onChanged: _task != null
-                          ? null
-                          : (v) => setState(() {
-                                _name = v!;
-                                _report = null;
-                                _progress = null;
-                                _error = null;
-                                _losses.clear();
-                                _validationLosses.clear();
-                                _status = 'Ready';
-                              })),
-                  Text(_name == 'Iris'
-                      ? 'MLP 4 → 8 tanh → 3 softmax. Deduplicate, stratify by class, fit scaler on training only. '
-                          'Compare held-out accuracy/F1 with a training-majority classifier.'
-                      : 'GRU with 12 monthly lags. Train through 1956, validate in 1957–1958, test in 1959–1960. '
-                          'One-step forecasts use observations available before each target, not a recursive 24-month forecast. '
-                          'Compare MAE in thousands against previous-month and previous-year baselines.'),
-                  Text(_name == 'Iris'
-                      ? 'Adam 0.01 · batch 16 · 120 epochs · categorical cross entropy · seed 42'
-                      : 'GRU hidden size 8 · Adam 0.01 · batch 12 · 100 epochs · mean squared error · chronological order · seed 42'),
-                  Wrap(spacing: 12, children: [
-                    FilledButton(
-                        key: const ValueKey('real-world-train'),
-                        onPressed: _task != null ? null : _train,
-                        child: const Text('Train on real data')),
-                    OutlinedButton(
-                        key: const ValueKey('real-world-cancel'),
-                        onPressed: _task == null ? null : () => _task?.cancel(),
-                        child: const Text('Cancel')),
-                  ]),
-                  Text(_status, key: const ValueKey('real-world-status')),
-                  if (_task != null)
-                    LinearProgressIndicator(value: _progress?.fraction ?? 0),
-                  if (_progress != null)
-                    Text(
-                        'Epoch ${_progress!.epochsCompleted} · loss ${_progress!.loss.toStringAsFixed(5)} · validation ${_progress!.validationLoss?.toStringAsFixed(5)}'),
-                  if (_error != null) Text(_error!),
-                  if (_losses.isNotEmpty)
-                    LossChart(
-                        training: List.of(_losses),
-                        validation: List.of(_validationLosses)),
-                  if (report != null) ...[
-                    Text('${report['dataset']} results',
-                        key: const ValueKey('real-world-result')),
-                    for (final entry in report.entries.where(
-                        (e) => !['sampleRows', 'scaler'].contains(e.key)))
-                      Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 3),
-                          child: Text('${entry.key}: ${entry.value}')),
-                    const SizedBox(height: 12),
-                    const Text('Reserved test predictions'),
-                    if (rows != null)
-                      SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: DataTable(columns: [
-                            for (final key in rows.first.keys)
-                              DataColumn(label: Text(key)),
-                          ], rows: [
-                            for (final row in rows)
-                              DataRow(cells: [
-                                for (final value in row.values)
-                                  DataCell(Text(value is double
-                                      ? value.toStringAsFixed(2)
-                                      : '$value')),
-                              ]),
+              key: const ValueKey('real-world-scroll'),
+              padding: EdgeInsets.all(
+                  MediaQuery.sizeOf(context).width < 600 ? 18 : 32),
+              children: [
+                const LabHeader(
+                    kicker: 'Real data / Evaluation',
+                    title: 'Good fit is a start.\nEvidence goes further.',
+                    description:
+                        'Train on one partition, validate on another and reserve the test set for the final report. Then compare the network with a simple baseline.',
+                    tags: [
+                      LabTag('Offline datasets', color: labAccent),
+                      LabTag('Reserved test partition', color: labViolet),
+                      LabTag('No uploads')
+                    ]),
+                LabPanel(
+                    eyebrow: '01 / EXPERIMENT',
+                    title: 'Choose your question',
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                              width: 300,
+                              child: DropdownButtonFormField<String>(
+                                  key: const ValueKey('real-world-dataset'),
+                                  initialValue: _name,
+                                  decoration: InputDecoration(
+                                      labelText: tr(context, 'Dataset')),
+                                  items: [
+                                    for (final name in [
+                                      'Iris',
+                                      'AirPassengers'
+                                    ])
+                                      DropdownMenuItem(
+                                          value: name, child: LabText(name))
+                                  ],
+                                  onChanged: _task != null
+                                      ? null
+                                      : (v) => setState(() {
+                                            _name = v!;
+                                            _report = null;
+                                            _progress = null;
+                                            _error = null;
+                                            _losses.clear();
+                                            _validationLosses.clear();
+                                            _status = 'Ready';
+                                          }))),
+                          const SizedBox(height: 20),
+                          LabText(
+                              iris
+                                  ? 'Classify a flower from four measurements.'
+                                  : 'Predict the next month of airline demand.',
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w600)),
+                          const SizedBox(height: 10),
+                          LabText(
+                              iris
+                                  ? 'MLP 4 → 8 tanh → 3 softmax. Exact duplicates are removed before a seeded, stratified split. The scaler is fitted on training data only.'
+                                  : 'GRU with 12 monthly lags and 8 hidden units. Train through 1956, validate in 1957–1958 and test in 1959–1960. One-step predictions use observations available before each target.',
+                              style: const TextStyle(
+                                  color: labMuted, height: 1.6)),
+                          const SizedBox(height: 18),
+                          Wrap(spacing: 8, runSpacing: 8, children: [
+                            const LabTag('Adam 0.01'),
+                            LabTag(iris ? '120 epochs' : '100 epochs'),
+                            LabTag(iris ? 'Batch 16' : 'Batch 12'),
+                            LabTag(
+                                iris ? 'Cross entropy' : 'Mean squared error'),
+                            const LabTag('Seed 42'),
+                          ]),
+                          const SizedBox(height: 22),
+                          Wrap(spacing: 10, runSpacing: 10, children: [
+                            FilledButton.icon(
+                                key: const ValueKey('real-world-train'),
+                                onPressed: _task != null ? null : _train,
+                                icon: const Icon(Icons.play_arrow_rounded,
+                                    size: 18),
+                                label: const LabText('Train on real data')),
+                            OutlinedButton(
+                                key: const ValueKey('real-world-cancel'),
+                                onPressed: _task == null
+                                    ? null
+                                    : () => _task?.cancel(),
+                                child: const LabText('Cancel')),
+                          ]),
+                          const SizedBox(height: 16),
+                          Semantics(
+                              liveRegion: true,
+                              child: LabText(_status,
+                                  key: const ValueKey('real-world-status'),
+                                  style: const TextStyle(
+                                      color: labAccent,
+                                      fontWeight: FontWeight.w600))),
+                          if (report != null)
+                            Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: LabText('${report['dataset']} results',
+                                    key: const ValueKey('real-world-result'),
+                                    style: const TextStyle(
+                                        color: labMuted, fontSize: 12))),
+                          if (_task != null)
+                            Padding(
+                                padding: const EdgeInsets.only(top: 12),
+                                child: LinearProgressIndicator(
+                                    value: _progress?.fraction ?? 0)),
+                          if (_progress != null)
+                            Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: LabText(
+                                    'Epoch ${_progress!.epochsCompleted} · loss ${_progress!.loss.toStringAsFixed(5)} · validation ${_progress!.validationLoss?.toStringAsFixed(5)}',
+                                    style: const TextStyle(
+                                        color: labMuted, fontSize: 12))),
+                          if (_error != null)
+                            LabNotice(_error!, icon: Icons.error_outline),
+                        ])),
+                const SizedBox(height: 20),
+                LabPanel(
+                    eyebrow: '02 / LEARNING',
+                    title: 'Training and validation, side by side',
+                    child: _losses.isEmpty
+                        ? const LabEmpty(
+                            title: 'An honest comparison starts here',
+                            description:
+                                'Start a run to see both loss curves on the same scale. Test data stays reserved until training is complete.')
+                        : LossChart(
+                            training: List.of(_losses),
+                            validation: List.of(_validationLosses))),
+                if (report != null) ...[
+                  const SizedBox(height: 20),
+                  LabPanel(
+                      eyebrow: '03 / RESERVED TEST SET',
+                      title: 'How well did it generalize?',
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Wrap(
+                                spacing: 42,
+                                runSpacing: 24,
+                                children: iris
+                                    ? [
+                                        LabMetric(
+                                            label: tr(context, 'Test accuracy'),
+                                            value:
+                                                '${((report['testAccuracy']! as num) * 100).toStringAsFixed(1)}%'),
+                                        LabMetric(
+                                            label: tr(context, 'Macro F1'),
+                                            value: number('testMacroF1'),
+                                            color: labViolet),
+                                        LabMetric(
+                                            label: tr(
+                                                context, 'Majority baseline'),
+                                            value:
+                                                '${((report['baselineAccuracy']! as num) * 100).toStringAsFixed(1)}%',
+                                            color: labMuted),
+                                      ]
+                                    : [
+                                        LabMetric(
+                                            label: tr(context, 'Test MAE'),
+                                            value: number('testMAEThousands'),
+                                            detail: 'Thousands of passengers'),
+                                        LabMetric(
+                                            label: tr(context, 'Test RMSE'),
+                                            value: number('testRMSEThousands'),
+                                            color: labViolet),
+                                        LabMetric(
+                                            label: tr(
+                                                context, 'Previous year MAE'),
+                                            value:
+                                                number('seasonalMAEThousands'),
+                                            color: labMuted),
+                                        LabMetric(
+                                            label: tr(
+                                                context, 'Previous month MAE'),
+                                            value: number(
+                                                'persistenceMAEThousands'),
+                                            color: labMuted),
+                                      ]),
+                            const SizedBox(height: 20),
+                            const Divider(),
+                            LabNotice(iris
+                                ? 'A small classic dataset is an educational benchmark, not a production-quality claim.'
+                                : 'The baseline can win. These are one-step predictions, not a recursive 24-month forecast.'),
+                            ExpansionTile(
+                                tilePadding: EdgeInsets.zero,
+                                title: const LabText(
+                                    'Split, protocol and complete metrics',
+                                    style: TextStyle(fontSize: 13)),
+                                children: [
+                                  for (final entry in report.entries.where(
+                                      (e) => !['sampleRows', 'scaler']
+                                          .contains(e.key)))
+                                    Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 5),
+                                        child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: LabText(
+                                                '${entry.key}: ${entry.value}',
+                                                style: const TextStyle(
+                                                    color: labMuted,
+                                                    fontSize: 12)))),
+                                ]),
                           ])),
-                  ],
-                  const SizedBox(height: 16),
-                  const Text(
-                      'Sources and snapshots: example/data/README.md. Tutorial: doc/real_world.pt-BR.md. '
-                      'Validation and test statistics never enter the scaler fit. Baselines are reported even if they outperform the neural network.'),
-                ])));
+                  const SizedBox(height: 20),
+                  LabPanel(
+                      eyebrow: '04 / INSPECT THE EXAMPLES',
+                      title: 'Reserved test predictions',
+                      child: rows == null
+                          ? const SizedBox.shrink()
+                          : SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: DataTable(columns: [
+                                for (final key in rows.first.keys)
+                                  DataColumn(label: LabText(key))
+                              ], rows: [
+                                for (final row in rows)
+                                  DataRow(cells: [
+                                    for (final value in row.values)
+                                      DataCell(LabText(value is num
+                                          ? value == value.roundToDouble()
+                                              ? value.toInt().toString()
+                                              : value.toStringAsFixed(2)
+                                          : '$value'))
+                                  ])
+                              ]))),
+                ],
+                const LabNotice(
+                    'Dataset snapshots and attribution are included with the project. Validation and test statistics never enter the scaler fit. Cancelling skips test evaluation; starting again trains a fresh model.'),
+              ],
+            )));
   }
 }

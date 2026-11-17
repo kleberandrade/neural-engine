@@ -1,5 +1,4 @@
-// ignore: deprecated_member_use
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:neural_engine_lab/pages/real_world_page.dart';
 import 'widget_test.dart' show waitForResult;
@@ -18,7 +17,13 @@ void main() {
         () => tester.tap(find.byKey(const ValueKey('real-world-train'))));
     await waitForResult(
         tester, find.byKey(const ValueKey('real-world-result')));
-    expect(find.textContaining('testAccuracy:'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Test accuracy'), 250,
+        scrollable: find
+            .descendant(
+                of: find.byKey(const ValueKey('real-world-scroll')),
+                matching: find.byType(Scrollable))
+            .first);
+    expect(find.text('Test accuracy'), findsOneWidget);
     tester.view.physicalSize = const Size(390, 844);
     await tester.pump();
     await tester.drag(find.byType(ListView), const Offset(0, -300));

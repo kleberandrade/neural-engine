@@ -1,6 +1,4 @@
-// Keep compatibility with Flutter versions before the material_ui split.
-// ignore: deprecated_member_use
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:neural_engine_lab/main.dart';
 
@@ -16,6 +14,10 @@ Future<void> waitForResult(WidgetTester tester, Finder result) async {
 
 void main() {
   testWidgets('MLP trains XOR and renders predictions', (tester) async {
+    tester.view.physicalSize = const Size(1440, 1100);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(const NeuralLab());
     await tester.tap(find.text('Train network'));
     await waitForResult(

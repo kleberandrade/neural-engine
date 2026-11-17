@@ -47,7 +47,7 @@ other's exports. JSON remains in memory until explicitly copied and saved.
 **Async training.** Select MLP, CNN, RNN, LSTM, GRU or autoencoder. The recipe card
 shows architecture, sample counts, loss, optimizer, batch size and seeds. Choose
 10–1000 total epochs before starting. Training and validation share the chart's
-vertical scale: cyan line for training, amber line with dots for validation.
+vertical scale: mint line for training, gold line with dots for validation.
 Numerical start/end values and screen-reader descriptions accompany the chart.
 Resume charts describe only the current run, not pre-import history.
 
@@ -88,7 +88,10 @@ The standalone model pages are small synchronous recipes using Flutter `compute`
 on Web they may briefly block and have no mid-run cancellation. SOM has a separate
 unsupervised schedule. Do not scale these recipes to large datasets in a browser.
 
-Tabs scroll horizontally on phones. Content scrolls vertically and charts stack
+The navbar switches between Laboratory, Learn and Examples. Circular flag buttons
+select EN/PT-BR with a stored language preference when supported. A mobile
+experiment picker replaces the desktop sidebar. Section and language changes
+preserve the experiment; loading a preset is an explicit configuration change. Content scrolls vertically and charts stack
 on narrow screens. Numerical values accompany color encodings. CNN pixels have
 row/column labels, toggle state and keyboard activation. Loss summaries and training
 status expose semantics. Screen-reader output was inspected through the browser

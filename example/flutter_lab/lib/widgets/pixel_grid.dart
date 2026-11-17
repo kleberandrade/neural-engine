@@ -1,6 +1,5 @@
-// Keep compatibility with Flutter versions before the material_ui split.
-// ignore: deprecated_member_use
-import 'package:flutter/material.dart';
+import '../l10n/lab_copy.dart';
+import 'package:material_ui/material_ui.dart';
 
 class PixelGrid extends StatelessWidget {
   final String title;
@@ -15,7 +14,7 @@ class PixelGrid extends StatelessWidget {
   Widget build(BuildContext context) => SizedBox(
       width: 210,
       child: Column(children: [
-        Text(title),
+        LabText(title),
         const SizedBox(height: 8),
         GridView.count(
             crossAxisCount: columns,
@@ -26,8 +25,8 @@ class PixelGrid extends StatelessWidget {
             children: [
               for (var i = 0; i < values.length; i++)
                 Semantics(
-                    label:
-                        '$title row ${i ~/ columns + 1}, column ${i % columns + 1}: ${values[i].toStringAsFixed(3)}',
+                    label: tr(context,
+                        '$title row ${i ~/ columns + 1}, column ${i % columns + 1}: ${values[i].toStringAsFixed(3)}'),
                     child: Tooltip(
                         message: values[i].toStringAsFixed(3),
                         child: ColoredBox(

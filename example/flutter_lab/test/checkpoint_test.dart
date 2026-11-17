@@ -1,21 +1,11 @@
-// ignore: deprecated_member_use
-import 'package:flutter/material.dart';
+import 'scroll_helpers.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:neural_engine_lab/pages/checkpoint_page.dart';
 import 'widget_test.dart' show waitForResult;
 
-Future<void> reveal(WidgetTester tester, String key, double delta) async {
-  final target = find.byKey(ValueKey(key));
-  final list = find.byKey(const ValueKey('checkpoint-scroll'));
-  for (var attempt = 0; attempt < 30; attempt++) {
-    await tester.pumpAndSettle();
-    if (target.hitTestable().evaluate().isNotEmpty) return;
-    // Drag in the list padding: the JSON editor has its own vertical scroller.
-    final origin = tester.getTopLeft(list) + const Offset(8, 100);
-    await tester.dragFrom(origin, Offset(0, delta));
-  }
-  fail('Could not reveal $key in the outer checkpoint list.');
-}
+Future<void> reveal(WidgetTester tester, String key, double delta) =>
+    revealControl(tester, 'checkpoint-scroll', key, delta);
 
 void main() {
   testWidgets('checkpoint JSON survives recreating the page and resumes',
@@ -35,6 +25,7 @@ void main() {
     await tester.pumpWidget(const SizedBox());
     await tester
         .pumpWidget(const MaterialApp(home: Scaffold(body: CheckpointPage())));
+    await reveal(tester, 'checkpoint-json', -250);
     await tester.enterText(
         find.byKey(const ValueKey('checkpoint-json')), saved);
     await reveal(tester, 'checkpoint-load', 250);
@@ -64,6 +55,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('checkpoint-load')));
     await waitForResult(tester, find.byKey(const ValueKey('checkpoint-error')));
+    await reveal(tester, 'checkpoint-result', 250);
     expect(find.text('Completed epochs: 100'), findsOneWidget);
   });
 }

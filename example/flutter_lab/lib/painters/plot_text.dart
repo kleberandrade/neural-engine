@@ -1,6 +1,4 @@
-// Keep compatibility with Flutter versions before the material_ui split.
-// ignore: deprecated_member_use
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 void paintPlotLabel(Canvas canvas, String text, Offset offset) {
   final painter = TextPainter(
